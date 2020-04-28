@@ -1,0 +1,180 @@
+syntax = "proto3";
+
+package io.modeld.api;
+
+import "protoc-gen-swagger/options/annotations.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/struct.proto";
+
+option go_package = "api";
+
+
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+  info: {
+    title: "PredictionServer"
+    version: "1.0"
+    contact: {
+      name: "modeld authors"
+      url: "https://modeld.io"
+      email: "modeld-discuss@googlegroups.com"
+    }
+  }
+  external_docs: {
+    url: "https://modeld.io/site/docs/"
+    description: "Modeld Documentation"
+  }
+  schemes: HTTP
+  schemes: HTTPS
+  consumes: "application/json"
+  produces: "application/json"
+  responses: {
+    key: "404"
+    value: {
+      description: "Returned when the resource does not exist."
+      schema: { json_schema: { type: STRING } }
+    }
+  }
+};
+
+// On any input that is documented to expect a string parameter in
+// snake_case or kebab-case, either of those cases is accepted.
+service PredictionServer {
+
+  rpc Predict(PredictionRequest) returns (PredictionResponse) {
+    option (google.api.http) = {
+      post: "/predict"
+      body: "*"
+    };
+  }
+
+  rpc BatchPredict(BatchPredictRequest) returns (BatchPredictResponse) {
+    option (google.api.http) = {
+      post: "/batchpredict"
+      body: "*"
+    };
+  }
+
+  rpc Alive(AliveRequest) returns (AliveResponse) {
+      option (google.api.http) = {
+      get: "/alive"
+
+    };
+  }
+
+  rpc Ready(ReadyRequest) returns (ReadyResponse) {
+      option (google.api.http) = {
+      get: "/ready"
+
+    };
+  }
+
+
+  rpc GetProduct(GetProductRequest) returns (GetProductResponse) {
+      option (google.api.http) = {
+      get: "/product"
+    };
+  }
+
+  rpc GetSchema(GetSchemaRequest) returns (GetSchemaResponse) {
+      option (google.api.http) = {
+      get: "/schema"
+    };
+  }
+
+  rpc GetDataset(GetDatasetRequest) returns (GetDatasetResponse) {
+      option (google.api.http) = {
+      get: "/dataset"
+    };
+  }
+
+  rpc GetModel(GetModelRequest) returns (GetModelResponse) {
+      option (google.api.http) = {
+      get: "/model"
+    };
+  }
+
+  rpc GetStat(GetStatRequest) returns (GetStatResponse) {
+      option (google.api.http) = {
+      get: "/stat"
+    };
+  }
+
+
+}
+
+message PredictionRequest {
+     string name             = 1;  // model name
+     string columns          = 2;  // json columns
+     string features         = 3;  // json string of features.
+     bool full               = 4;  // return the features and the predicted label, vs just the predictions.
+}
+
+message PredictionResponse {
+     string columns  = 1;
+     string labels   = 2; // json labels.
+}
+
+
+message BatchPredictRequest {
+    string url = 1;
+}
+
+message BatchPredictResponse {
+     string labels   = 1;
+}
+
+
+
+message AliveRequest {
+
+}
+
+message AliveResponse {
+}
+
+message ReadyRequest {
+}
+
+message ReadyResponse {
+}
+
+message GetProductRequest {
+
+}
+
+message GetProductResponse {
+    string content = 1;
+}
+
+message GetSchemaRequest {
+
+}
+
+message GetSchemaResponse {
+    string content = 1;
+}
+
+message GetDatasetRequest {
+
+}
+
+message GetDatasetResponse {
+    string content = 1;
+}
+
+message GetModelRequest {
+
+}
+
+message GetModelResponse {
+    string content = 1;
+}
+
+message GetStatRequest {
+
+}
+
+message GetStatResponse {
+    string content = 1;
+}
+
