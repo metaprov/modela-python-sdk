@@ -10,7 +10,6 @@ set -o nounset
 set -o pipefail
 
 PROJECT_ROOT=$(cd $(dirname ${BASH_SOURCE})/..; pwd)
-CODEGEN_PKG=${CODEGEN_PKG:-$(cd ${PROJECT_ROOT}; ls -d -1 ./vendor/k8s.io/code-generator 2>/dev/null || echo ../code-generator)}
 PATH="${PROJECT_ROOT}/dist:${PATH}"
 
 rm -rf ${PROJECT_ROOT}/github.com
@@ -23,13 +22,12 @@ rm -rf ${PROJECT_ROOT}/google
 
 python3 -m grpc_tools.protoc \
     -I/usr/local/include \
-    -I${PROJECT_ROOT}/../../../../ \
     -I${PROJECT_ROOT} \
-    -I${PROJECT_ROOT}/../pkg \
-    -I${PROJECT_ROOT}/../common-protos \
-    -I${PROJECT_ROOT}/../common-protos/github.com/gogo/protobuf \
+    -I${PROJECT_ROOT}/common-protos \
     --plugin protoc-gen-grpc-python=/usr/local/bin/grpc_python_plugin \
     --grpc-python_out=. \
+    --python_out=. \
     google/api/annotations.proto \
     google/api/http.proto \
-    proto/prediction_sever.proto
+    protoc-gen-swagger/options/annotations.proto \
+    ${PROJECT_ROOT}/proto/prediction_server.proto
