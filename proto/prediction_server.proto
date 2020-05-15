@@ -54,21 +54,6 @@ service PredictionServer {
     };
   }
 
-  rpc Alive(AliveRequest) returns (AliveResponse) {
-      option (google.api.http) = {
-      get: "/alive"
-
-    };
-  }
-
-  rpc Ready(ReadyRequest) returns (ReadyResponse) {
-      option (google.api.http) = {
-      get: "/ready"
-
-    };
-  }
-
-
   rpc GetProduct(GetProductRequest) returns (GetProductResponse) {
       option (google.api.http) = {
       get: "/product"
@@ -125,18 +110,6 @@ message BatchPredictResponse {
 
 
 
-message AliveRequest {
-
-}
-
-message AliveResponse {
-}
-
-message ReadyRequest {
-}
-
-message ReadyResponse {
-}
 
 message GetProductRequest {
 
