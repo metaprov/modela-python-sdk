@@ -1,1 +1,1 @@
-"""Unit test package for mdpyclient."""
+"""Unit test package for modeld_python_sdk."""

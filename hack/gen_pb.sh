@@ -1,3 +1,4 @@
+:wq
 #! /usr/bin/env bash
 
 # This script auto-generates protobuf related files. It is intended to be run manually when either

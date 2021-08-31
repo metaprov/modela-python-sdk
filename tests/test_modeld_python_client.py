@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
-"""Tests for `mdpyclient` package."""
+"""Tests for `modeld_python_sdk` package."""
 
 
 import unittest
 
 
 class TestModeld_python_client(unittest.TestCase):
-    """Tests for `mdpyclient` package."""
+    """Tests for `modeld_python_sdk` package."""
 
     def setUp(self):
         """Set up test fixtures, if any."""

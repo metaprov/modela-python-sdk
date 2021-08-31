@@ -15,7 +15,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/metaprov/mdpyclient/issues.
+Report bugs at https://github.com/metaprov/modeld-python-sdk/issues.
 
 If you are reporting a bug, please include:
 
