@@ -1,21 +1,21 @@
 [tool.poetry]
 name = "modeld-python-sdk"
-version = "0.3.648"
+version = "0.3.653"
 description = "python client sdk for the modeld auto ml system."
 authors = ["tsagi <tsagi@metaprov.com>"]
 keywords = ["modeld", "automl"]
 readme = "README.md"
 license = "MIT"
 homepage = "https://github.com/metaprov/modeld-api-sdk"
-repository = "https://github.com/MattiooFR/package_name"
+repository = "https://github.com/metaprov/modeld/modeld-python-sdk"
 include = [
     "LICENSE",
 ]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-modeldapi = "^0.3.646"
-grpc = "^1.0.0"
+modeldapi = "^0.3.649"
+grpcio = "^1.39.0"
 
 [tool.poetry.dev-dependencies]
 
