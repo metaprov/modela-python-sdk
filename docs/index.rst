@@ -1,4 +1,4 @@
-Welcome to modeld-python-client's documentation!
+Welcome to modela-python-client's documentation!
 ======================================
 
 .. toctree::

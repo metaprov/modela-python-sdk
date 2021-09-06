@@ -5,7 +5,7 @@ Credits
 Development Lead
 ----------------
 
-* modeld <info@modeld.io>
+* modela <info@modela.io>
 
 Contributors
 ------------

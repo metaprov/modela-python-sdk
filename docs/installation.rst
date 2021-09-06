@@ -8,13 +8,13 @@ Installation
 Stable release
 --------------
 
-To install modeld-python-client, run this command in your terminal:
+To install modela-python-client, run this command in your terminal:
 
 .. code-block:: console
 
     $ pip install mdpyclient
 
-This is the preferred method to install modeld-python-client, as it will always install the most recent stable release.
+This is the preferred method to install modela-python-client, as it will always install the most recent stable release.
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
@@ -26,7 +26,7 @@ you through the process.
 From sources
 ------------
 
-The sources for modeld-python-client can be downloaded from the `Github repo`_.
+The sources for modela-python-client can be downloaded from the `Github repo`_.
 
 You can either clone the public repository:
 

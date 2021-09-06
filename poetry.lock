@@ -33,7 +33,7 @@ grpcio = ">=1.39.0"
 protobuf = ">=3.5.0.post1,<4.0dev"
 
 [[package]]
-name = "modeldapi"
+name = "modelaapi"
 version = "0.3.646"
 description = "A suite of automatic machine learning for kubernetes"
 category = "main"
@@ -178,8 +178,8 @@ grpcio-tools = [
     {file = "grpcio_tools-1.39.0-cp39-cp39-win32.whl", hash = "sha256:4098b482ef1b085842d9376aed955ba07f9d7d84c40d41beab01df0d3ca5fa45"},
     {file = "grpcio_tools-1.39.0-cp39-cp39-win_amd64.whl", hash = "sha256:cfa6229c5771c989bfc27f5640d8dc62a3572dcd43c00707e8176a247c48399b"},
 ]
-modeldapi = [
-    {file = "modeldapi-0.3.646.tar.gz", hash = "sha256:8000f2c38279c983c34b41bdaf49938043ac97d0cd10a3fb8f5d7fdc1320410f"},
+modelaapi = [
+    {file = "modelaapi-0.3.646.tar.gz", hash = "sha256:8000f2c38279c983c34b41bdaf49938043ac97d0cd10a3fb8f5d7fdc1320410f"},
 ]
 protobuf = [
     {file = "protobuf-3.17.3-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:ab6bb0e270c6c58e7ff4345b3a803cc59dbee19ddf77a4719c5b635f1d547aa8"},

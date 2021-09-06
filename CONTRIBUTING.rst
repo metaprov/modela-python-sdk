@@ -15,7 +15,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/metaprov/modeld-python-sdk/issues.
+Report bugs at https://github.com/metaprov/modela-python-sdk/issues.
 
 If you are reporting a bug, please include:
 
@@ -38,8 +38,8 @@ and "help wanted" is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-modeld-python-client could always use more documentation, whether as part of the
-official modeld-python-client docs, in docstrings, or even on the web in blog posts,
+modela-python-client could always use more documentation, whether as part of the
+official modela-python-client docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Submit Feedback

@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use modeld-python-client in a project::
+To use modela-python-client in a project::
 
     import mdpyclient

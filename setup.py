@@ -17,8 +17,8 @@ setup_requirements = [ ]
 test_requirements = [ ]
 
 setup(
-    author="modeld",
-    author_email='info@modeld.io',
+    author="modela",
+    author_email='info@modela.io',
     python_requires='>=3.5',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
@@ -31,19 +31,19 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
-    description="Python client lib for modeld prediction server",
+    description="Python client lib for modela prediction server",
     entry_points={
         'console_scripts': [
-            'modeld_python_sdk=modeld_python_sdk.cli:main',
+            'modela_python_sdk=modela_python_sdk.cli:main',
         ],
     },
     install_requires=requirements,
     license="Apache Software License 2.0",
     long_description=readme + '\n\n' + history,
     include_package_data=True,
-    keywords='modeld_python_sdk',
-    name='modeld_python_sdk',
-    packages=find_packages(include=['modeld_python_sdk', 'modeld_python_sdk.*']),
+    keywords='modela_python_sdk',
+    name='modela_python_sdk',
+    packages=find_packages(include=['modela_python_sdk', 'modela_python_sdk.*']),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,

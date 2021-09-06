@@ -7,8 +7,8 @@ from grpc import (  # type: ignore
     StreamStreamClientInterceptor
 )
 
-from github.com.metaprov.modeldapi.services.grpcinferenceservice.v1 import grpcinferenceservice_pb2
-from github.com.metaprov.modeldapi.services.grpcinferenceservice.v1 import grpcinferenceservice_pb2_grpc
+from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1 import grpcinferenceservice_pb2
+from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1 import grpcinferenceservice_pb2_grpc
 
 from typing import Dict, Optional, Union, Sequence, List
 
@@ -87,7 +87,7 @@ class Predictions:
 #######################################################
 
 
-class ModeldGrpcClient(object):
+class ModelaGrpcClient(object):
     def __init__(self,
                  host,
                  port=3000,
@@ -123,7 +123,7 @@ class ModeldGrpcClient(object):
     def __del__(self):
         self.close()
 
-    def __enter__(self) -> 'ModeldGrpcClient':
+    def __enter__(self) -> 'ModelaGrpcClient':
         return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
