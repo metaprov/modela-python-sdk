@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "modela-python-sdk"
-version = "0.4.9"
+version = "0.4.87"
 description = "python client sdk for the modela auto ml system."
 authors = ["tsagi <tsagi@metaprov.com>"]
 keywords = ["modela", "automl"]
 readme = "README.md"
 license = "MIT"
-homepage = "https://github.com/metaprov/modela-api-sdk"
+homepage = "https://github.com/metaprov/modela-python-sdk"
 repository = "https://github.com/metaprov/modela/modela-python-sdk"
 include = [
     "LICENSE",
@@ -14,8 +14,8 @@ include = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-modelaapi = "^0.4.9"
-grpcio = "^1.39.0"
+modelaapi = "^0.4.87"
+grpcio = "^1.41.0"
 
 [tool.poetry.dev-dependencies]
 

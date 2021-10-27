@@ -4,4 +4,4 @@ Usage
 
 To use modela-python-client in a project::
 
-    import mdpyclient
+    import modela_python_sdk

@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
-SPHINXPROJ    = mdpyclient
+SPHINXPROJ    = modela_python_sdk
 SOURCEDIR     = .
 BUILDDIR      = _build
 

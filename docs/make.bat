@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
-set SPHINXPROJ=mdpyclient
+set SPHINXPROJ=modela-python-sdk
 
 if "%1" == "" goto help
 

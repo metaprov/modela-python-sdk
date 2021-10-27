@@ -32,13 +32,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/metaprov/mdpyclient
+    $ git clone git://github.com/metaprov/modela-python-sdk
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/metaprov/mdpyclient/tarball/master
+    $ curl -OJL https://github.com/metaprov/modela-python-sdk/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/metaprov/mdpyclient
-.. _tarball: https://github.com/metaprov/mdpyclient/tarball/master
+.. _Github repo: https://github.com/metaprov/modela-python-sdk
+.. _tarball: https://github.com/metaprov/modela-python-sdk/tarball/master
