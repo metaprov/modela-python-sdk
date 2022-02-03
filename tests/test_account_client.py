@@ -1,22 +1,35 @@
-from modela_python_sdk.server import ModelaServer
-from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import ObjectMeta
-from github.com.metaprov.modelaapi.pkg.apis.infra.v1alpha1.generated_pb2 import Account
+import unittest
+from modela.server import Modela
+from modela.Accounts import Account
 
-def test_account_crud():
-    modela_service = ModelaServer("localhost",3000)
-    account = Account()
-    account.metadata.CopyFrom(ObjectMeta())
-    account.metadata.name = "test2"
-    account.metadata.namespace = "default-tenant"
-    modela_service.accounts.create_account(account,"test2")
-    # get the account
-    get_account_result = modela_service.accounts.get_account("default-tenant","test2")
-    assert get_account_result != None
-    # update the account
-    get_account_result.spec.email="test@acme.com"
-    get_account_result = modela_service.accounts.update_account(get_account_result)
+class TestModela_account(unittest.TestCase):
+    """Tests for `modela` package."""
 
+    def setUp(self):
+        self.modela = Modela("localhost", 3000)
 
+    def tearDown(self):
+        """Tear down test fixtures, if any."""
+        self.modela.close()
+
+    def test_account_create(self):
+        account = self.modela.Account(namespace="default-tenant", name="test")
+        assert account != None
+        account.submit(password="test")
+
+    def test_account_update(self):
+        pass
+
+    def test_account_get(self):
+        account = self.modela.Account(namespace="default-tenant", name="admin")
+        print(account.metadata.labels)
+
+    def test_account_delete(self):
+        account = self.modela.Account(namespace="default-tenant", name="test")
+        account.delete()
+
+    def test_account_list(self):
+        print(len(self.modela.Accounts.list("default-tenant")))
 
 
 
