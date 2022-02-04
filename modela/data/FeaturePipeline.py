@@ -3,7 +3,7 @@ from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import F
 from github.com.metaprov.modelaapi.services.featurepipeline.v1.featurepipeline_pb2_grpc import FeaturePipelineServiceStub
 from github.com.metaprov.modelaapi.services.featurepipeline.v1.featurepipeline_pb2 import CreateFeaturePipelineRequest, \
     UpdateFeaturePipelineRequest, \
-    DeleteFeaturePipelineRequest, GetFeaturePipelineRequest, ListFeaturePipelinesRequest
+    DeleteFeaturePipelineRequest, GetFeaturePipelineRequest, ListFeaturePipelineRequest
 
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
@@ -70,7 +70,7 @@ class FeaturePipelineClient:
         return False
 
     def list(self, namespace: str) -> Union[List[FeaturePipeline], bool]:
-        request = ListFeaturePipelinesRequest()
+        request = ListFeaturePipelineRequest()
         request.namespace = namespace
         try:
             response = self.__stub.ListFeaturePipelines(request)

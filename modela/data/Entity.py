@@ -3,7 +3,7 @@ from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import E
 from github.com.metaprov.modelaapi.services.entity.v1.entity_pb2_grpc import EntityServiceStub
 from github.com.metaprov.modelaapi.services.entity.v1.entity_pb2 import CreateEntityRequest, \
     UpdateEntityRequest, \
-    DeleteEntityRequest, GetEntityRequest, ListEntitysRequest
+    DeleteEntityRequest, GetEntityRequest, ListEntitiesRequest
 
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
@@ -70,7 +70,7 @@ class EntityClient:
         return False
 
     def list(self, namespace: str) -> Union[List[Entity], bool]:
-        request = ListEntitysRequest()
+        request = ListEntitiesRequest()
         request.namespace = namespace
         try:
             response = self.__stub.ListEntitys(request)

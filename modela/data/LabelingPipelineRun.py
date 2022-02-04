@@ -3,7 +3,7 @@ from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import L
 from github.com.metaprov.modelaapi.services.labelingpipelinerun.v1.labelingpipelinerun_pb2_grpc import LabelingPipelineRunServiceStub
 from github.com.metaprov.modelaapi.services.labelingpipelinerun.v1.labelingpipelinerun_pb2 import CreateLabelingPipelineRunRequest, \
     UpdateLabelingPipelineRunRequest, \
-    DeleteLabelingPipelineRunRequest, GetLabelingPipelineRunRequest, ListLabelingPipelineRunsRequest
+    DeleteLabelingPipelineRunRequest, GetLabelingPipelineRunRequest, ListLabelingPipelineRunRequest
 
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
@@ -70,7 +70,7 @@ class LabelingPipelineRunClient:
         return False
 
     def list(self, namespace: str) -> Union[List[LabelingPipelineRun], bool]:
-        request = ListLabelingPipelineRunsRequest()
+        request = ListLabelingPipelineRunRequest()
         request.namespace = namespace
         try:
             response = self.__stub.ListLabelingPipelineRuns(request)

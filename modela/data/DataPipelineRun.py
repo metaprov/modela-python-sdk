@@ -3,7 +3,7 @@ from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import D
 from github.com.metaprov.modelaapi.services.datapipelinerun.v1.datapipelinerun_pb2_grpc import DataPipelineRunServiceStub
 from github.com.metaprov.modelaapi.services.datapipelinerun.v1.datapipelinerun_pb2 import CreateDataPipelineRunRequest, \
     UpdateDataPipelineRunRequest, \
-    DeleteDataPipelineRunRequest, GetDataPipelineRunRequest, ListDataPipelineRunsRequest
+    DeleteDataPipelineRunRequest, GetDataPipelineRunRequest, ListDataPipelineRunRequest
 
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
@@ -70,7 +70,7 @@ class DataPipelineRunClient:
         return False
 
     def list(self, namespace: str) -> Union[List[DataPipelineRun], bool]:
-        request = ListDataPipelineRunsRequest()
+        request = ListDataPipelineRunRequest()
         request.namespace = namespace
         try:
             response = self.__stub.ListDataPipelineRuns(request)

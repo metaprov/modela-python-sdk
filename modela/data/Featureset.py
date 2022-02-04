@@ -3,7 +3,7 @@ from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import F
 from github.com.metaprov.modelaapi.services.featureset.v1.featureset_pb2_grpc import FeaturesetServiceStub
 from github.com.metaprov.modelaapi.services.featureset.v1.featureset_pb2 import CreateFeaturesetRequest, \
     UpdateFeaturesetRequest, \
-    DeleteFeaturesetRequest, GetFeaturesetRequest, ListFeaturesetsRequest
+    DeleteFeaturesetRequest, GetFeaturesetRequest, ListFeaturesetRequest
 
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
@@ -70,7 +70,7 @@ class FeaturesetClient:
         return False
 
     def list(self, namespace: str) -> Union[List[Featureset], bool]:
-        request = ListFeaturesetsRequest()
+        request = ListFeaturesetRequest()
         request.namespace = namespace
         try:
             response = self.__stub.ListFeaturesets(request)

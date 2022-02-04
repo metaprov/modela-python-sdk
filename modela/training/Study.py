@@ -3,7 +3,7 @@ from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 impo
 from github.com.metaprov.modelaapi.services.study.v1.study_pb2_grpc import StudyServiceStub
 from github.com.metaprov.modelaapi.services.study.v1.study_pb2 import CreateStudyRequest, \
     UpdateStudyRequest, \
-    DeleteStudyRequest, GetStudyRequest, ListStudysRequest
+    DeleteStudyRequest, GetStudyRequest, ListStudyRequest
 
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
@@ -70,7 +70,7 @@ class StudyClient:
         return False
 
     def list(self, namespace: str) -> Union[List[Study], bool]:
-        request = ListStudysRequest()
+        request = ListStudyRequest()
         request.namespace = namespace
         try:
             response = self.__stub.ListStudys(request)

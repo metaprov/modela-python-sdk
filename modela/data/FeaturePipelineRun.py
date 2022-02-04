@@ -3,7 +3,7 @@ from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import F
 from github.com.metaprov.modelaapi.services.featurepipelinerun.v1.featurepipelinerun_pb2_grpc import FeaturePipelineRunServiceStub
 from github.com.metaprov.modelaapi.services.featurepipelinerun.v1.featurepipelinerun_pb2 import CreateFeaturePipelineRunRequest, \
     UpdateFeaturePipelineRunRequest, \
-    DeleteFeaturePipelineRunRequest, GetFeaturePipelineRunRequest, ListFeaturePipelineRunsRequest
+    DeleteFeaturePipelineRunRequest, GetFeaturePipelineRunRequest, ListFeaturePipelineRunRequest
 
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException

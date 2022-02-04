@@ -23,10 +23,9 @@ class DataProductClient:
     def __init__(self, stub):
         self.__stub: DataProductServiceStub = stub
 
-    def create(self, dataproduct: DataProduct, password: str = "") -> bool:
+    def create(self, dataproduct: DataProduct) -> bool:
         request = CreateDataProductRequest()
         request.item.CopyFrom(DataProduct.raw_message)
-        request.password = password
         try:
             response = self.__stub.CreateDataProduct(request)
             return True
