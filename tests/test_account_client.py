@@ -22,14 +22,13 @@ class TestModela_account(unittest.TestCase):
 
     def test_account_get(self):
         account = self.modela.Account(namespace="default-tenant", name="admin")
-        print(account.metadata.labels)
 
     def test_account_delete(self):
         account = self.modela.Account(namespace="default-tenant", name="test")
         account.delete()
 
     def test_account_list(self):
-        print(len(self.modela.Accounts.list("default-tenant")))
+        print(self.modela.Accounts.list("default-tenant"))
 
 
 

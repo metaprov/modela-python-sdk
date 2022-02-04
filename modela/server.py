@@ -1,6 +1,4 @@
-import grpc
-
-from typing import List, Optional,Union
+from typing import Optional
 from grpc import (  # type: ignore
     UnaryUnaryClientInterceptor,
     UnaryStreamClientInterceptor,
@@ -13,9 +11,9 @@ from github.com.metaprov.modelaapi.services.account.v1 import account_pb2_grpc
 from github.com.metaprov.modelaapi.services.dataproduct.v1 import dataproduct_pb2_grpc
 from github.com.metaprov.modelaapi.services.datasource.v1 import datasource_pb2_grpc
 
-from modela.Accounts import *
-from modela.DataProducts import *
-from modela.DataSources import  *
+from modela.infra.Account import *
+from modela.data.DataProduct import *
+from modela.data.DataSource import  *
 
 class Modela:
     def __init__(
