@@ -5,7 +5,7 @@ import unittest
 from modela.client import ModelaGrpcClient
 
 
-class TestModela_python_client(unittest.TestCase):
+class Test_Modela_python_client(unittest.TestCase):
     """Tests for `modela` package."""
 
     def setUp(self):

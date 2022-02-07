@@ -44,13 +44,13 @@ class ModelaException(Exception):
 
     @staticmethod
     def process_error(err: grpc.RpcError):
-        if err.code().value == grpc.StatusCode.ALREADY_EXISTS:
+        if err.code() == grpc.StatusCode.ALREADY_EXISTS.value:
             raise ResourceExistsException(err.code().value, err.code().name, err.details(), err.debug_error_string())
-        if err.code().value == grpc.StatusCode.NOT_FOUND:
+        if err.code() == grpc.StatusCode.NOT_FOUND:
             raise ResourceNotFoundException(err.code().value, err.code().name, err.details(), err.debug_error_string())
-        elif err.code().value == grpc.StatusCode.UNAUTHENTICATED:
+        elif err.code() == grpc.StatusCode.UNAUTHENTICATED:
             raise UnauthenticatedException(err.code().value, err.code().name, err.details(), err.debug_error_string())
-        elif err.code().value == grpc.StatusCode.PERMISSION_DENIED:
+        elif err.code() == grpc.StatusCode.PERMISSION_DENIED:
             raise PermissionDeniedException(err.code().value, err.code().name, err.details(), err.debug_error_string())
         else:
             raise GrpcErrorException(err.code().value, err.code().name, err.details(), err.debug_error_string())

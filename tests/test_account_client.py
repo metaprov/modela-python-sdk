@@ -1,6 +1,5 @@
 import unittest
 from modela.server import Modela
-from modela.Accounts import Account
 
 class TestModela_account(unittest.TestCase):
     """Tests for `modela` package."""

@@ -1,7 +1,7 @@
 import unittest
 from modela.server import Modela
 
-class TestModela_datasource(unittest.TestCase):
+class Test_Modela_datasource(unittest.TestCase):
     """Tests for `modela` package."""
 
     def setUp(self):
@@ -22,7 +22,9 @@ class TestModela_datasource(unittest.TestCase):
 
     def test_datasource_get(self):
         datasource = self.modela.DataSource(namespace="iris-product", name="test")
-        print(datasource.spec)
+        datasource.spec.csvfile.nullValues = "test"
+        print(type(datasource.spec.schema.columns))
+
 
     def test_datasource_delete(self):
         #datasource = self.modela.DataSource(namespace="default-tenant", name="test")

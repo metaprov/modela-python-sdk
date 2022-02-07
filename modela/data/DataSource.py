@@ -4,14 +4,18 @@ from github.com.metaprov.modelaapi.services.datasource.v1.datasource_pb2_grpc im
 from github.com.metaprov.modelaapi.services.datasource.v1.datasource_pb2 import CreateDataSourceRequest, \
     UpdateDataSourceRequest, \
     DeleteDataSourceRequest, GetDataSourceRequest, ListDataSourceRequest
-from modela.Resource import Resource
+from modela.Resource import *
 from modela.ModelaException import ModelaException
 from typing import List, Union
+import pandas
+from modela.data.models import *
+from modela.training.common import *
 
 
 class DataSource(Resource):
-    def __init__(self, item: MDDataSource = None, client=None, namespace="", name="", infer_file="",
-                 infer_dataframe="", target_column="", file_type="csv"):
+    def __init__(self, item: MDDataSource = MDDataSource(), client=None, namespace="", name="", infer_file="",
+                 infer_dataframe: pandas.DataFrame = None, target_column: str = "", file_type: FlatFileType = FlatFileType.Csv,
+                 task_type: TaskType = "", csv_config: CsvFileFormat = None, excel_config: ExcelNotebookFormat = None):
         super().__init__(item, client, namespace=namespace, name=name)
 
 

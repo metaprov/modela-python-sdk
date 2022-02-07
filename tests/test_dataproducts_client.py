@@ -1,7 +1,7 @@
 import unittest
 from modela.server import Modela
 
-class TestModela_dataproduct(unittest.TestCase):
+class Test_Modela_dataproduct(unittest.TestCase):
     """Tests for `modela` package."""
 
     def setUp(self):
