@@ -14,9 +14,23 @@ from modela.training.common import *
 
 class DataSource(Resource):
     def __init__(self, item: MDDataSource = MDDataSource(), client=None, namespace="", name="", infer_file="",
-                 infer_dataframe: pandas.DataFrame = None, target_column: str = "", file_type: FlatFileType = FlatFileType.Csv,
-                 task_type: TaskType = "", csv_config: CsvFileFormat = None, excel_config: ExcelNotebookFormat = None):
+                 infer_dataframe: pandas.DataFrame = None, target_column: str = "",
+                 file_type: FlatFileType = FlatFileType.Csv, infer_location=None,
+                 task_type: TaskType = TaskType.BinaryClassification, csv_config: CsvFileFormat = None,
+                 excel_config: ExcelNotebookFormat = None, ):
         super().__init__(item, client, namespace=namespace, name=name)
+
+    @property
+    def spec(self):
+        return DataSourceSpec().copy_from(self._object.spec)
+
+    @property
+    def schema(self):
+        return self.spec.Schema
+
+    def default(self):
+        DataSourceSpec().apply_config(self._object.spec)
+
 
 
 class DataSourceClient:
@@ -29,9 +43,10 @@ class DataSourceClient:
 
     def create(self, datasource: DataSource) -> bool:
         request = CreateDataSourceRequest()
-        request.item.CopyFrom(DataSource.raw_message)
+        request.item.CopyFrom(datasource.raw_message)
         try:
             response = self.__stub.CreateDataSource(request)
+            return True
         except grpc.RpcError as err:
             error = err
 
@@ -40,7 +55,7 @@ class DataSourceClient:
 
     def update(self, datasource: DataSource) -> bool:
         request = UpdateDataSourceRequest()
-        request.item = DataSource.raw_message
+        request.item.CopyFrom(datasource.raw_message)
         try:
             self.__stub.UpdateDataSource(request)
             return True
@@ -81,7 +96,7 @@ class DataSourceClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListDataSources(request)
-            return [DataSource(item, self) for item in response.items.items]
+            return [DataSource(item, self) for item in response.list.items]
         except grpc.RpcError as err:
             error = err
 

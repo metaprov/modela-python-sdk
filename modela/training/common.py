@@ -1,6 +1,37 @@
 from enum import Enum
 
 
+class HolidayCountry(Enum):
+    UnitedState = "US"
+    Brazil = "BR"
+    Indonesia = "ID"
+    India = "IN"
+    Malaysia = "MY"
+    Vietnam = "VN"
+    Thailand = "TH"
+    Philippines = "PH"
+    Pakistan = "PK"
+    Bangladesh = "BD"
+    Egypt = "EG"
+    China = "CN"
+    Russian = "RU"
+    Korea = "KR"
+    Belarus = "BY"
+    UnitedArabEmirates = "AE"
+    NoneHoliday = "none"
+
+
+class Frequency(Enum):
+    Seconds = "second"
+    Minutes = "minute"
+    Hours = "hour"
+    Days = "day"
+    Weeks = "week"
+    Months = "month"
+    Qtrs = "quarter"
+    Years = "year"
+
+
 class TaskType(Enum):
     BinaryClassification = "binary-classification"
     MultiClassification = "multi-classification"
@@ -47,3 +78,17 @@ class Scaling(Enum):
     ScaleToUnitNorm = "scale-to-unit-norm"
     NoScaling = "none"
     Auto = "auto"
+
+
+class DatasetType(Enum):
+    Tabular = "tabular"
+    Image = "image"
+    Text = "text"
+    Video = "video"
+    Audio = "audio"
+
+
+class RelationshipArity(Enum):
+    OneToOne = "one-to-one"
+    OneToMany = "one-to-many"
+    ManyToMany = "many-to-many"

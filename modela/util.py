@@ -14,6 +14,7 @@ class TrackedList(_collections_abc.MutableSequence):
             elif isinstance(data, TrackedList):
                 self.data[:] = data.data[:]
             else:
+                print(type(data))
                 self.data = list(data)
 
     def __repr__(self):

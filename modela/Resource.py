@@ -1,4 +1,5 @@
 import _collections_abc
+import warnings
 from types import GenericAlias
 from typing import List, get_type_hints, get_args
 import typing_utils
@@ -6,6 +7,7 @@ from google.protobuf.message import Message
 from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import ObjectMeta
 from enum import Enum
 
+from modela.ModelaException import ResourceNotFoundException
 from modela.util import TrackedList
 
 
@@ -27,6 +29,8 @@ class Configuration:
 
     def apply_field(self, attribute, value, message):
         """ Apply a single attribute to a related Protobuf Message """
+        if not value:
+            return
         real_field = convert_case(attribute)
         annotation_type = get_type_hints(self)[attribute]
         if typing_utils.issubtype(annotation_type, List):
@@ -35,7 +39,7 @@ class Configuration:
                 getattr(message, real_field).extend(value)
             else:
                 getattr(message, real_field).extend([model.to_message() for model in value])
-                for ind, model in enumerate(value): # Fix parent reference, protobuf containers like to make copies of objects
+                for ind, model in enumerate(value): # Fix _parent references, protobuf containers like to make copies of objects
                     model._parent = getattr(message, real_field)[ind]
 
         elif isinstance(getattr(message, real_field), Message):
@@ -69,12 +73,18 @@ class Configuration:
                         [annotation_type().copy_from(message).set_parent(message) for message in message_attr],
                         self, attribute))
             elif isinstance(message_attr, Message):
-                setattr(self, attribute, annotation_type(message_attr).copy_from(message_attr).set_parent(message_attr))
+                if message_attr.ByteSize() <= 0:
+                    continue
+                setattr(self, attribute, annotation_type().copy_from(message_attr))
             else:
-                setattr(self, attribute, (type(annotation_type) if not callable(annotation_type) else annotation_type)(
-                    message_attr))
+                try:
+                    setattr(self, attribute, (type(annotation_type) if not callable(annotation_type) else annotation_type)(
+                        message_attr))
+                except ValueError:
+                    pass
 
-        self.set_parent(message)
+
+        self._parent = message
         return self
 
     def set_parent(self, model):
@@ -88,6 +98,10 @@ class Configuration:
 
     def to_message(self):
         raise NotImplementedError()
+
+    @property
+    def parent(self):
+        return self._parent
 
     def __setattr__(self, attribute, value):
         if hasattr(self, "_parent") and attribute != "_parent":
@@ -103,6 +117,7 @@ class Resource:
     """
     Base class for all classes representing Modela custom resources
     """
+    DefaultVersion = 'v0.0.1'
 
     def __init__(self, resource: Message, client=None, name="", namespace=""):
         self._object: Message = resource
@@ -111,10 +126,16 @@ class Resource:
             if hasattr(self._client, "get"):
                 try:
                     self._object = self._client.get(namespace, name).raw_message
-                except AttributeError:
+                except ResourceNotFoundException:
                     self._object.metadata.CopyFrom(ObjectMeta())
                     self._object.metadata.name = name
                     self._object.metadata.namespace = namespace
+                    self.default()
+                    if hasattr(self._object.spec, 'versionName'):
+                        self._object.spec.versionName = Resource.DefaultVersion
+
+            else:
+                print("Unable to lookup resource: object has no client repository")
 
     @property
     def spec(self):
@@ -171,3 +192,6 @@ class Resource:
             self._object = self._client.get(self.namespace, self.name).raw_message
         else:
             raise AttributeError("Object has no client repository")
+
+    def default(self):
+        warnings.warn("default resource constructor is missing. resource may encounter errors.")

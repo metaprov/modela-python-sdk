@@ -52,6 +52,8 @@ class ModelaException(Exception):
             raise UnauthenticatedException(err.code().value, err.code().name, err.details(), err.debug_error_string())
         elif err.code() == grpc.StatusCode.PERMISSION_DENIED:
             raise PermissionDeniedException(err.code().value, err.code().name, err.details(), err.debug_error_string())
+        elif err.code() == grpc.StatusCode.FAILED_PRECONDITION:
+            raise InvalidResourceException(err.code().value, err.code().name, err.details(), err.debug_error_string())
         else:
             raise GrpcErrorException(err.code().value, err.code().name, err.details(), err.debug_error_string())
 
@@ -80,6 +82,12 @@ class UnauthenticatedException(ModelaException):
 class PermissionDeniedException(ModelaException):
     """
     Exception raised in the case of unauthorized access to a certain type of resource action.
+    """
+
+
+class InvalidResourceException(ModelaException):
+    """
+    Exception raised in the case of the application recognizing a resource update or create request to be invalid.
     """
 
 

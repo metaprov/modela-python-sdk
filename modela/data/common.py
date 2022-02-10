@@ -99,3 +99,75 @@ class DataDomain(Enum):
     Embedding = "embedding"
     Record = "record"
     Useless = "useless"
+    Nothing = "none"
+
+
+class MultiDatasetValidationRule(Enum):
+    SameNumberOfRows = "same-number-of-rows"
+    OuterJoinEmpty = "outer-join-empty"
+    OuterJoinNotEmpty = "outer-join-not-empty"
+    InnerJoinEmpty = "inner-join-empty"
+    InnerJoinNotEmpty = "inner-join-not-empty"
+    LeftJoinEmpty = "left-join-empty"
+    LeftJoinNotEmpty = "left-join-not-empty"
+    RightJoinEmpty = "right-join-empty"
+    RightJoinNotEmpty = "right-join-not-empty"
+
+
+class DatasetValidationRule(Enum):
+    ColumnsCountEqual = "columns-count-equal"
+    ColumnsNameInSet = "columns-in-set"
+    ColumnsInOrderedList = "columns-in-ordered-list"
+    RowCountBetween = "row-count-between"
+    NameNotEmpty = "dataset-not-empty"
+    NameEmpty = "dataset-empty"
+
+
+class MultiColumnValidationRule(Enum):
+    MultiColumnCorrelation = "multi-column-corr"
+
+
+class ColumnValidationRule(Enum):
+    ColumnExist = "column-exist"
+    ColumnHaveValues = "have-values"
+    ColumnHasNoValue = "has-no-values"
+    ColumnHaveNulls = "value-have-nulls"
+    ColumnHasNoNull = "value-has-no-nulls"
+    ColumnOfType = "value-of-type"
+    InSet = "values-in-set"
+    Increasing = "values-increasing"
+    Decreasing = "values-decreasing"
+    LengthBetween = "value-length-between"
+    MatchRegex = "value-match-regex"
+    IsDate = "value-is-date"
+    IsJson = "value-is-json"
+    ColumnValidationInDomain = "value-in-domain"
+    UniqueValueCountBetween = "unique-value-count-between"
+    OutlierValueUniqueBetween = "outlier-value-count-between"
+    ValidValueUniqueBetween = "valid-values-count-between"
+    MismatchValueBetween = "mismatch-values-between"
+    MinBetween = "min-between"
+    LowerQuartileBetween = "lower-quartile-between"
+    MedianBetween = "median-between"
+    AvgBetween = "average-between"
+    UpperQuartileBetween = "upper-quartile-between"
+    MaxBetween = "max-between"
+    ColumnValidationStddevBetween = "stddev-between"
+    ColumnValidationChiSquarePValueBetween = "chi-square-p-value-between"
+    ColumnValidationPairCramersBetween = "pair-cramers-between"
+
+
+class FileValidationRule(Enum):
+    FileSizeBetween = "file-size-between"
+    FileExist = "file-exist"
+    FileRegexMatchCountBetween = "file-regex-match-count-between"
+    FileValidJson = "file-valid-json"
+    FileValidCsv = "file-valid-csv"
+
+
+class SamplingType(Enum):
+    Header = "header"
+    Random = "random"
+    Filter = "filter"
+    Anomaly = "anomaly"
+    Stratified = "stratified"
