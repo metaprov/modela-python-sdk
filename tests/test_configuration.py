@@ -8,56 +8,56 @@ class Test_Modela_configurations(unittest.TestCase):
     def test_parent_propagation(self):
         conf = CsvFileFormat()
         dc = DataSource()
-        conf.set_parent(dc.spec.csvfile)
+        conf.set_parent(dc._object.spec.csvfile)
         conf.ColumnDelimiter = Delimiter.CRLF
-        assert dc.spec.csvfile.columnDelimiter == Delimiter.CRLF.value
-        dc.spec.csvfile.commentChars = "x"
+        assert dc._object.spec.csvfile.columnDelimiter == Delimiter.CRLF.value
+        dc._object.spec.csvfile.commentChars = "x"
         conf.CommentChars = "#"
         newconf = CsvFileFormat()
-        newconf.copy_from(dc.spec.csvfile)
+        newconf.copy_from(dc._object.spec.csvfile)
         assert newconf.ColumnDelimiter == Delimiter.CRLF
         assert newconf.CommentChars == "#"
 
         # Test propagation with subclass Message types
         conf = ExcelNotebookFormat()
-        conf.set_parent(dc.spec.excelNotebook)
+        conf.set_parent(dc._object.spec.excelNotebook)
         conf.SheetName = "abc"
         conf.Data.ToColumn = 3
-        assert dc.spec.excelNotebook.sheetName == "abc"
-        assert dc.spec.excelNotebook.data.toColumn == 3
+        assert dc._object.spec.excelNotebook.sheetName == "abc"
+        assert dc._object.spec.excelNotebook.data.toColumn == 3
         conf.Data = ExcelSheetArea(ToColumn=5, EntireSheet=False)
-        assert dc.spec.excelNotebook.data.toColumn == 5
-        assert dc.spec.excelNotebook.data.entireSheet == False
+        assert dc._object.spec.excelNotebook.data.toColumn == 5
+        assert dc._object.spec.excelNotebook.data.entireSheet == False
 
         # Test propagation with list types
-        assert len(dc.spec.schema.columns) == 0
+        assert len(dc._object.spec.schema.columns) == 0
         conf = Schema([Column(DataType.Text, Imputation=Imputation.ReplaceWithMean, SkewThreshold=4, Enum=["1", "2"])])
-        conf.set_parent(dc.spec.schema)
+        conf.set_parent(dc._object.spec.schema)
         conf.Columns[0].Imputation = Imputation.AutoImputer
-        assert dc.spec.schema.columns[0].imputation == Imputation.AutoImputer.value
-        assert len(dc.spec.schema.columns) == 1
-        conf.Columns.append(Column(DataType.Text, Imputation=Imputation.ReplaceWithMean, SkewThreshold=4, Enum=["1", "2"]))
+        assert dc._object.spec.schema.columns[0].imputation == Imputation.AutoImputer.value
+        assert len(dc._object.spec.schema.columns) == 1
+        conf.Columns.append(
+            Column(DataType.Text, Imputation=Imputation.ReplaceWithMean, SkewThreshold=4, Enum=["1", "2"]))
         conf.Columns[0].Enum.append("test")
         conf.Columns[1].Enum[0] = "1337"
-        assert dc.spec.schema.columns[0].enum[2] == "test"
-        assert dc.spec.schema.columns[1].enum[0] == "1337"
+        assert dc._object.spec.schema.columns[0].enum[2] == "test"
+        assert dc._object.spec.schema.columns[1].enum[0] == "1337"
         conf.Columns[0].Enum = ["a"]
-        assert dc.spec.schema.columns[0].enum[0] == "a"
+        assert dc._object.spec.schema.columns[0].enum[0] == "a"
         conf.Columns[0].Enum.insert(0, "c")
-        assert dc.spec.schema.columns[0].enum == ["c", "a"]
+        assert dc._object.spec.schema.columns[0].enum == ["c", "a"]
         newconf = Schema([])
-        newconf.copy_from(dc.spec.schema)
+        newconf.copy_from(dc._object.spec.schema)
         assert len(newconf.Columns) == 2
-
 
     def test_csv_config(self):
         conf = CsvFileFormat()
         conf.ColumnDelimiter = Delimiter.Colon
         dc = DataSource()
-        dc.spec.csvfile.commentChars = "x"
-        conf.apply_config(dc.spec.csvfile)
+        dc._object.spec.csvfile.commentChars = "x"
+        conf.apply_config(dc._object.spec.csvfile)
         newconf = CsvFileFormat()
-        newconf.copy_from(dc.spec.csvfile)
+        newconf.copy_from(dc._object.spec.csvfile)
         assert newconf.ColumnDelimiter == Delimiter.Colon
         assert newconf.CommentChars == "#"
 
@@ -66,10 +66,10 @@ class Test_Modela_configurations(unittest.TestCase):
         conf.SheetName = "test"
         conf.Data.ToColumn = 3
         dc = DataSource()
-        dc.spec.excelNotebook.data.fromColumn = 8
-        conf.apply_config(dc.spec.excelNotebook)
+        dc._object.spec.excelNotebook.data.fromColumn = 8
+        conf.apply_config(dc._object.spec.excelNotebook)
         newconf = ExcelNotebookFormat()
-        newconf.copy_from(dc.spec.excelNotebook)
+        newconf.copy_from(dc._object.spec.excelNotebook)
         assert newconf.SheetName == "test"
         assert newconf.Data.ToColumn == 3
         assert newconf.Data.FromColumn == 1
@@ -78,9 +78,9 @@ class Test_Modela_configurations(unittest.TestCase):
         conf = Schema([Column(DataType.Text, Imputation=Imputation.ReplaceWithMean, SkewThreshold=4, Enum=["1", "2"]),
                        Column(DataType.Text, Imputation=Imputation.ReplaceWithMean, SkewThreshold=4, Enum=["1", "2"])])
         dc = DataSource()
-        conf.apply_config(dc.spec.schema)
+        conf.apply_config(dc._object.spec.schema)
         newconf = Schema([])
-        newconf.copy_from(dc.spec.schema)
+        newconf.copy_from(dc._object.spec.schema)
         assert len(newconf.Columns) == 2
 
 

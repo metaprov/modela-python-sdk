@@ -1,5 +1,13 @@
 from enum import Enum
 
+from modela.Configuration import Configuration
+
+
+class ConditionStatus(Enum):
+    ConditionTrue = "True"
+    ConditionFalse = "False"
+    ConditionUnknown = "Unknown"
+
 
 class TaskName(Enum):
     BatchPredictTask = "batch-predict"
@@ -33,3 +41,16 @@ class TaskName(Enum):
     RunWebRequestTask = "run-web-request"
     GenerateDataset = "generate-dataset"
     ValidateModel = "validate-model"
+
+
+class StatusError(Enum):
+    InvalidConfiguration = "InvalidConfiguration"
+    InsufficientResources = "InsufficientResources"
+    CreateError = "CreateError"
+    UpdateError = "UpdateError"
+    DeleteError = "DeleteError"
+
+
+class Time(Configuration):
+    Seconds: int = 0
+    Nanos: int = 0

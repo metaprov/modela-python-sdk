@@ -1,9 +1,10 @@
 from abc import ABC
 
 from modela.data.common import *
+from modela.infra.models import Workload, NotificationSetting, OutputLogs
 from modela.training.common import *
 from modela.common import *
-from modela.Resource import *
+from modela.Configuration import *
 from dataclasses import dataclass, field
 from typing import List
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import Column as MDColumn
@@ -23,8 +24,35 @@ from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import R
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import SampleSpec as MDSampleSpec
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import RecipeInputSpec as MDRecipeInputSpec
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import RecipeOutputSpec as MDRecipeOutputSpec
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import Dataset as MDDataset
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import DatasetSpec as MDDatasetSpec
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import DatasetStatistics as MDDatasetStatistics
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import DatasetCondition as MDDatasetCondition
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import ColumnStatistics as MDColumnStatistics
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import DatasetTemplate as MDDatasetTemplate
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import DataLocation as MDDataLocation
+
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import \
+    DataValidationResult as MDDataValidationResult
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import Correlation as MDCorrelation
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import CorrelationSpec as MDCorrelationSpec
 
 from modela.util import TrackedList
+
+
+@dataclass
+class DataLocation(Configuration):
+    Type: DataLocationType = DataLocationType.ObjectStorage
+    ConnectionName: str = ""
+    BucketName: str = ""
+    Path: str = ""
+    Table: str = ""
+    Database: str = ""
+    Sql: str = ""
+    Topic: str = ""
+
+    def to_message(self) -> MDDataLocation:
+        return self.set_parent(MDDataLocation()).parent
 
 
 @dataclass
@@ -80,9 +108,9 @@ class ExcelNotebookFormat(Configuration):
 
 @dataclass
 class Column(Configuration):
+    Name: str = ""
     Datatype: DataType = DataType.Categorical
     Format: DataDomain = DataDomain.Unknown
-    Name: str = ""
     DisplayName: str = ""
     Description: str = ""
     Ignore: bool = False
@@ -248,8 +276,8 @@ class ValidationRules(Configuration):
         self.MultiDatasetValidations = TrackedList(self.MultiDatasetValidations, self, "MultiDatasetValidations")
         self.DatasetValidations = TrackedList(self.DatasetValidations, self, "DatasetValidations")
         self.MultiColumnValidations = TrackedList(self.MultiColumnValidations, self, "MultiColumnValidations")
-        self.ColumnValidations = TrackedList(self.ColumnValidation, self, "ColumnValidations")
-        self.FileValidations = TrackedList(self.FileValidation, self, "FileValidations")
+        self.ColumnValidations = TrackedList(self.ColumnValidations, self, "ColumnValidations")
+        self.FileValidations = TrackedList(self.FileValidations, self, "FileValidations")
 
 
 MDTimeSeriesSchema = TimeSeriesSchema
@@ -261,7 +289,7 @@ class Schema(Configuration):
     Columns: List[Column] = field(default_factory=lambda: [])
     TimeSeriesSchema: MDTimeSeriesSchema = None
     RecommendationSchema: MDRecommendationSchema = None
-    Validation: ValidationRules = None
+    Validation: ValidationRules = ValidationRules()
 
     def __post_init__(self):
         self.Columns = TrackedList(self.Columns, self, "Columns")
@@ -278,7 +306,18 @@ class ColumnRelationship(Configuration):
         return self.set_parent(MDRelationshipSpec()).parent
 
 
+@dataclass
+class CorrelationSetting(Configuration):
+    Float64: float = 50
+    Method: str = "pearson"
+    Top: int = 10
+
+    def to_message(self) -> MDCorrelationSpec:
+        return self.set_parent(MDCorrelationSpec()).parent
+
+
 DataSourceSchema = Schema  # workaround for type annotation bug
+
 
 @dataclass
 class DataSourceSpec(Configuration):
@@ -295,3 +334,144 @@ class DataSourceSpec(Configuration):
 
     def __post_init__(self):
         self.Relationships = TrackedList(self.Relationships, self, "Relationships")
+
+
+@dataclass
+class DatasetSpec(Configuration):
+    Origin: DataLocation = DataLocation()
+    Location: DataLocation = DataLocation()
+    Owner: str = "no-one"
+    VersionName: str = "v0.0.1"
+    DatasourceName: str = ""
+    Description: str = ""
+    DisplayName: str = ""
+    Reported: bool = True
+    Snapshotted: bool = False
+    Validate: bool = True
+    Labeled: bool = True
+    Syntactic: bool = False
+    SyntacticRows: int = 0
+    Resources: Workload = None
+    ActiveDeadlineSeconds: int = 600
+    Type: DatasetType = DatasetType.Tabular
+    Sample: SampleSettings = None
+    Task: TaskType = None
+    Notification: NotificationSetting = None
+    Correlation: CorrelationSetting = None
+
+
+@dataclass
+class ColumnStatistics(Configuration):
+    Name: str = ""
+    Datatype: DataType = None
+    Count: float = 0
+    Distinct: int = 0
+    Missing: int = 0
+    PercentMissing: float = 0
+    Mean: float = 0
+    Stddev: float = 0
+    Variance: float = 0
+    Min: float = 0
+    Max: float = 0
+    Kurtosis: float = 0
+    Skewness: float = 0
+    Sum: float = 0
+    Mad: float = 0
+    P25: float = 0
+    P50: float = 0
+    P75: float = 0
+    Iqr: float = 0
+    Mode: str = ""
+    Zeros: float = 0
+    Invalid: int = 0
+    Importance: float = 0
+    Target: bool = False
+    Ignore: bool = False
+    Nullable: bool = False
+    HighCardinality: bool = False
+    HighCorrWithOtherFeatures: bool = False
+    LowCorrWithTarget: bool = False
+    HighMissingPct: bool = False
+    Skewed: bool = False
+    Id: bool = False
+    Constant: bool = False
+    Duplicate: bool = False
+    Reserved: bool = False
+    Outliers: int = 0
+    Completeness: float = 0
+    DistinctValueCount: float = 0
+    MostFreqValuesRatio: float = 0
+    IndexOfPeculiarity: float = 0
+    CorrToTarget: float = 0
+
+    def to_message(self) -> MDColumnStatistics:
+        return self.set_parent(MDColumnStatistics()).parent
+
+
+@dataclass
+class Correlation(Configuration):
+    Feature1: str = ""
+    Feature2: str = ""
+    Value: float = 0
+    Method: str = ""
+
+    def to_message(self) -> MDCorrelation:
+        return self.set_parent(MDCorrelation()).parent
+
+
+@dataclass
+class DatasetStatistics(Configuration):
+    Columns: List[ColumnStatistics] = field(default_factory=lambda: [])
+    Rows: int = 0
+    Cols: int = 0
+    FileSize: int = 0
+    CorrelationsWithTarget: List[Correlation] = field(default_factory=lambda: [])
+    TopCorrelations: List[Correlation] = field(default_factory=lambda: [])
+
+    def to_message(self) -> MDDatasetStatistics:
+        return self.set_parent(MDDatasetStatistics()).parent
+
+
+@dataclass
+class DatasetCondition(Configuration):
+    Type: DatasetPhase = DatasetPhase.Ready
+    Status: ConditionStatus = ConditionStatus.ConditionUnknown
+    LastTransitionTime: Time = None
+    Reason: str = ""
+    Message: str = ""
+
+    def to_message(self) -> MDDatasetCondition:
+        return self.set_parent(MDDatasetCondition()).parent
+
+
+@dataclass
+class DataValidationResult(Configuration):
+    Type: str = ""
+    Column: str = ""
+    Error: str = ""
+    Passed: bool = False
+
+    def to_message(self) -> MDDataValidationResult:
+        return self.set_parent(MDDataValidationResult()).parent
+
+
+@dataclass
+class DatasetStatus(ImmutableConfiguration):
+    Statistics: DatasetStatistics = None
+    Phase: DatasetPhase = DatasetPhase.Pending
+    ReportName: str = ""
+    ReportUri: str = ""
+    ProfileUri: str = ""
+    Imbalanced: bool = False
+    ObservedGeneration: int = 0
+    ValidationResults: List[DataValidationResult] = field(default_factory=lambda: [])
+    LastStudyTime: Time = None
+    LastNotificationTime: Time = None
+    FailureReason: StatusError = None
+    FailureMessage: str = ""
+    Progress: int = 0
+    Hash: str = ""
+    Logs: OutputLogs = OutputLogs()
+    DerivedFromDataset: str = ""
+    LastUpdated: int = None
+    Conditions: List[DatasetCondition] = field(default_factory=lambda: [])

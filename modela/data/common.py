@@ -171,3 +171,23 @@ class SamplingType(Enum):
     Filter = "filter"
     Anomaly = "anomaly"
     Stratified = "stratified"
+
+
+class DataLocationType(Enum):
+    ObjectStorage = "object"
+    SQLTable = "table"
+    SQLView = "view"
+    Stream = "stream"
+    WebApi = "web"
+
+
+class DatasetPhase(Enum):
+    Reported = "Reported"
+    Validated = "Validated"
+    Snapshotted = "Snapshooted"
+    Profiled = "Profiled"
+    Ingested = "Ingested"
+    Generated = "Generated"
+    Saved = "Saved"
+    Archived = "Archived"
+    Ready = "Ready"

@@ -17,12 +17,12 @@ class DataSource(Resource):
                  infer_dataframe: pandas.DataFrame = None, target_column: str = "",
                  file_type: FlatFileType = FlatFileType.Csv, infer_location=None,
                  task_type: TaskType = TaskType.BinaryClassification, csv_config: CsvFileFormat = None,
-                 excel_config: ExcelNotebookFormat = None, ):
+                 excel_config: ExcelNotebookFormat = None):
         super().__init__(item, client, namespace=namespace, name=name)
 
     @property
     def spec(self):
-        return DataSourceSpec().copy_from(self._object.spec)
+        return DataSourceSpec().copy_from(self._object.spec).set_parent(self._object.spec)
 
     @property
     def schema(self):

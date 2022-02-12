@@ -17,7 +17,7 @@ class Test_Modela_datasource(unittest.TestCase):
     def tearDown(self):
         self.modela.close()
 
-    def test_0_datasource_create(self):
+    def test_0_create(self):
         datasource = self.modela.DataSource(namespace="iris-product", name="test")
         try:
             datasource.delete()
@@ -26,24 +26,23 @@ class Test_Modela_datasource(unittest.TestCase):
         assert type(datasource) == DataSource
         datasource.submit()
 
-    def test_1_datasource_list(self):
+    def test_1_list(self):
         assert len(self.modela.DataSources.list("iris-product")) >= 1
 
-    def test_2_datasource_update(self):
+    def test_2_update(self):
         datasource = self.modela.DataSource(namespace="iris-product", name="test")
         datasource.spec.Schema.Columns.append(
-            Column(DataType.Text, Imputation=Imputation.ReplaceWithMean, SkewThreshold=4, Enum=["1", "2"]))
+            Column("col", DataType.Text, Imputation=Imputation.ReplaceWithMean, SkewThreshold=4, Enum=["1", "2"]))
         datasource.update()
         newds = self.modela.DataSource(namespace="iris-product", name="test")
-        assert len(newds.spec.Schema.Columns) == 1
+        assert len(datasource._object.spec.schema.columns) == 1
 
-    def test_3_datasource_get(self):
+    def test_3_get(self):
         datasource = self.modela.DataSource(namespace="iris-product", name="test")
         spec = datasource.spec
         assert type(spec) == DataSourceSpec
 
-    def test_4_datasource_delete(self):
+    def test_4_delete(self):
         datasource = self.modela.DataSource(namespace="iris-product", name="test")
-        #datasource.delete()
-        #self.assertRaises(ResourceNotFoundException, self.modela.DataSources.get, "iris-product", "test")
-        print(datasource.spec)
+        datasource.delete()
+        self.assertRaises(ResourceNotFoundException, self.modela.DataSources.get, "iris-product", "test")
