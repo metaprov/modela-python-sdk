@@ -21,7 +21,7 @@ class LabClient:
 
     def create(self, lab: Lab) -> bool:
         request = CreateLabRequest()
-        request.item.CopyFrom(Lab.raw_message)
+        request.item.CopyFrom(lab.raw_message)
         try:
             response = self.__stub.CreateLab(request)
             return True
@@ -33,7 +33,7 @@ class LabClient:
 
     def update(self, lab: Lab) -> bool:
         request = UpdateLabRequest()
-        request.item = Lab.raw_message
+        request.item.CopyFrom(lab.raw_message)
         try:
             self.__stub.UpdateLab(request)
             return True

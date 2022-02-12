@@ -21,7 +21,7 @@ class EntityClient:
 
     def create(self, entity: Entity) -> bool:
         request = CreateEntityRequest()
-        request.item.CopyFrom(Entity.raw_message)
+        request.item.CopyFrom(entity.raw_message)
         try:
             response = self.__stub.CreateEntity(request)
             return True
@@ -33,7 +33,7 @@ class EntityClient:
 
     def update(self, entity: Entity) -> bool:
         request = UpdateEntityRequest()
-        request.item = Entity.raw_message
+        request.item.CopyFrom(entity.raw_message)
         try:
             self.__stub.UpdateEntity(request)
             return True

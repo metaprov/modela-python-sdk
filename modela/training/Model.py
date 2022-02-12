@@ -21,7 +21,7 @@ class ModelClient:
 
     def create(self, model: Model) -> bool:
         request = CreateModelRequest()
-        request.item.CopyFrom(Model.raw_message)
+        request.item.CopyFrom(model.raw_message)
         try:
             response = self.__stub.CreateModel(request)
             return True
@@ -33,7 +33,7 @@ class ModelClient:
 
     def update(self, model: Model) -> bool:
         request = UpdateModelRequest()
-        request.item = Model.raw_message
+        request.item.CopyFrom(model.raw_message)
         try:
             self.__stub.UpdateModel(request)
             return True

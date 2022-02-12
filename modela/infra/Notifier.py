@@ -21,7 +21,7 @@ class NotifierClient:
 
     def create(self, notifier: Notifier) -> bool:
         request = CreateNotifierRequest()
-        request.item.CopyFrom(Notifier.raw_message)
+        request.item.CopyFrom(notifier.raw_message)
         try:
             response = self.__stub.CreateNotifier(request)
             return True
@@ -33,7 +33,7 @@ class NotifierClient:
 
     def update(self, notifier: Notifier) -> bool:
         request = UpdateNotifierRequest()
-        request.item = Notifier.raw_message
+        request.item.CopyFrom(notifier.raw_message)
         try:
             self.__stub.UpdateNotifier(request)
             return True

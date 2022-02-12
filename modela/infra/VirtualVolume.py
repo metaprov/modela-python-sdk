@@ -21,7 +21,7 @@ class VirtualVolumeClient:
 
     def create(self, virtualvolume: VirtualVolume) -> bool:
         request = CreateVirtualVolumeRequest()
-        request.item.CopyFrom(VirtualVolume.raw_message)
+        request.item.CopyFrom(virtualvolume.raw_message)
         try:
             response = self.__stub.CreateVirtualVolume(request)
             return True
@@ -33,7 +33,7 @@ class VirtualVolumeClient:
 
     def update(self, virtualvolume: VirtualVolume) -> bool:
         request = UpdateVirtualVolumeRequest()
-        request.item = VirtualVolume.raw_message
+        request.item.CopyFrom(virtualvolume.raw_message)
         try:
             self.__stub.UpdateVirtualVolume(request)
             return True

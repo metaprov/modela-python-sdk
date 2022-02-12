@@ -21,7 +21,7 @@ class DataAppClient:
 
     def create(self, dataapp: DataApp) -> bool:
         request = CreateDataAppRequest()
-        request.item.CopyFrom(DataApp.raw_message)
+        request.item.CopyFrom(dataapp.raw_message)
         try:
             response = self.__stub.CreateDataApp(request)
             return True
@@ -33,7 +33,7 @@ class DataAppClient:
 
     def update(self, dataapp: DataApp) -> bool:
         request = UpdateDataAppRequest()
-        request.item = DataApp.raw_message
+        request.item.CopyFrom(dataapp.raw_message)
         try:
             self.__stub.UpdateDataApp(request)
             return True

@@ -21,7 +21,7 @@ class FeatureHistogramClient:
 
     def create(self, featurehistogram: FeatureHistogram) -> bool:
         request = CreateFeatureHistogramRequest()
-        request.item.CopyFrom(FeatureHistogram.raw_message)
+        request.item.CopyFrom(featurehistogram.raw_message)
         try:
             response = self.__stub.CreateFeatureHistogram(request)
             return True
@@ -33,7 +33,7 @@ class FeatureHistogramClient:
 
     def update(self, featurehistogram: FeatureHistogram) -> bool:
         request = UpdateFeatureHistogramRequest()
-        request.item = FeatureHistogram.raw_message
+        request.item.CopyFrom(featurehistogram.raw_message)
         try:
             self.__stub.UpdateFeatureHistogram(request)
             return True

@@ -21,7 +21,7 @@ class NotebookRunClient:
 
     def create(self, notebookrun: NotebookRun) -> bool:
         request = CreateNotebookRunRequest()
-        request.item.CopyFrom(NotebookRun.raw_message)
+        request.item.CopyFrom(notebookrun.raw_message)
         try:
             response = self.__stub.CreateNotebookRun(request)
             return True
@@ -33,7 +33,7 @@ class NotebookRunClient:
 
     def update(self, notebookrun: NotebookRun) -> bool:
         request = UpdateNotebookRunRequest()
-        request.item = NotebookRun.raw_message
+        request.item.CopyFrom(notebookrun.raw_message)
         try:
             self.__stub.UpdateNotebookRun(request)
             return True

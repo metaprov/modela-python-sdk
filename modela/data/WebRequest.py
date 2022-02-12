@@ -21,7 +21,7 @@ class WebRequestClient:
 
     def create(self, webrequest: WebRequest) -> bool:
         request = CreateWebRequestRequest()
-        request.item.CopyFrom(WebRequest.raw_message)
+        request.item.CopyFrom(webrequest.raw_message)
         try:
             response = self.__stub.CreateWebRequest(request)
             return True
@@ -33,7 +33,7 @@ class WebRequestClient:
 
     def update(self, webrequest: WebRequest) -> bool:
         request = UpdateWebRequestRequest()
-        request.item = WebRequest.raw_message
+        request.item.CopyFrom(webrequest.raw_message)
         try:
             self.__stub.UpdateWebRequest(request)
             return True

@@ -21,7 +21,7 @@ class CurtainClient:
 
     def create(self, curtain: Curtain) -> bool:
         request = CreateCurtainRequest()
-        request.item.CopyFrom(Curtain.raw_message)
+        request.item.CopyFrom(curtain.raw_message)
         try:
             response = self.__stub.CreateCurtain(request)
             return True
@@ -33,7 +33,7 @@ class CurtainClient:
 
     def update(self, curtain: Curtain) -> bool:
         request = UpdateCurtainRequest()
-        request.item = Curtain.raw_message
+        request.item.CopyFrom(curtain.raw_message)
         try:
             self.__stub.UpdateCurtain(request)
             return True

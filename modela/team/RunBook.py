@@ -21,7 +21,7 @@ class RunBookClient:
 
     def create(self, runbook: RunBook) -> bool:
         request = CreateRunBookRequest()
-        request.item.CopyFrom(RunBook.raw_message)
+        request.item.CopyFrom(runbook.raw_message)
         try:
             response = self.__stub.CreateRunBook(request)
             return True
@@ -33,7 +33,7 @@ class RunBookClient:
 
     def update(self, runbook: RunBook) -> bool:
         request = UpdateRunBookRequest()
-        request.item = RunBook.raw_message
+        request.item.CopyFrom(runbook.raw_message)
         try:
             self.__stub.UpdateRunBook(request)
             return True

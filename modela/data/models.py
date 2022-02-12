@@ -1,7 +1,7 @@
 from abc import ABC
 
 from modela.data.common import *
-from modela.infra.models import Workload, NotificationSetting, OutputLogs
+from modela.infra.models import Workload, NotificationSetting, OutputLogs, GitSettings
 from modela.training.common import *
 from modela.common import *
 from modela.Configuration import *
@@ -66,6 +66,65 @@ class SampleSettings(Configuration):
 
     def to_message(self) -> MDSampleSpec:
         return self.set_parent(MDSampleSpec()).parent
+
+
+@dataclass
+class GovernanceSpec(Configuration):
+    Enabled: bool = False
+    Country: str = ""
+    ItReviewer: str = ""
+    ComplianceReviewer: str = ""
+    BusinessReviewer: str = ""
+
+
+@dataclass
+class CompilerSettings(Configuration):
+    Enable: bool = False
+    Compiler: CompilerType = CompilerType.Nothing
+    Targets: List[HardwareTarget] = field(default_factory=lambda: [])
+
+
+@dataclass
+class ImageLocation(Configuration):
+    Name: str = ""
+    RegistryConnectionName: str = ""
+
+
+# Typename collision workaround
+ColorType = Color
+ImageLocationType = ImageLocation
+DataLocationType = DataLocation
+
+
+@dataclass
+class DataProductSpec(Configuration):
+    Owner: str = "no-one"
+    TenantRef: ObjectReference = ObjectReference(Namespace="modela-system", Name="default-tenant")
+    GitLocation: GitSettings = GitSettings()
+    ImageLocation: ImageLocationType = ImageLocation()
+    LabName: str = "default-lab"
+    ServingSiteName: str = "default-servingsite"
+    Task: TaskType = TaskType.BinaryClassification
+    Description: str = ""
+    DataLocation: DataLocationType = DataLocationType()
+    Notification: NotificationSetting = NotificationSetting()
+    Resources: Workload = Workload("general-large")
+    RetriesOnFailure: int = 3
+    OnCallAccountName: str = ""
+    Compilation: CompilerSettings = CompilerSettings()
+    ClearenceLevel: SecurityClearanceLevel = SecurityClearanceLevel.Unclassified
+    Priority: PriorityLevel = PriorityLevel.Medium
+    Color: ColorType = ColorType.NoColor
+    Governance: GovernanceSpec = GovernanceSpec()
+
+
+@dataclass
+class DataProductVersionSpec(Configuration):
+    ProductRef: ObjectReference = ObjectReference(Namespace="default-tenant", Name="iris-product")
+    Description: str = ""
+    PrevVersionName: str = ""
+    Baseline: bool = False
+    Owner: str = "no-one"
 
 
 @dataclass
@@ -157,9 +216,6 @@ class Column(Configuration):
     def to_message(self) -> MDColumn:
         return self.set_parent(MDColumn()).parent
 
-    def __post_init__(self):
-        self.Enum = TrackedList(self.Enum, self, "Enum")
-
 
 @dataclass
 class TimeSeriesSchema(Configuration):
@@ -183,9 +239,6 @@ class MultiDatasetValidation(Configuration):
     def to_message(self) -> MDMultiDatasetValidation:
         return self.set_parent(MDMultiDatasetValidation()).parent
 
-    def __post_init__(self):
-        self.Datasets = TrackedList(self.Datasets, self, "Datasets")
-
 
 @dataclass
 class DatasetValidation(Configuration):
@@ -200,9 +253,6 @@ class DatasetValidation(Configuration):
 
     def to_message(self) -> MDDatasetValidation:
         return self.set_parent(MDDatasetValidation()).parent
-
-    def __post_init__(self):
-        self.ValueSet = TrackedList(self.ValueSet, self, "ValueSet")
 
 
 @dataclass
@@ -220,10 +270,6 @@ class MultiColumnValidation(Configuration):
     def to_message(self) -> MDMultiColumnValidation:
         return self.set_parent(MDMultiColumnValidation()).parent
 
-    def __post_init__(self):
-        self.Columns = TrackedList(self.Columns, self, "Columns")
-        self.ValueSet = TrackedList(self.ValueSet, self, "ValueSet")
-
 
 @dataclass
 class ColumnValidation(Configuration):
@@ -239,9 +285,6 @@ class ColumnValidation(Configuration):
 
     def to_message(self) -> MDColumnValidation:
         return self.set_parent(MDColumnValidation()).parent
-
-    def __post_init__(self):
-        self.ValueSet = TrackedList(self.ValueSet, self, "ValueSet")
 
 
 @dataclass
@@ -260,9 +303,6 @@ class FileValidation(Configuration):
     def to_message(self) -> MDFileValidation:
         return self.set_parent(MDFileValidation()).parent
 
-    def __post_init__(self):
-        self.ValueSet = TrackedList(self.ValueSet, self, "ValueSet")
-
 
 @dataclass
 class ValidationRules(Configuration):
@@ -271,13 +311,6 @@ class ValidationRules(Configuration):
     MultiColumnValidations: List[MultiColumnValidation] = field(default_factory=lambda: [])
     ColumnValidations: List[ColumnValidation] = field(default_factory=lambda: [])
     FileValidations: List[FileValidation] = field(default_factory=lambda: [])
-
-    def __post_init__(self):
-        self.MultiDatasetValidations = TrackedList(self.MultiDatasetValidations, self, "MultiDatasetValidations")
-        self.DatasetValidations = TrackedList(self.DatasetValidations, self, "DatasetValidations")
-        self.MultiColumnValidations = TrackedList(self.MultiColumnValidations, self, "MultiColumnValidations")
-        self.ColumnValidations = TrackedList(self.ColumnValidations, self, "ColumnValidations")
-        self.FileValidations = TrackedList(self.FileValidations, self, "FileValidations")
 
 
 MDTimeSeriesSchema = TimeSeriesSchema
@@ -290,9 +323,6 @@ class Schema(Configuration):
     TimeSeriesSchema: MDTimeSeriesSchema = None
     RecommendationSchema: MDRecommendationSchema = None
     Validation: ValidationRules = ValidationRules()
-
-    def __post_init__(self):
-        self.Columns = TrackedList(self.Columns, self, "Columns")
 
 
 @dataclass
@@ -331,9 +361,6 @@ class DataSourceSpec(Configuration):
     Csvfile: CsvFileFormat = CsvFileFormat()
     ExcelNotebook: ExcelNotebookFormat = None
     DatasetType: DatasetType = DatasetType.Tabular
-
-    def __post_init__(self):
-        self.Relationships = TrackedList(self.Relationships, self, "Relationships")
 
 
 @dataclass
@@ -434,7 +461,7 @@ class DatasetStatistics(Configuration):
 
 @dataclass
 class DatasetCondition(Configuration):
-    Type: DatasetPhase = DatasetPhase.Ready
+    Type: DatasetCondition = DatasetCondition.Ready
     Status: ConditionStatus = ConditionStatus.ConditionUnknown
     LastTransitionTime: Time = None
     Reason: str = ""

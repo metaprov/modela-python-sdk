@@ -36,3 +36,17 @@ class OutputLogs(Configuration):
 
     def __post_init__(self):
         self.Paths = TrackedList(self.Paths, self, "Paths")
+
+
+@dataclass
+class GitSettings(Configuration):
+    GitConnectionName: str = ""
+    Url: str = ""
+    Branch: str = ""
+    Private: bool = False
+
+
+@dataclass
+class ImageLocation(Configuration):
+    Name: str = ""
+    RegistryConnectionName: str = ""

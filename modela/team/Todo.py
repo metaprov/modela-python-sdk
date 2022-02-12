@@ -21,7 +21,7 @@ class TodoClient:
 
     def create(self, todo: Todo) -> bool:
         request = CreateTodoRequest()
-        request.item.CopyFrom(Todo.raw_message)
+        request.item.CopyFrom(todo.raw_message)
         try:
             response = self.__stub.CreateTodo(request)
             return True
@@ -33,7 +33,7 @@ class TodoClient:
 
     def update(self, todo: Todo) -> bool:
         request = UpdateTodoRequest()
-        request.item = Todo.raw_message
+        request.item.CopyFrom(todo.raw_message)
         try:
             self.__stub.UpdateTodo(request)
             return True

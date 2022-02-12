@@ -21,7 +21,7 @@ class SqlQueryClient:
 
     def create(self, sqlquery: SqlQuery) -> bool:
         request = CreateSqlQueryRequest()
-        request.item.CopyFrom(SqlQuery.raw_message)
+        request.item.CopyFrom(sqlquery.raw_message)
         try:
             response = self.__stub.CreateSqlQuery(request)
             return True
@@ -33,7 +33,7 @@ class SqlQueryClient:
 
     def update(self, sqlquery: SqlQuery) -> bool:
         request = UpdateSqlQueryRequest()
-        request.item = SqlQuery.raw_message
+        request.item.CopyFrom(sqlquery.raw_message)
         try:
             self.__stub.UpdateSqlQuery(request)
             return True

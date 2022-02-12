@@ -9,23 +9,29 @@ from modela.Resource import Resource
 from modela.ModelaException import ModelaException
 from typing import List, Union
 
+from modela.data.models import DataProductSpec
+
 
 class DataProduct(Resource):
     def __init__(self, item: MDDataProduct = MDDataProduct(), client=None, namespace="", name=""):
         super().__init__(item, client, namespace=namespace, name=name)
 
+    @property
+    def spec(self) -> DataProductSpec:
+        return DataProductSpec().copy_from(self._object.spec).set_parent(self._object.spec)
+
+    def default(self):
+        DataProductSpec().apply_config(self._object.spec)
+
+
 
 class DataProductClient:
-    """
-    DataProductClient provides a CRUD interface for the Data Product resource.
-    """
-
     def __init__(self, stub):
         self.__stub: DataProductServiceStub = stub
 
     def create(self, dataproduct: DataProduct) -> bool:
         request = CreateDataProductRequest()
-        request.item.CopyFrom(DataProduct.raw_message)
+        request.item.CopyFrom(dataproduct.raw_message)
         try:
             response = self.__stub.CreateDataProduct(request)
             return True
@@ -37,7 +43,7 @@ class DataProductClient:
 
     def update(self, dataproduct: DataProduct) -> bool:
         request = UpdateDataProductRequest()
-        request.item = DataProduct.raw_message
+        request.item.CopyFrom(dataproduct.raw_message)
         try:
             self.__stub.UpdateDataProduct(request)
             return True
@@ -84,4 +90,5 @@ class DataProductClient:
 
         ModelaException.process_error(error)
         return False
+
 

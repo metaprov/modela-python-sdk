@@ -21,7 +21,7 @@ class DataPipelineClient:
 
     def create(self, datapipeline: DataPipeline) -> bool:
         request = CreateDataPipelineRequest()
-        request.item.CopyFrom(DataPipeline.raw_message)
+        request.item.CopyFrom(datapipeline.raw_message)
         try:
             response = self.__stub.CreateDataPipeline(request)
             return True
@@ -33,7 +33,7 @@ class DataPipelineClient:
 
     def update(self, datapipeline: DataPipeline) -> bool:
         request = UpdateDataPipelineRequest()
-        request.item = DataPipeline.raw_message
+        request.item.CopyFrom(datapipeline.raw_message)
         try:
             self.__stub.UpdateDataPipeline(request)
             return True

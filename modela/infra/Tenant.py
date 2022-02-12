@@ -21,7 +21,7 @@ class TenantClient:
 
     def create(self, tenant: Tenant) -> bool:
         request = CreateTenantRequest()
-        request.item.CopyFrom(Tenant.raw_message)
+        request.item.CopyFrom(tenant.raw_message)
         try:
             response = self.__stub.CreateTenant(request)
             return True
@@ -33,7 +33,7 @@ class TenantClient:
 
     def update(self, tenant: Tenant) -> bool:
         request = UpdateTenantRequest()
-        request.item = Tenant.raw_message
+        request.item.CopyFrom(tenant.raw_message)
         try:
             self.__stub.UpdateTenant(request)
             return True

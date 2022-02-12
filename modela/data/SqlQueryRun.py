@@ -21,7 +21,7 @@ class SqlQueryRunClient:
 
     def create(self, sqlqueryrun: SqlQueryRun) -> bool:
         request = CreateSqlQueryRunRequest()
-        request.item.CopyFrom(SqlQueryRun.raw_message)
+        request.item.CopyFrom(sqlqueryrun.raw_message)
         try:
             response = self.__stub.CreateSqlQueryRun(request)
             return True
@@ -33,7 +33,7 @@ class SqlQueryRunClient:
 
     def update(self, sqlqueryrun: SqlQueryRun) -> bool:
         request = UpdateSqlQueryRunRequest()
-        request.item = SqlQueryRun.raw_message
+        request.item.CopyFrom(sqlqueryrun.raw_message)
         try:
             self.__stub.UpdateSqlQueryRun(request)
             return True

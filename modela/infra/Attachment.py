@@ -21,7 +21,7 @@ class AttachmentClient:
 
     def create(self, attachment: Attachment) -> bool:
         request = CreateAttachmentRequest()
-        request.item.CopyFrom(Attachment.raw_message)
+        request.item.CopyFrom(attachment.raw_message)
         try:
             response = self.__stub.CreateAttachment(request)
             return True
@@ -33,7 +33,7 @@ class AttachmentClient:
 
     def update(self, attachment: Attachment) -> bool:
         request = UpdateAttachmentRequest()
-        request.item = Attachment.raw_message
+        request.item.CopyFrom(attachment.raw_message)
         try:
             self.__stub.UpdateAttachment(request)
             return True

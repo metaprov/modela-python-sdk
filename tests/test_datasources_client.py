@@ -35,7 +35,7 @@ class Test_Modela_datasource(unittest.TestCase):
             Column("col", DataType.Text, Imputation=Imputation.ReplaceWithMean, SkewThreshold=4, Enum=["1", "2"]))
         datasource.update()
         newds = self.modela.DataSource(namespace="iris-product", name="test")
-        assert len(datasource._object.spec.schema.columns) == 1
+        assert len(newds._object.spec.schema.columns) == 1
 
     def test_3_get(self):
         datasource = self.modela.DataSource(namespace="iris-product", name="test")

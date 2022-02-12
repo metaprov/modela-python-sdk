@@ -13,15 +13,31 @@ from modela.training.common import *
 
 
 class DataSource(Resource):
-    def __init__(self, item: MDDataSource = MDDataSource(), client=None, namespace="", name="", infer_file="",
-                 infer_dataframe: pandas.DataFrame = None, target_column: str = "",
-                 file_type: FlatFileType = FlatFileType.Csv, infer_location=None,
+    def __init__(self, item: MDDataSource = MDDataSource(), client=None, namespace="", name="", infer_file: str = None,
+                 infer_dataframe: pandas.DataFrame = None, target_column: str = "", file_type: FlatFileType = FlatFileType.Csv,
                  task_type: TaskType = TaskType.BinaryClassification, csv_config: CsvFileFormat = None,
                  excel_config: ExcelNotebookFormat = None):
+        """
+        :param client: The Data Source client repository, which can be obtained through an instance of Modela.
+        :param namespace: The target namespace of the resource.
+        :param name: The desired name of the resource.
+        :param infer_file: If specified, the SDK will attempt read a file with the given path and will upload the
+            contents of the file to the Modela API for analysis. The analysed columns will be applied to the Data Source.
+        :param infer_dataframe: If specified, the  Pandas DataFrame will be serialized and uploaded to the Modela
+            API for analysis. The analysed columns will be applied to the Data Source.
+        :param target_column: The name of the target column used when training a model. This parameter only has effect
+            when `infer_file` or `infer_dataframe` is specified.
+        :param file_type: The file type of raw data, used when ingesting a Dataset.
+        :param task_type: The target task type in relation to the data being used.
+        :param csv_config: The CSV file format of the raw data.
+        :param excel_config: The Excel file format of the raw data.
+        """
+
         super().__init__(item, client, namespace=namespace, name=name)
 
+
     @property
-    def spec(self):
+    def spec(self) -> DataSourceSpec:
         return DataSourceSpec().copy_from(self._object.spec).set_parent(self._object.spec)
 
     @property

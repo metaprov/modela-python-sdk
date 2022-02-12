@@ -21,7 +21,7 @@ class LicenseClient:
 
     def create(self, license: License) -> bool:
         request = CreateLicenseRequest()
-        request.item.CopyFrom(License.raw_message)
+        request.item.CopyFrom(license.raw_message)
         try:
             response = self.__stub.CreateLicense(request)
             return True
@@ -33,7 +33,7 @@ class LicenseClient:
 
     def update(self, license: License) -> bool:
         request = UpdateLicenseRequest()
-        request.item = License.raw_message
+        request.item.CopyFrom(license.raw_message)
         try:
             self.__stub.UpdateLicense(request)
             return True

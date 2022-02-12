@@ -21,7 +21,7 @@ class ConnectionClient:
 
     def create(self, connection: Connection) -> bool:
         request = CreateConnectionRequest()
-        request.item.CopyFrom(Connection.raw_message)
+        request.item.CopyFrom(connection.raw_message)
         try:
             response = self.__stub.CreateConnection(request)
             return True
@@ -33,7 +33,7 @@ class ConnectionClient:
 
     def update(self, connection: Connection) -> bool:
         request = UpdateConnectionRequest()
-        request.item = Connection.raw_message
+        request.item.CopyFrom(connection.raw_message)
         try:
             self.__stub.UpdateConnection(request)
             return True

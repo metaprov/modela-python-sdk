@@ -21,7 +21,7 @@ class ReviewClient:
 
     def create(self, review: Review) -> bool:
         request = CreateReviewRequest()
-        request.item.CopyFrom(Review.raw_message)
+        request.item.CopyFrom(review.raw_message)
         try:
             response = self.__stub.CreateReview(request)
             return True
@@ -33,7 +33,7 @@ class ReviewClient:
 
     def update(self, review: Review) -> bool:
         request = UpdateReviewRequest()
-        request.item = Review.raw_message
+        request.item.CopyFrom(review.raw_message)
         try:
             self.__stub.UpdateReview(request)
             return True

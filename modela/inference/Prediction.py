@@ -21,7 +21,7 @@ class PredictionClient:
 
     def create(self, prediction: Prediction) -> bool:
         request = CreatePredictionRequest()
-        request.item.CopyFrom(Prediction.raw_message)
+        request.item.CopyFrom(prediction.raw_message)
         try:
             response = self.__stub.CreatePrediction(request)
             return True
@@ -33,7 +33,7 @@ class PredictionClient:
 
     def update(self, prediction: Prediction) -> bool:
         request = UpdatePredictionRequest()
-        request.item = Prediction.raw_message
+        request.item.CopyFrom(prediction.raw_message)
         try:
             self.__stub.UpdatePrediction(request)
             return True

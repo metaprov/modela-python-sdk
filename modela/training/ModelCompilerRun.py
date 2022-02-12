@@ -21,7 +21,7 @@ class ModelCompilerRunClient:
 
     def create(self, modelcompilerrun: ModelCompilerRun) -> bool:
         request = CreateModelCompilerRunRequest()
-        request.item.CopyFrom(ModelCompilerRun.raw_message)
+        request.item.CopyFrom(modelcompilerrun.raw_message)
         try:
             response = self.__stub.CreateModelCompilerRun(request)
             return True
@@ -33,7 +33,7 @@ class ModelCompilerRunClient:
 
     def update(self, modelcompilerrun: ModelCompilerRun) -> bool:
         request = UpdateModelCompilerRunRequest()
-        request.item = ModelCompilerRun.raw_message
+        request.item.CopyFrom(modelcompilerrun.raw_message)
         try:
             self.__stub.UpdateModelCompilerRun(request)
             return True

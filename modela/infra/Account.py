@@ -16,17 +16,12 @@ class Account(Resource):
 
 
 class AccountClient:
-    """
-    AccountClient provides a CRUD interface for the Data Product resource.
-    """
-
     def __init__(self, stub):
         self.__stub: AccountServiceStub = stub
 
-    def create(self, account: Account, password: str = "") -> bool:
+    def create(self, account: Account) -> bool:
         request = CreateAccountRequest()
-        request.item.CopyFrom(Account.raw_message)
-        request.password = password
+        request.item.CopyFrom(account.raw_message)
         try:
             response = self.__stub.CreateAccount(request)
             return True
@@ -38,7 +33,7 @@ class AccountClient:
 
     def update(self, account: Account) -> bool:
         request = UpdateAccountRequest()
-        request.item = Account.raw_message
+        request.item.CopyFrom(account.raw_message)
         try:
             self.__stub.UpdateAccount(request)
             return True

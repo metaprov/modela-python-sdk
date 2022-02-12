@@ -21,7 +21,7 @@ class PredictorClient:
 
     def create(self, predictor: Predictor) -> bool:
         request = CreatePredictorRequest()
-        request.item.CopyFrom(Predictor.raw_message)
+        request.item.CopyFrom(predictor.raw_message)
         try:
             response = self.__stub.CreatePredictor(request)
             return True
@@ -33,7 +33,7 @@ class PredictorClient:
 
     def update(self, predictor: Predictor) -> bool:
         request = UpdatePredictorRequest()
-        request.item = Predictor.raw_message
+        request.item.CopyFrom(predictor.raw_message)
         try:
             self.__stub.UpdatePredictor(request)
             return True

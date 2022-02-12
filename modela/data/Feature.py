@@ -21,7 +21,7 @@ class FeatureClient:
 
     def create(self, feature: Feature) -> bool:
         request = CreateFeatureRequest()
-        request.item.CopyFrom(Feature.raw_message)
+        request.item.CopyFrom(feature.raw_message)
         try:
             response = self.__stub.CreateFeature(request)
             return True
@@ -33,7 +33,7 @@ class FeatureClient:
 
     def update(self, feature: Feature) -> bool:
         request = UpdateFeatureRequest()
-        request.item = Feature.raw_message
+        request.item.CopyFrom(feature.raw_message)
         try:
             self.__stub.UpdateFeature(request)
             return True

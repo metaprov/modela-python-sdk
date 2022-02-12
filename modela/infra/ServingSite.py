@@ -21,7 +21,7 @@ class ServingSiteClient:
 
     def create(self, servingsite: ServingSite) -> bool:
         request = CreateServingSiteRequest()
-        request.item.CopyFrom(ServingSite.raw_message)
+        request.item.CopyFrom(servingsite.raw_message)
         try:
             response = self.__stub.CreateServingSite(request)
             return True
@@ -33,7 +33,7 @@ class ServingSiteClient:
 
     def update(self, servingsite: ServingSite) -> bool:
         request = UpdateServingSiteRequest()
-        request.item = ServingSite.raw_message
+        request.item.CopyFrom(servingsite.raw_message)
         try:
             self.__stub.UpdateServingSite(request)
             return True

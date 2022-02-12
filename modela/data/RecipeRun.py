@@ -21,7 +21,7 @@ class RecipeRunClient:
 
     def create(self, reciperun: RecipeRun) -> bool:
         request = CreateRecipeRunRequest()
-        request.item.CopyFrom(RecipeRun.raw_message)
+        request.item.CopyFrom(reciperun.raw_message)
         try:
             response = self.__stub.CreateRecipeRun(request)
             return True
@@ -33,7 +33,7 @@ class RecipeRunClient:
 
     def update(self, reciperun: RecipeRun) -> bool:
         request = UpdateRecipeRunRequest()
-        request.item = RecipeRun.raw_message
+        request.item.CopyFrom(reciperun.raw_message)
         try:
             self.__stub.UpdateRecipeRun(request)
             return True

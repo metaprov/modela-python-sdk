@@ -21,7 +21,7 @@ class MeetingClient:
 
     def create(self, meeting: Meeting) -> bool:
         request = CreateMeetingRequest()
-        request.item.CopyFrom(Meeting.raw_message)
+        request.item.CopyFrom(meeting.raw_message)
         try:
             response = self.__stub.CreateMeeting(request)
             return True
@@ -33,7 +33,7 @@ class MeetingClient:
 
     def update(self, meeting: Meeting) -> bool:
         request = UpdateMeetingRequest()
-        request.item = Meeting.raw_message
+        request.item.CopyFrom(meeting.raw_message)
         try:
             self.__stub.UpdateMeeting(request)
             return True

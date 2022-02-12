@@ -21,7 +21,7 @@ class DataPipelineRunClient:
 
     def create(self, datapipelinerun: DataPipelineRun) -> bool:
         request = CreateDataPipelineRunRequest()
-        request.item.CopyFrom(DataPipelineRun.raw_message)
+        request.item.CopyFrom(datapipelinerun.raw_message)
         try:
             response = self.__stub.CreateDataPipelineRun(request)
             return True
@@ -33,7 +33,7 @@ class DataPipelineRunClient:
 
     def update(self, datapipelinerun: DataPipelineRun) -> bool:
         request = UpdateDataPipelineRunRequest()
-        request.item = DataPipelineRun.raw_message
+        request.item.CopyFrom(datapipelinerun.raw_message)
         try:
             self.__stub.UpdateDataPipelineRun(request)
             return True

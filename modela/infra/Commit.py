@@ -21,7 +21,7 @@ class CommitClient:
 
     def create(self, commit: Commit) -> bool:
         request = CreateCommitRequest()
-        request.item.CopyFrom(Commit.raw_message)
+        request.item.CopyFrom(commit.raw_message)
         try:
             response = self.__stub.CreateCommit(request)
             return True
@@ -33,7 +33,7 @@ class CommitClient:
 
     def update(self, commit: Commit) -> bool:
         request = UpdateCommitRequest()
-        request.item = Commit.raw_message
+        request.item.CopyFrom(commit.raw_message)
         try:
             self.__stub.UpdateCommit(request)
             return True

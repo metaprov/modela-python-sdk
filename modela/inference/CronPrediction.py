@@ -21,7 +21,7 @@ class CronPredictionClient:
 
     def create(self, cronprediction: CronPrediction) -> bool:
         request = CreateCronPredictionRequest()
-        request.item.CopyFrom(CronPrediction.raw_message)
+        request.item.CopyFrom(cronprediction.raw_message)
         try:
             response = self.__stub.CreateCronPrediction(request)
             return True
@@ -33,7 +33,7 @@ class CronPredictionClient:
 
     def update(self, cronprediction: CronPrediction) -> bool:
         request = UpdateCronPredictionRequest()
-        request.item = CronPrediction.raw_message
+        request.item.CopyFrom(cronprediction.raw_message)
         try:
             self.__stub.UpdateCronPrediction(request)
             return True

@@ -21,7 +21,7 @@ class ModelAutobuilderClient:
 
     def create(self, modelautobuilder: ModelAutobuilder) -> bool:
         request = CreateModelAutobuilderRequest()
-        request.item.CopyFrom(ModelAutobuilder.raw_message)
+        request.item.CopyFrom(modelautobuilder.raw_message)
         try:
             response = self.__stub.CreateModelAutobuilder(request)
             return True
@@ -33,7 +33,7 @@ class ModelAutobuilderClient:
 
     def update(self, modelautobuilder: ModelAutobuilder) -> bool:
         request = UpdateModelAutobuilderRequest()
-        request.item = ModelAutobuilder.raw_message
+        request.item.CopyFrom(modelautobuilder.raw_message)
         try:
             self.__stub.UpdateModelAutobuilder(request)
             return True

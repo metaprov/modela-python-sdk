@@ -21,7 +21,7 @@ class ReportClient:
 
     def create(self, report: Report) -> bool:
         request = CreateReportRequest()
-        request.item.CopyFrom(Report.raw_message)
+        request.item.CopyFrom(report.raw_message)
         try:
             response = self.__stub.CreateReport(request)
             return True
@@ -33,7 +33,7 @@ class ReportClient:
 
     def update(self, report: Report) -> bool:
         request = UpdateReportRequest()
-        request.item = Report.raw_message
+        request.item.CopyFrom(report.raw_message)
         try:
             self.__stub.UpdateReport(request)
             return True

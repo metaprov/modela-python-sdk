@@ -21,7 +21,7 @@ class StudyClient:
 
     def create(self, study: Study) -> bool:
         request = CreateStudyRequest()
-        request.item.CopyFrom(Study.raw_message)
+        request.item.CopyFrom(study.raw_message)
         try:
             response = self.__stub.CreateStudy(request)
             return True
@@ -33,7 +33,7 @@ class StudyClient:
 
     def update(self, study: Study) -> bool:
         request = UpdateStudyRequest()
-        request.item = Study.raw_message
+        request.item.CopyFrom(study.raw_message)
         try:
             self.__stub.UpdateStudy(request)
             return True

@@ -21,7 +21,7 @@ class ApiTokenClient:
 
     def create(self, apitoken: ApiToken) -> bool:
         request = CreateApiTokenRequest()
-        request.item.CopyFrom(ApiToken.raw_message)
+        request.item.CopyFrom(apitoken.raw_message)
         try:
             response = self.__stub.CreateApiToken(request)
             return True
@@ -33,7 +33,7 @@ class ApiTokenClient:
 
     def update(self, apitoken: ApiToken) -> bool:
         request = UpdateApiTokenRequest()
-        request.item = ApiToken.raw_message
+        request.item.CopyFrom(apitoken.raw_message)
         try:
             self.__stub.UpdateApiToken(request)
             return True

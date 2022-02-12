@@ -21,7 +21,7 @@ class PostMortemClient:
 
     def create(self, postmortem: PostMortem) -> bool:
         request = CreatePostMortemRequest()
-        request.item.CopyFrom(PostMortem.raw_message)
+        request.item.CopyFrom(postmortem.raw_message)
         try:
             response = self.__stub.CreatePostMortem(request)
             return True
@@ -33,7 +33,7 @@ class PostMortemClient:
 
     def update(self, postmortem: PostMortem) -> bool:
         request = UpdatePostMortemRequest()
-        request.item = PostMortem.raw_message
+        request.item.CopyFrom(postmortem.raw_message)
         try:
             self.__stub.UpdatePostMortem(request)
             return True

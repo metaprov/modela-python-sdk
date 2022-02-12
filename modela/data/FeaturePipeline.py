@@ -21,7 +21,7 @@ class FeaturePipelineClient:
 
     def create(self, featurepipeline: FeaturePipeline) -> bool:
         request = CreateFeaturePipelineRequest()
-        request.item.CopyFrom(FeaturePipeline.raw_message)
+        request.item.CopyFrom(featurepipeline.raw_message)
         try:
             response = self.__stub.CreateFeaturePipeline(request)
             return True
@@ -33,7 +33,7 @@ class FeaturePipelineClient:
 
     def update(self, featurepipeline: FeaturePipeline) -> bool:
         request = UpdateFeaturePipelineRequest()
-        request.item = FeaturePipeline.raw_message
+        request.item.CopyFrom(featurepipeline.raw_message)
         try:
             self.__stub.UpdateFeaturePipeline(request)
             return True

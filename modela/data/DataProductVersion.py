@@ -9,23 +9,37 @@ from modela.Resource import Resource
 from modela.ModelaException import ModelaException
 from typing import List, Union
 
+from modela.data.models import DataProductVersionSpec
+
 
 class DataProductVersion(Resource):
-    def __init__(self, item: MDDataProductVersion = MDDataProductVersion(), client=None, namespace="", name=""):
+    def __init__(self, item: MDDataProductVersion = MDDataProductVersion(), client=None, namespace="", name="",
+                baseline: bool = False, previous_version: str = None):
+        """
+        :param client: The Data Product Version client repository, which can be obtained through an instance of Modela.
+        :param namespace: The target namespace of the resource.
+        :param name: The desired name of the resource.
+        :param baseline: If this version is baseline, then the objects of previous version will be garbage collected.
+        :param previous_version: The name of the previous version.
+        """
         super().__init__(item, client, namespace=namespace, name=name)
+
+    @property
+    def spec(self) -> DataProductVersionSpec:
+        return DataProductVersionSpec().copy_from(self._object.spec).set_parent(self._object.spec)
+
+    def default(self):
+        DataProductVersionSpec().apply_config(self._object.spec)
+
 
 
 class DataProductVersionClient:
-    """
-    DataProductVersionClient provides a CRUD interface for the Data Product resource.
-    """
-
     def __init__(self, stub):
         self.__stub: DataProductVersionServiceStub = stub
 
     def create(self, dataproductversion: DataProductVersion) -> bool:
         request = CreateDataProductVersionRequest()
-        request.item.CopyFrom(DataProductVersion.raw_message)
+        request.item.CopyFrom(dataproductversion.raw_message)
         try:
             response = self.__stub.CreateDataProductVersion(request)
             return True
@@ -37,7 +51,7 @@ class DataProductVersionClient:
 
     def update(self, dataproductversion: DataProductVersion) -> bool:
         request = UpdateDataProductVersionRequest()
-        request.item = DataProductVersion.raw_message
+        request.item.CopyFrom(dataproductversion.raw_message)
         try:
             self.__stub.UpdateDataProductVersion(request)
             return True
@@ -84,4 +98,5 @@ class DataProductVersionClient:
 
         ModelaException.process_error(error)
         return False
+
 

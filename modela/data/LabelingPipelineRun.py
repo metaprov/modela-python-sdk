@@ -21,7 +21,7 @@ class LabelingPipelineRunClient:
 
     def create(self, labelingpipelinerun: LabelingPipelineRun) -> bool:
         request = CreateLabelingPipelineRunRequest()
-        request.item.CopyFrom(LabelingPipelineRun.raw_message)
+        request.item.CopyFrom(labelingpipelinerun.raw_message)
         try:
             response = self.__stub.CreateLabelingPipelineRun(request)
             return True
@@ -33,7 +33,7 @@ class LabelingPipelineRunClient:
 
     def update(self, labelingpipelinerun: LabelingPipelineRun) -> bool:
         request = UpdateLabelingPipelineRunRequest()
-        request.item = LabelingPipelineRun.raw_message
+        request.item.CopyFrom(labelingpipelinerun.raw_message)
         try:
             self.__stub.UpdateLabelingPipelineRun(request)
             return True

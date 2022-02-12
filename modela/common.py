@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from enum import Enum
 
 from modela.Configuration import Configuration
@@ -51,6 +52,33 @@ class StatusError(Enum):
     DeleteError = "DeleteError"
 
 
+class PriorityLevel(Enum):
+    Low = "low"
+    Medium = "medium"
+    High = "high"
+    Urgent = "urgent"
+
+
+class HardwareTarget(Enum):
+    AMDEPYC2 = "amd-epyc-2"
+    ARMA53 = "arma-53"
+    ARMA72 = "arma-72"
+    IntelCascadeLake = "intel-cascade-lake"
+    IntelBroadwell = "intel-broadwell"
+    IntelSkylake = "intel-skylake"
+    TeslaV100 = "tesla-v100"
+    TeslaK80 = "tesla-k80"
+    T4 = "t4"
+    RaspberryPi8MODELB = "raspberry-pi8-modela-b"
+
+
+@dataclass
 class Time(Configuration):
     Seconds: int = 0
     Nanos: int = 0
+
+
+@dataclass
+class ObjectReference(Configuration):
+    Name: str = ""
+    Namespace: str = ""

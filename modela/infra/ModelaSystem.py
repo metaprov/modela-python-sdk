@@ -21,7 +21,7 @@ class ModelaSystemClient:
 
     def create(self, modelasystem: ModelaSystem) -> bool:
         request = CreateModelaSystemRequest()
-        request.item.CopyFrom(ModelaSystem.raw_message)
+        request.item.CopyFrom(modelasystem.raw_message)
         try:
             response = self.__stub.CreateModelaSystem(request)
             return True
@@ -33,7 +33,7 @@ class ModelaSystemClient:
 
     def update(self, modelasystem: ModelaSystem) -> bool:
         request = UpdateModelaSystemRequest()
-        request.item = ModelaSystem.raw_message
+        request.item.CopyFrom(modelasystem.raw_message)
         try:
             self.__stub.UpdateModelaSystem(request)
             return True

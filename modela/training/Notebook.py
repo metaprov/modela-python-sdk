@@ -21,7 +21,7 @@ class NotebookClient:
 
     def create(self, notebook: Notebook) -> bool:
         request = CreateNotebookRequest()
-        request.item.CopyFrom(Notebook.raw_message)
+        request.item.CopyFrom(notebook.raw_message)
         try:
             response = self.__stub.CreateNotebook(request)
             return True
@@ -33,7 +33,7 @@ class NotebookClient:
 
     def update(self, notebook: Notebook) -> bool:
         request = UpdateNotebookRequest()
-        request.item = Notebook.raw_message
+        request.item.CopyFrom(notebook.raw_message)
         try:
             self.__stub.UpdateNotebook(request)
             return True

@@ -21,7 +21,7 @@ class VirtualBucketClient:
 
     def create(self, virtualbucket: VirtualBucket) -> bool:
         request = CreateVirtualBucketRequest()
-        request.item.CopyFrom(VirtualBucket.raw_message)
+        request.item.CopyFrom(virtualbucket.raw_message)
         try:
             response = self.__stub.CreateVirtualBucket(request)
             return True
@@ -33,7 +33,7 @@ class VirtualBucketClient:
 
     def update(self, virtualbucket: VirtualBucket) -> bool:
         request = UpdateVirtualBucketRequest()
-        request.item = VirtualBucket.raw_message
+        request.item.CopyFrom(virtualbucket.raw_message)
         try:
             self.__stub.UpdateVirtualBucket(request)
             return True

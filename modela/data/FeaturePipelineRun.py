@@ -21,7 +21,7 @@ class FeaturePipelineRunClient:
 
     def create(self, featurepipelinerun: FeaturePipelineRun) -> bool:
         request = CreateFeaturePipelineRunRequest()
-        request.item.CopyFrom(FeaturePipelineRun.raw_message)
+        request.item.CopyFrom(featurepipelinerun.raw_message)
         try:
             response = self.__stub.CreateFeaturePipelineRun(request)
             return True
@@ -33,7 +33,7 @@ class FeaturePipelineRunClient:
 
     def update(self, featurepipelinerun: FeaturePipelineRun) -> bool:
         request = UpdateFeaturePipelineRunRequest()
-        request.item = FeaturePipelineRun.raw_message
+        request.item.CopyFrom(featurepipelinerun.raw_message)
         try:
             self.__stub.UpdateFeaturePipelineRun(request)
             return True
@@ -70,7 +70,7 @@ class FeaturePipelineRunClient:
         return False
 
     def list(self, namespace: str) -> Union[List[FeaturePipelineRun], bool]:
-        request = ListFeaturePipelineRunsRequest()
+        request = ListFeaturePipelineRunRequest()
         request.namespace = namespace
         try:
             response = self.__stub.ListFeaturePipelineRuns(request)

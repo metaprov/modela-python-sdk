@@ -1,6 +1,13 @@
 from enum import Enum
 
 
+class CompilerType(Enum):
+    TVM = "tvm"
+    Onyx = "onyx"
+    Xla = "xla"
+    Nothing = "none"
+
+
 class FileEncoding(Enum):
     Utf8 = "utf-8"
     Lating1 = "latin-1"
@@ -181,7 +188,7 @@ class DataLocationType(Enum):
     WebApi = "web"
 
 
-class DatasetPhase(Enum):
+class DatasetCondition(Enum):
     Reported = "Reported"
     Validated = "Validated"
     Snapshotted = "Snapshooted"
@@ -191,3 +198,52 @@ class DatasetPhase(Enum):
     Saved = "Saved"
     Archived = "Archived"
     Ready = "Ready"
+
+
+class DatasetPhase(Enum):
+    Pending = "Pending"
+    Generating = "Generating"
+    GenSuccess = "GenSuccess"
+    IngestRunning = "Ingesting"
+    IngestSuccess = "Ingested"
+    ReportRunning = "Reporting"
+    ReportSuccess = "Reported"
+    ProfileRunning = "Profiling"
+    ProfileSuccess = "Profiled"
+    ValidationRunning = "Validating"
+    ValidationSuccess = "Validated"
+    SnapshotRunning = "TakingSnapshot"
+    SnapshotSuccess = "Snapshotted"
+    Failed = "Failed"
+    Aborted = "Aborted"
+    Ready = "Ready"
+
+
+class Color(Enum):
+    Aliceblue = "aliceblue"
+    Antiquewhite = "antiquewhite"
+    Aqua = "aqua"
+    Aquamarine = "aquamarine"
+    Azure = "azure"
+    Beige = "beige"
+    Bisque = "bisque"
+    Black = "black"
+    Blanchedalmond = "blanchedalmond"
+    Blue = "blue"
+    Blueviolet = "blueviolet"
+    Brown = "brown"
+    Burlywood = "burlywood"
+    Cadetblue = "cadetblue"
+    Chartreuse = "chartreuse"
+    Chocolate = "chocolate"
+    Coral = "coral"
+    Cornflowerblue = "cornflowerblue"
+    Cornsilk = "cornsilk"
+    NoColor = "none"
+
+
+class SecurityClearanceLevel(Enum):
+    Unclassified = "unclassified"
+    Confidential = "confidential"
+    Secret = "secret"
+    TopSecret = "top-secret"

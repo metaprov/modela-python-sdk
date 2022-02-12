@@ -21,7 +21,7 @@ class VirtualClusterClient:
 
     def create(self, virtualcluster: VirtualCluster) -> bool:
         request = CreateVirtualClusterRequest()
-        request.item.CopyFrom(VirtualCluster.raw_message)
+        request.item.CopyFrom(virtualcluster.raw_message)
         try:
             response = self.__stub.CreateVirtualCluster(request)
             return True
@@ -33,7 +33,7 @@ class VirtualClusterClient:
 
     def update(self, virtualcluster: VirtualCluster) -> bool:
         request = UpdateVirtualClusterRequest()
-        request.item = VirtualCluster.raw_message
+        request.item.CopyFrom(virtualcluster.raw_message)
         try:
             self.__stub.UpdateVirtualCluster(request)
             return True

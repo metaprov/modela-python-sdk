@@ -21,7 +21,7 @@ class AlertClient:
 
     def create(self, alert: Alert) -> bool:
         request = CreateAlertRequest()
-        request.item.CopyFrom(Alert.raw_message)
+        request.item.CopyFrom(alert.raw_message)
         try:
             response = self.__stub.CreateAlert(request)
             return True
@@ -33,7 +33,7 @@ class AlertClient:
 
     def update(self, alert: Alert) -> bool:
         request = UpdateAlertRequest()
-        request.item = Alert.raw_message
+        request.item.CopyFrom(alert.raw_message)
         try:
             self.__stub.UpdateAlert(request)
             return True

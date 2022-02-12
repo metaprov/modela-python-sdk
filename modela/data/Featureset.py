@@ -21,7 +21,7 @@ class FeaturesetClient:
 
     def create(self, featureset: Featureset) -> bool:
         request = CreateFeaturesetRequest()
-        request.item.CopyFrom(Featureset.raw_message)
+        request.item.CopyFrom(featureset.raw_message)
         try:
             response = self.__stub.CreateFeatureset(request)
             return True
@@ -33,7 +33,7 @@ class FeaturesetClient:
 
     def update(self, featureset: Featureset) -> bool:
         request = UpdateFeaturesetRequest()
-        request.item = Featureset.raw_message
+        request.item.CopyFrom(featureset.raw_message)
         try:
             self.__stub.UpdateFeatureset(request)
             return True

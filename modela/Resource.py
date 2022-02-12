@@ -89,4 +89,8 @@ class Resource:
             raise AttributeError("Object has no client repository")
 
     def default(self):
-        warnings.warn("default resource constructor is missing. resource may encounter errors.")
+        warnings.warn("default resource constructor is missing. resource may encounter errors on creation.")
+
+    @staticmethod
+    def set_default_version(version):
+        Resource.DefaultVersion = version

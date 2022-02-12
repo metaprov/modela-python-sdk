@@ -22,6 +22,12 @@ class Configuration(object):
     from a Python dataclass to a Message, and vice-versa.
     """
 
+    def __post_init__(self):  # Apply tracking to all list attributes post-initialization
+        for attribute, value in self.__dict__.items():
+            annotation_type = get_type_hints(self)[attribute]
+            if typing_utils.issubtype(annotation_type, List):
+                setattr(self, attribute, TrackedList(value, self, attribute))
+
     def apply_field(self, attribute, value, message):
         """ Apply a single attribute to a related Protobuf Message """
         if value is None:
@@ -30,7 +36,7 @@ class Configuration(object):
         annotation_type = get_type_hints(self)[attribute]
         if typing_utils.issubtype(annotation_type, List):
             del getattr(message, real_field)[:]
-            if isPrimitive(get_args(annotation_type)[0]()):
+            if issubclass(get_args(annotation_type)[0], Enum) or isPrimitive(get_args(annotation_type)[0]()):
                 getattr(message, real_field).extend(value)
             else:
                 getattr(message, real_field).extend([model.to_message() for model in value])
@@ -61,7 +67,7 @@ class Configuration(object):
             message_attr = getattr(message, convert_case(attribute))
             if typing_utils.issubtype(annotation_type, List):
                 annotation_type = get_args(annotation_type)[0]
-                if isPrimitive(annotation_type()):
+                if issubclass(annotation_type, Enum) or isPrimitive(annotation_type()):
                     setattr(self, attribute, TrackedList([annotation_type(message) for message in message_attr],
                                                          self, attribute))
                 else:

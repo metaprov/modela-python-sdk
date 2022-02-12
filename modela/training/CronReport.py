@@ -21,7 +21,7 @@ class CronReportClient:
 
     def create(self, cronreport: CronReport) -> bool:
         request = CreateCronReportRequest()
-        request.item.CopyFrom(CronReport.raw_message)
+        request.item.CopyFrom(cronreport.raw_message)
         try:
             response = self.__stub.CreateCronReport(request)
             return True
@@ -33,7 +33,7 @@ class CronReportClient:
 
     def update(self, cronreport: CronReport) -> bool:
         request = UpdateCronReportRequest()
-        request.item = CronReport.raw_message
+        request.item.CopyFrom(cronreport.raw_message)
         try:
             self.__stub.UpdateCronReport(request)
             return True
