@@ -21,7 +21,7 @@ class MeetingClient:
 
     def create(self, meeting: Meeting) -> bool:
         request = CreateMeetingRequest()
-        request.item.CopyFrom(meeting.raw_message)
+        request.meeting.CopyFrom(meeting.raw_message)
         try:
             response = self.__stub.CreateMeeting(request)
             return True
@@ -33,7 +33,7 @@ class MeetingClient:
 
     def update(self, meeting: Meeting) -> bool:
         request = UpdateMeetingRequest()
-        request.item.CopyFrom(meeting.raw_message)
+        request.meeting.CopyFrom(meeting.raw_message)
         try:
             self.__stub.UpdateMeeting(request)
             return True
@@ -49,7 +49,7 @@ class MeetingClient:
         request.name = name
         try:
             response = self.__stub.GetMeeting(request)
-            return Meeting(response.item, self)
+            return Meeting(response.meeting, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class MeetingClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListMeetings(request)
-            return [Meeting(item, self) for item in response.items.items]
+            return [Meeting(item, self) for item in response.meetings.items]
         except grpc.RpcError as err:
             error = err
 

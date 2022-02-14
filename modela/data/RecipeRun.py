@@ -21,7 +21,7 @@ class RecipeRunClient:
 
     def create(self, reciperun: RecipeRun) -> bool:
         request = CreateRecipeRunRequest()
-        request.item.CopyFrom(reciperun.raw_message)
+        request.reciperun.CopyFrom(reciperun.raw_message)
         try:
             response = self.__stub.CreateRecipeRun(request)
             return True
@@ -33,7 +33,7 @@ class RecipeRunClient:
 
     def update(self, reciperun: RecipeRun) -> bool:
         request = UpdateRecipeRunRequest()
-        request.item.CopyFrom(reciperun.raw_message)
+        request.reciperun.CopyFrom(reciperun.raw_message)
         try:
             self.__stub.UpdateRecipeRun(request)
             return True
@@ -49,7 +49,7 @@ class RecipeRunClient:
         request.name = name
         try:
             response = self.__stub.GetRecipeRun(request)
-            return RecipeRun(response.item, self)
+            return RecipeRun(response.reciperun, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class RecipeRunClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListRecipeRuns(request)
-            return [RecipeRun(item, self) for item in response.items.items]
+            return [RecipeRun(item, self) for item in response.reciperuns.items]
         except grpc.RpcError as err:
             error = err
 

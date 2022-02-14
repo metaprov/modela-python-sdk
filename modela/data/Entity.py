@@ -21,7 +21,7 @@ class EntityClient:
 
     def create(self, entity: Entity) -> bool:
         request = CreateEntityRequest()
-        request.item.CopyFrom(entity.raw_message)
+        request.entity.CopyFrom(entity.raw_message)
         try:
             response = self.__stub.CreateEntity(request)
             return True
@@ -33,7 +33,7 @@ class EntityClient:
 
     def update(self, entity: Entity) -> bool:
         request = UpdateEntityRequest()
-        request.item.CopyFrom(entity.raw_message)
+        request.entity.CopyFrom(entity.raw_message)
         try:
             self.__stub.UpdateEntity(request)
             return True
@@ -49,7 +49,7 @@ class EntityClient:
         request.name = name
         try:
             response = self.__stub.GetEntity(request)
-            return Entity(response.item, self)
+            return Entity(response.entity, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class EntityClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListEntitys(request)
-            return [Entity(item, self) for item in response.items.items]
+            return [Entity(item, self) for item in response.entitys.items]
         except grpc.RpcError as err:
             error = err
 

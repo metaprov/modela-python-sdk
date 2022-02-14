@@ -21,7 +21,7 @@ class ModelPipelineRunClient:
 
     def create(self, modelpipelinerun: ModelPipelineRun) -> bool:
         request = CreateModelPipelineRunRequest()
-        request.item.CopyFrom(modelpipelinerun.raw_message)
+        request.modelpipelinerun.CopyFrom(modelpipelinerun.raw_message)
         try:
             response = self.__stub.CreateModelPipelineRun(request)
             return True
@@ -33,7 +33,7 @@ class ModelPipelineRunClient:
 
     def update(self, modelpipelinerun: ModelPipelineRun) -> bool:
         request = UpdateModelPipelineRunRequest()
-        request.item.CopyFrom(modelpipelinerun.raw_message)
+        request.modelpipelinerun.CopyFrom(modelpipelinerun.raw_message)
         try:
             self.__stub.UpdateModelPipelineRun(request)
             return True
@@ -49,7 +49,7 @@ class ModelPipelineRunClient:
         request.name = name
         try:
             response = self.__stub.GetModelPipelineRun(request)
-            return ModelPipelineRun(response.item, self)
+            return ModelPipelineRun(response.modelpipelinerun, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class ModelPipelineRunClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListModelPipelineRuns(request)
-            return [ModelPipelineRun(item, self) for item in response.items.items]
+            return [ModelPipelineRun(item, self) for item in response.modelpipelineruns.items]
         except grpc.RpcError as err:
             error = err
 

@@ -21,7 +21,7 @@ class CommitClient:
 
     def create(self, commit: Commit) -> bool:
         request = CreateCommitRequest()
-        request.item.CopyFrom(commit.raw_message)
+        request.commit.CopyFrom(commit.raw_message)
         try:
             response = self.__stub.CreateCommit(request)
             return True
@@ -33,7 +33,7 @@ class CommitClient:
 
     def update(self, commit: Commit) -> bool:
         request = UpdateCommitRequest()
-        request.item.CopyFrom(commit.raw_message)
+        request.commit.CopyFrom(commit.raw_message)
         try:
             self.__stub.UpdateCommit(request)
             return True
@@ -49,7 +49,7 @@ class CommitClient:
         request.name = name
         try:
             response = self.__stub.GetCommit(request)
-            return Commit(response.item, self)
+            return Commit(response.commit, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class CommitClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListCommits(request)
-            return [Commit(item, self) for item in response.items.items]
+            return [Commit(item, self) for item in response.commits.items]
         except grpc.RpcError as err:
             error = err
 

@@ -21,7 +21,7 @@ class PredictionClient:
 
     def create(self, prediction: Prediction) -> bool:
         request = CreatePredictionRequest()
-        request.item.CopyFrom(prediction.raw_message)
+        request.prediction.CopyFrom(prediction.raw_message)
         try:
             response = self.__stub.CreatePrediction(request)
             return True
@@ -33,7 +33,7 @@ class PredictionClient:
 
     def update(self, prediction: Prediction) -> bool:
         request = UpdatePredictionRequest()
-        request.item.CopyFrom(prediction.raw_message)
+        request.prediction.CopyFrom(prediction.raw_message)
         try:
             self.__stub.UpdatePrediction(request)
             return True
@@ -49,7 +49,7 @@ class PredictionClient:
         request.name = name
         try:
             response = self.__stub.GetPrediction(request)
-            return Prediction(response.item, self)
+            return Prediction(response.prediction, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class PredictionClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListPredictions(request)
-            return [Prediction(item, self) for item in response.items.items]
+            return [Prediction(item, self) for item in response.predictions.items]
         except grpc.RpcError as err:
             error = err
 

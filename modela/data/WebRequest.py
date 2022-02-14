@@ -21,7 +21,7 @@ class WebRequestClient:
 
     def create(self, webrequest: WebRequest) -> bool:
         request = CreateWebRequestRequest()
-        request.item.CopyFrom(webrequest.raw_message)
+        request.webrequest.CopyFrom(webrequest.raw_message)
         try:
             response = self.__stub.CreateWebRequest(request)
             return True
@@ -33,7 +33,7 @@ class WebRequestClient:
 
     def update(self, webrequest: WebRequest) -> bool:
         request = UpdateWebRequestRequest()
-        request.item.CopyFrom(webrequest.raw_message)
+        request.webrequest.CopyFrom(webrequest.raw_message)
         try:
             self.__stub.UpdateWebRequest(request)
             return True
@@ -49,7 +49,7 @@ class WebRequestClient:
         request.name = name
         try:
             response = self.__stub.GetWebRequest(request)
-            return WebRequest(response.item, self)
+            return WebRequest(response.webrequest, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class WebRequestClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListWebRequests(request)
-            return [WebRequest(item, self) for item in response.items.items]
+            return [WebRequest(item, self) for item in response.webrequests.items]
         except grpc.RpcError as err:
             error = err
 

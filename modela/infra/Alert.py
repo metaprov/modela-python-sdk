@@ -21,7 +21,7 @@ class AlertClient:
 
     def create(self, alert: Alert) -> bool:
         request = CreateAlertRequest()
-        request.item.CopyFrom(alert.raw_message)
+        request.alert.CopyFrom(alert.raw_message)
         try:
             response = self.__stub.CreateAlert(request)
             return True
@@ -33,7 +33,7 @@ class AlertClient:
 
     def update(self, alert: Alert) -> bool:
         request = UpdateAlertRequest()
-        request.item.CopyFrom(alert.raw_message)
+        request.alert.CopyFrom(alert.raw_message)
         try:
             self.__stub.UpdateAlert(request)
             return True
@@ -49,7 +49,7 @@ class AlertClient:
         request.name = name
         try:
             response = self.__stub.GetAlert(request)
-            return Alert(response.item, self)
+            return Alert(response.alert, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class AlertClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListAlerts(request)
-            return [Alert(item, self) for item in response.items.items]
+            return [Alert(item, self) for item in response.alerts.items]
         except grpc.RpcError as err:
             error = err
 

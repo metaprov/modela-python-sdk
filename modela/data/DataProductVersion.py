@@ -18,7 +18,7 @@ class DataProductVersion(Resource):
         """
         :param client: The Data Product Version client repository, which can be obtained through an instance of Modela.
         :param namespace: The target namespace of the resource.
-        :param name: The desired name of the resource.
+        :param name: The name of the resource.
         :param baseline: If this version is baseline, then the objects of previous version will be garbage collected.
         :param previous_version: The name of the previous version.
         """
@@ -39,7 +39,7 @@ class DataProductVersionClient:
 
     def create(self, dataproductversion: DataProductVersion) -> bool:
         request = CreateDataProductVersionRequest()
-        request.item.CopyFrom(dataproductversion.raw_message)
+        request.dataproductversion.CopyFrom(dataproductversion.raw_message)
         try:
             response = self.__stub.CreateDataProductVersion(request)
             return True
@@ -51,7 +51,7 @@ class DataProductVersionClient:
 
     def update(self, dataproductversion: DataProductVersion) -> bool:
         request = UpdateDataProductVersionRequest()
-        request.item.CopyFrom(dataproductversion.raw_message)
+        request.dataproductversion.CopyFrom(dataproductversion.raw_message)
         try:
             self.__stub.UpdateDataProductVersion(request)
             return True
@@ -67,7 +67,7 @@ class DataProductVersionClient:
         request.name = name
         try:
             response = self.__stub.GetDataProductVersion(request)
-            return DataProductVersion(response.item, self)
+            return DataProductVersion(response.dataproductversion, self)
         except grpc.RpcError as err:
             error = err
 
@@ -92,7 +92,7 @@ class DataProductVersionClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListDataProductVersions(request)
-            return [DataProductVersion(item, self) for item in response.items.items]
+            return [DataProductVersion(item, self) for item in response.dataproductversions.items]
         except grpc.RpcError as err:
             error = err
 

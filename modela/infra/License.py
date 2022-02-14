@@ -21,7 +21,7 @@ class LicenseClient:
 
     def create(self, license: License) -> bool:
         request = CreateLicenseRequest()
-        request.item.CopyFrom(license.raw_message)
+        request.license.CopyFrom(license.raw_message)
         try:
             response = self.__stub.CreateLicense(request)
             return True
@@ -33,7 +33,7 @@ class LicenseClient:
 
     def update(self, license: License) -> bool:
         request = UpdateLicenseRequest()
-        request.item.CopyFrom(license.raw_message)
+        request.license.CopyFrom(license.raw_message)
         try:
             self.__stub.UpdateLicense(request)
             return True
@@ -49,7 +49,7 @@ class LicenseClient:
         request.name = name
         try:
             response = self.__stub.GetLicense(request)
-            return License(response.item, self)
+            return License(response.license, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class LicenseClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListLicenses(request)
-            return [License(item, self) for item in response.items.items]
+            return [License(item, self) for item in response.licenses.items]
         except grpc.RpcError as err:
             error = err
 

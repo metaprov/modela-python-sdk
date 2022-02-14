@@ -21,7 +21,7 @@ class AttachmentClient:
 
     def create(self, attachment: Attachment) -> bool:
         request = CreateAttachmentRequest()
-        request.item.CopyFrom(attachment.raw_message)
+        request.attachment.CopyFrom(attachment.raw_message)
         try:
             response = self.__stub.CreateAttachment(request)
             return True
@@ -33,7 +33,7 @@ class AttachmentClient:
 
     def update(self, attachment: Attachment) -> bool:
         request = UpdateAttachmentRequest()
-        request.item.CopyFrom(attachment.raw_message)
+        request.attachment.CopyFrom(attachment.raw_message)
         try:
             self.__stub.UpdateAttachment(request)
             return True
@@ -49,7 +49,7 @@ class AttachmentClient:
         request.name = name
         try:
             response = self.__stub.GetAttachment(request)
-            return Attachment(response.item, self)
+            return Attachment(response.attachment, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class AttachmentClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListAttachments(request)
-            return [Attachment(item, self) for item in response.items.items]
+            return [Attachment(item, self) for item in response.attachments.items]
         except grpc.RpcError as err:
             error = err
 

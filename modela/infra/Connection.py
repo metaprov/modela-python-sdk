@@ -21,7 +21,7 @@ class ConnectionClient:
 
     def create(self, connection: Connection) -> bool:
         request = CreateConnectionRequest()
-        request.item.CopyFrom(connection.raw_message)
+        request.connection.CopyFrom(connection.raw_message)
         try:
             response = self.__stub.CreateConnection(request)
             return True
@@ -33,7 +33,7 @@ class ConnectionClient:
 
     def update(self, connection: Connection) -> bool:
         request = UpdateConnectionRequest()
-        request.item.CopyFrom(connection.raw_message)
+        request.connection.CopyFrom(connection.raw_message)
         try:
             self.__stub.UpdateConnection(request)
             return True
@@ -49,7 +49,7 @@ class ConnectionClient:
         request.name = name
         try:
             response = self.__stub.GetConnection(request)
-            return Connection(response.item, self)
+            return Connection(response.connection, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class ConnectionClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListConnections(request)
-            return [Connection(item, self) for item in response.items.items]
+            return [Connection(item, self) for item in response.connections.items]
         except grpc.RpcError as err:
             error = err
 

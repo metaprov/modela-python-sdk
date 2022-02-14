@@ -170,3 +170,374 @@ class RelationshipArity(Enum):
     OneToOne = "one-to-one"
     OneToMany = "one-to-many"
     ManyToMany = "many-to-many"
+
+
+class FeatureSelection(Enum):
+    DropFeatures = "drop-features"
+    DropConstantFeatures = "drop-constant-features"
+    DropDuplicateFeatures = "drop-deplicated-features"
+    DropCorrelatedFeatures = "drop-correlated-features"
+    MutalInformation = "mutal-information-feature-selection"
+    ChiSquare = "chisquare-fearture-selection"
+    Anova = "anova-feature-selection"
+    StepForward = "step-forward-feature-selection"
+    StepBackward = "step-backward-feature-selection"
+    LassoRegression = "lasso-regression-feature-selection"
+    TreeImportance = "tree-importance-feature-selection"
+    RecursiveFeatureElimination = "recursive-feature-elimination"
+    RecursiveFeatureAddition = "recursive-feature-addition"
+    SelectPercentile = "select-percentile"
+    SelectKBest = "select-kbest"
+    SelectFpr = "select-fpr"
+    SelectFdr = "select-fdr"
+    VarianceThreshold = "variance-threshold"
+    Nothing = "none"
+    Auto = "auto"
+
+
+class ShapType(Enum):
+    Permutation = "permutation"
+    Partition = "partition"
+    Tree = "tree"
+    Kernel = "kernel"
+    Sampling = "sampling"
+    Linear = "linear"
+    Deep = "deep"
+    Gradient = "gradient"
+    Auto = "auto"
+    Unknown = "none"
+
+
+class ModelClassType(Enum):
+    FE = "feature-engineering"
+    Baseine = "baseline"
+    Search = "search"
+    Ensemble = "ensemble"
+    Test = "test"
+
+
+class ModelType(Enum):
+    Classical = "classical"
+    DNN = "dnn"
+    Transformer = "transformer"
+    Chatbot = "chatbot"
+    RL = "rl"
+
+
+class CategoricalEncoding(Enum):
+    OneHotEncoding = "one-hot-encoding"
+    OneHotEncoderTop = "one-hot-encoding-top-categories"
+    OrdinalEncoding = "ordinal-encoding"
+    CountEncoding = "count-encoding"
+    TargetEncoding = "target-encoding"
+    WoERatioEncoding = "weight-of-evidence-encoding"
+    BinaryEncoding = "binary-encoding"
+    LabelEncoding = "label-encoding"
+    HashEncoding = "hash-encoding"
+    CatboostEncoding = "catboost-encoding"
+    LeaveOneOutEncoding = "loo-encoding"
+    NoEncoding = "no-encoding"
+    AutoEncoding = "auto"
+    NoneEncoding = "none"
+
+
+class Discretisation(Enum):
+    EqualWidth = "equal-width-discretisation-"
+    EqualFreq = "equal-freq-discretisation"
+    KBins = "kbin-discretisation"
+    KernelCenterer = "kernel-centerer-discretisation"
+    LabelBinarizer = "label-binarizer-discretisation"
+    MultiLabelBinarizer = "multi-label-binarizer-discretisation"
+    NoDiscretisation = "none"
+    Auto = "auto"
+
+
+class OutlierHandling(Enum):
+    Trim = "trim-outliers"
+    Winsorizer = "winsorizer-outliers"
+    Cap = "cap-outliers"
+    ZeroCode = "zero-code-outliers"
+    NoneOutlier = "none"
+    AutoOutlier = "auto"
+
+
+class VariableTransformation(Enum):
+    LogTransformation = "log-transformation"
+    ReciprocalTransformation = "reciprocal-transformation"
+    SqrtTransformation = "sqrt-transformation"
+    PowerTransformation = "power-transformation"
+    BoxCoxTransformation = "box-cox-transformation"
+    YeoJohnsonTransformation = "yj-transformation"
+    NoneTransform = "none"
+    AutoTransform = "auto"
+
+
+class DatetimeTransformation(Enum):
+    ExtractDateTimeInformation = "extract-datetime-information"
+    NoneDatetime = "none"
+    AutoDatetime = "auto"
+
+
+class TextEncoding(Enum):
+    TfIdf = "tfidf"
+    CountVectorizer = "count-vec"
+    HashingVectorizer = "hashing-vec"
+    NoEncoding = "none"
+    Auto = "auto"
+
+
+class CvType(Enum):
+    Nothing = "none"
+    GroupKFold = "group-kfold"
+    GroupShuffleSplit = "group-shuffle-split"
+    CVTypeKFold = "kfold"
+    CVTypeLeaveOneGroupOut = "leave-one-group-out"
+    LeavePGroupsOut = "leave-p-groups-out"
+    LeaveOneOut = "leave-one-out"
+    LeavePOut = "leave-p-out"
+    PredefinedSplit = "predefined-split"
+    RepeatedKFold = "repeated-kfold"
+    RepeatedStratifiedKFold = "repeated-stratified-k-fold"
+    ShuffleSplit = "shuffle-split"
+    StratifiedKFold = "stratified-k-fold"
+    StratifiedShuffleSplit = "stratified-shuffle-split"
+    StratifiedGroupKFold = "stratified-group-k-fold"
+    TimeSeriesSplit = "time-series-split"
+
+
+class EnsembleType(Enum):
+    Voting = "voting"
+    Stack = "stacking"
+
+
+class DataSplitMethod(Enum):
+    RandomStratified = "random-stratified"
+    Random = "random"
+    SplitColumn = "split-column"
+    Time = "time"
+    Auto = "auto"
+
+
+class Operation(Enum):
+    LT = "lt"
+    EQ = "eq"
+    GT = "gt"
+    NE = "ne"
+    LE = "le"
+    GE = "ge"
+
+
+class ImbalanceHandling(Enum):
+    ADASYN = "adasyn"
+    BorderlineSMOTE = "baseline-smote"
+    KMeansSMOTE = "kmean-smote"
+    RandomOverSampler = "random-over-sampler"
+    SMOTE = "smote"
+    SMOTENC = "smotenc"
+    SVMSMOTE = "svmsmote"
+    ClassWeights = "class-weights"
+    ImbalanceNone = "none"
+    ImbalanceAuto = "auto"
+
+
+class ModalityType(Enum):
+    Data = "data"
+    Epochs = "epochs"
+
+
+class ModelPhase(Enum):
+    Failed = "Failed"
+    Pending = "Pending"
+    Training = "Training"
+    Trained = "Trained"
+    Testing = "Testing"
+    Tested = "Tested"
+    Reporting = "Reporting"
+    Reported = "Reported"
+    Completed = "Completed"
+    Publishing = "Publishing"
+    Published = "Published"
+    Packaging = "Packaging"
+    Packaged = "Packaged"
+    Profiling = "Profiling"
+    Profiled = "Profiled"
+    Explaining = "Explaining"
+    Explained = "Explained"
+    Aborted = "Aborted"
+    Forecasting = "Forecasting"
+    Forecasted = "Forecasted"
+    Uat = "UAT"
+    Deployed = "Deployed"
+    Releasing = "Releasing"
+    Live = "Live"
+    Maintenance = "Maintenance"
+    Retired = "Retired"
+
+
+class ModelConditionType(Enum):
+    ModelInitialized = "Initialized"
+    ModelTrained = "Trained"
+    ModelTested = "Tested"
+    ModelReported = "Reported"
+    ModelPackaged = "Packaged"
+    ModelPublished = "Published"
+    ModelProfiled = "Profiled"
+    ModelReady = "Ready"
+    ModelSaved = "Saved"
+    ModelArchived = "Archived"
+    ModelExplained = "Explained"
+    ModelReleased = "Released"
+    ModelAborted = "Aborted"
+    ModelPaused = "Paused"
+    ModelForecasted = "Forecasted"
+    ModelUat = "UAT"
+    ModelLive = "Live"
+    ModelStale = "Stale"
+    ModelMaintenance = "Maintenance"
+    ModelRetired = "Retired"
+
+
+class ClassicEstimator(Enum):
+    KNeighborsRegressor = "knn-regressor"
+    RidgeRegressor = "ridge-regressor"
+    LassoRegressor = "lasso-regressor"
+    AdaBoostRegressor = "ada-boost-regressor"
+    DecisionTreeRegressor = "decision-tree-regressor"
+    ExtraTreeRegressor = "extra-tree-regressor"
+    LinearSvr = "linear-svr"
+    Svr = "svr"
+    PassiveAggressiveRegressor = "passive-agressive-regressor"
+    SGDRegressor = "sgd-regressor"
+    GradientBoostingRegressor = "gradient-boosting-regressor"
+    HistGradientBoostingRegressor = "hist-gradient-boosting-regressor"
+    RandomForestRegressor = "random-forest-regressor"
+    XGBRegressor = "xgb-regressor"
+    CatBoostRegressor = "catboost-regressor"
+    LightGbmRegressor = "lightgbm-regressor"
+    ElasticNetRegressor = "elasticnet-regressor"
+    DNNRegressor = "dnn-regressor"
+    EllipticEnvelope = "elliptic-envelope"
+    OneClassSVM = "one-class-svm"
+    IsolationForest = "isolation-forest"
+    LocalOutlierFactor = "local-outlier-factor"
+    Prophet = "prophet"
+    ARIMA = "arima"
+    AutoARIMA = "auto-arima"
+    VRIMA = "vrima"
+    ExponentialSmoothing = "exponential-smoothing"
+    FastFourierTransform = "fast-fourier-transform"
+    NBeats = "nbeats"
+    ThetaMethod = "theata-method"
+    ALS = "als"
+    BayesianPersonalizedRanking = "bayesian-personalized-ranking"
+    KNeighborsClassifier = "knn-classifier"
+    AdaBoostClassifier = "ada-boost-classifier"
+    BernoulliNB = "bernoulli-nb"
+    DecisionTreeClassifier = "decision-tree-classifier"
+    ExtraTreeClassifier = "extra-tree-classifier"
+    LinearSVC = "linear-svc"
+    SVC = "svc"
+    PassiveAggressiveClassifier = "passive-aggressive-classifier"
+    SGDClassifier = "sgd-classifier"
+    LogisticRegression = "logistic-regression"
+    GradientBoostingClassifier = "gradient-boosting-classifier"
+    HistGradientBoostingClassifier = "hist-gradient-boosting-classifier"
+    RandomForestClassifier = "random-forest-classifier"
+    XGBClassifier = "xgboost-classifier"
+    RidgeClassifier = "ridge-classifier"
+    QuadraticDiscriminant = "quadratic-discriminant"
+    LinearDiscriminant = "linear-discriminant"
+    LightGBMClassifier = "lightgbm-classifier"
+    CatBoostClassifier = "catboost-classifier"
+    StackingEnsemble = "stacking-ensemble"
+    UnknownEstimatorName = "unknown"
+    NoneEstimatorName = "none"
+    SpectralClustering = "spectral"
+    AgglomerativeClustering = "agglomerative"
+    GaussianMixtureClustering = "gaussian-mixture"
+    KMeanClustering = "kmean"
+    DBSCANClustering = "dbscan"
+    VotingClassifier = "voting-classifier"
+    VotingRegressor = "voting-regressor"
+    StackingClassifier = "stacking-classifier"
+    StackingRegressor = "stacking-regressor"
+
+
+class Sampler(Enum):
+    RandomSearch = "random"
+    GridSearch = "grid"
+    BayesianSearch = "bayesian"
+    TPESearch = "tpe"
+    ManualSearch = "manual"
+    AutoSearchMethod = "auto"
+
+
+class Pruner(Enum):
+    NonePruner = "none"
+    PatientPruner = "patient"
+    MedianPruner = "median"
+    PrcentilePruner = "percentile"
+    SHPruner = "sh"
+    HyperbandPruner = "hyperband"
+    ThresholdPruner = "threshold"
+
+
+class AlgorithmFilter(Enum):
+    Quick = "quick"
+    LinearOnly = "linear-only"
+    TreeOnly = "tree"
+    DefaultParameters = "default-hp"
+    NoFilter = "none"
+
+
+class StudyPhase(Enum):
+    ModelPending = "Pending"
+    Spliting = "Spliting"
+    Splitted = "Splitted"
+    EngineeringFeature = "EngineeringFeatures"
+    FeatureEngineered = "FeaturesEngineered"
+    Baseline = "Baselining"
+    Baselined = "Baselined"
+    Searching = "Searching"
+    Searched = "Searched"
+    CreatingEnsembles = "CreatingEnsembles"
+    CreatedEnsembles = "CreatedEnsembles"
+    Testing = "Testing"
+    Tested = "Tested"
+    Reported = "Reported"
+    Reporting = "Reporting"
+    Profiling = "Profiling"
+    Profiled = "Profiled"
+    Explaining = "Explaining"
+    Explained = "Explained"
+    Completed = "Completed"
+    Failed = "Failed"
+    Aborted = "Aborted"
+    Paused = "Paused"
+
+
+class StudyConditionType(Enum):
+    StudyInitialized = "Initialized"
+    StudySplitted = "StudySplitted"
+    StudyFeatureEngineered = "StudyFeaturesEngineered"
+    StudyBaselined = "StudyBaselined"
+    StudySearched = "StudySearched"
+    StudyEnsambleCreated = "ModelsEnsembleCreated"
+    StudyTested = "ModelTested"
+    StudyReported = "Reported"
+    StudyProfiled = "Profiled"
+    StudyExplained = "Explained"
+    StudyAborted = "Aborted"
+    StudyPaused = "Paused"
+    StudySaved = "Saved"
+    StudyCompleted = "Completed"
+    StudyPartitioned = "Partitioned"
+
+
+class TriggerType(Enum):
+    OnDemand = "on-demand"
+    Schedule = "on-schedule"
+    NewData = "on-new-data"
+    GithubEvent = "on-github-event"
+    ConceptDrift = "on-concept-drift"
+    PrefDegradation = "on-perf-degradation"

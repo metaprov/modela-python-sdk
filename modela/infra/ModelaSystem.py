@@ -21,7 +21,7 @@ class ModelaSystemClient:
 
     def create(self, modelasystem: ModelaSystem) -> bool:
         request = CreateModelaSystemRequest()
-        request.item.CopyFrom(modelasystem.raw_message)
+        request.modelasystem.CopyFrom(modelasystem.raw_message)
         try:
             response = self.__stub.CreateModelaSystem(request)
             return True
@@ -33,7 +33,7 @@ class ModelaSystemClient:
 
     def update(self, modelasystem: ModelaSystem) -> bool:
         request = UpdateModelaSystemRequest()
-        request.item.CopyFrom(modelasystem.raw_message)
+        request.modelasystem.CopyFrom(modelasystem.raw_message)
         try:
             self.__stub.UpdateModelaSystem(request)
             return True
@@ -49,7 +49,7 @@ class ModelaSystemClient:
         request.name = name
         try:
             response = self.__stub.GetModelaSystem(request)
-            return ModelaSystem(response.item, self)
+            return ModelaSystem(response.modelasystem, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class ModelaSystemClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListModelaSystems(request)
-            return [ModelaSystem(item, self) for item in response.items.items]
+            return [ModelaSystem(item, self) for item in response.modelasystems.items]
         except grpc.RpcError as err:
             error = err
 

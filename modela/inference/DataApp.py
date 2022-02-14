@@ -21,7 +21,7 @@ class DataAppClient:
 
     def create(self, dataapp: DataApp) -> bool:
         request = CreateDataAppRequest()
-        request.item.CopyFrom(dataapp.raw_message)
+        request.dataapp.CopyFrom(dataapp.raw_message)
         try:
             response = self.__stub.CreateDataApp(request)
             return True
@@ -33,7 +33,7 @@ class DataAppClient:
 
     def update(self, dataapp: DataApp) -> bool:
         request = UpdateDataAppRequest()
-        request.item.CopyFrom(dataapp.raw_message)
+        request.dataapp.CopyFrom(dataapp.raw_message)
         try:
             self.__stub.UpdateDataApp(request)
             return True
@@ -49,7 +49,7 @@ class DataAppClient:
         request.name = name
         try:
             response = self.__stub.GetDataApp(request)
-            return DataApp(response.item, self)
+            return DataApp(response.dataapp, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class DataAppClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListDataApps(request)
-            return [DataApp(item, self) for item in response.items.items]
+            return [DataApp(item, self) for item in response.dataapps.items]
         except grpc.RpcError as err:
             error = err
 

@@ -21,7 +21,7 @@ class CronPredictionClient:
 
     def create(self, cronprediction: CronPrediction) -> bool:
         request = CreateCronPredictionRequest()
-        request.item.CopyFrom(cronprediction.raw_message)
+        request.cronprediction.CopyFrom(cronprediction.raw_message)
         try:
             response = self.__stub.CreateCronPrediction(request)
             return True
@@ -33,7 +33,7 @@ class CronPredictionClient:
 
     def update(self, cronprediction: CronPrediction) -> bool:
         request = UpdateCronPredictionRequest()
-        request.item.CopyFrom(cronprediction.raw_message)
+        request.cronprediction.CopyFrom(cronprediction.raw_message)
         try:
             self.__stub.UpdateCronPrediction(request)
             return True
@@ -49,7 +49,7 @@ class CronPredictionClient:
         request.name = name
         try:
             response = self.__stub.GetCronPrediction(request)
-            return CronPrediction(response.item, self)
+            return CronPrediction(response.cronprediction, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class CronPredictionClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListCronPredictions(request)
-            return [CronPrediction(item, self) for item in response.items.items]
+            return [CronPrediction(item, self) for item in response.cronpredictions.items]
         except grpc.RpcError as err:
             error = err
 

@@ -21,7 +21,7 @@ class ModelAutobuilderClient:
 
     def create(self, modelautobuilder: ModelAutobuilder) -> bool:
         request = CreateModelAutobuilderRequest()
-        request.item.CopyFrom(modelautobuilder.raw_message)
+        request.modelautobuilder.CopyFrom(modelautobuilder.raw_message)
         try:
             response = self.__stub.CreateModelAutobuilder(request)
             return True
@@ -33,7 +33,7 @@ class ModelAutobuilderClient:
 
     def update(self, modelautobuilder: ModelAutobuilder) -> bool:
         request = UpdateModelAutobuilderRequest()
-        request.item.CopyFrom(modelautobuilder.raw_message)
+        request.modelautobuilder.CopyFrom(modelautobuilder.raw_message)
         try:
             self.__stub.UpdateModelAutobuilder(request)
             return True
@@ -49,7 +49,7 @@ class ModelAutobuilderClient:
         request.name = name
         try:
             response = self.__stub.GetModelAutobuilder(request)
-            return ModelAutobuilder(response.item, self)
+            return ModelAutobuilder(response.modelautobuilder, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class ModelAutobuilderClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListModelAutobuilders(request)
-            return [ModelAutobuilder(item, self) for item in response.items.items]
+            return [ModelAutobuilder(item, self) for item in response.modelautobuilders.items]
         except grpc.RpcError as err:
             error = err
 

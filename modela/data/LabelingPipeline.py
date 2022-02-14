@@ -21,7 +21,7 @@ class LabelingPipelineClient:
 
     def create(self, labelingpipeline: LabelingPipeline) -> bool:
         request = CreateLabelingPipelineRequest()
-        request.item.CopyFrom(labelingpipeline.raw_message)
+        request.labelingpipeline.CopyFrom(labelingpipeline.raw_message)
         try:
             response = self.__stub.CreateLabelingPipeline(request)
             return True
@@ -33,7 +33,7 @@ class LabelingPipelineClient:
 
     def update(self, labelingpipeline: LabelingPipeline) -> bool:
         request = UpdateLabelingPipelineRequest()
-        request.item.CopyFrom(labelingpipeline.raw_message)
+        request.labelingpipeline.CopyFrom(labelingpipeline.raw_message)
         try:
             self.__stub.UpdateLabelingPipeline(request)
             return True
@@ -49,7 +49,7 @@ class LabelingPipelineClient:
         request.name = name
         try:
             response = self.__stub.GetLabelingPipeline(request)
-            return LabelingPipeline(response.item, self)
+            return LabelingPipeline(response.labelingpipeline, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class LabelingPipelineClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListLabelingPipelines(request)
-            return [LabelingPipeline(item, self) for item in response.items.items]
+            return [LabelingPipeline(item, self) for item in response.labelingpipelines.items]
         except grpc.RpcError as err:
             error = err
 

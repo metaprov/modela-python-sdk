@@ -21,7 +21,7 @@ class CurtainClient:
 
     def create(self, curtain: Curtain) -> bool:
         request = CreateCurtainRequest()
-        request.item.CopyFrom(curtain.raw_message)
+        request.curtain.CopyFrom(curtain.raw_message)
         try:
             response = self.__stub.CreateCurtain(request)
             return True
@@ -33,7 +33,7 @@ class CurtainClient:
 
     def update(self, curtain: Curtain) -> bool:
         request = UpdateCurtainRequest()
-        request.item.CopyFrom(curtain.raw_message)
+        request.curtain.CopyFrom(curtain.raw_message)
         try:
             self.__stub.UpdateCurtain(request)
             return True
@@ -49,7 +49,7 @@ class CurtainClient:
         request.name = name
         try:
             response = self.__stub.GetCurtain(request)
-            return Curtain(response.item, self)
+            return Curtain(response.curtain, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class CurtainClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListCurtains(request)
-            return [Curtain(item, self) for item in response.items.items]
+            return [Curtain(item, self) for item in response.curtains.items]
         except grpc.RpcError as err:
             error = err
 

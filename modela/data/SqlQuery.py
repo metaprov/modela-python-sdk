@@ -21,7 +21,7 @@ class SqlQueryClient:
 
     def create(self, sqlquery: SqlQuery) -> bool:
         request = CreateSqlQueryRequest()
-        request.item.CopyFrom(sqlquery.raw_message)
+        request.sqlquery.CopyFrom(sqlquery.raw_message)
         try:
             response = self.__stub.CreateSqlQuery(request)
             return True
@@ -33,7 +33,7 @@ class SqlQueryClient:
 
     def update(self, sqlquery: SqlQuery) -> bool:
         request = UpdateSqlQueryRequest()
-        request.item.CopyFrom(sqlquery.raw_message)
+        request.sqlquery.CopyFrom(sqlquery.raw_message)
         try:
             self.__stub.UpdateSqlQuery(request)
             return True
@@ -49,7 +49,7 @@ class SqlQueryClient:
         request.name = name
         try:
             response = self.__stub.GetSqlQuery(request)
-            return SqlQuery(response.item, self)
+            return SqlQuery(response.sqlquery, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class SqlQueryClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListSqlQuerys(request)
-            return [SqlQuery(item, self) for item in response.items.items]
+            return [SqlQuery(item, self) for item in response.sqlquerys.items]
         except grpc.RpcError as err:
             error = err
 

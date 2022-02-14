@@ -21,7 +21,7 @@ class CronReportClient:
 
     def create(self, cronreport: CronReport) -> bool:
         request = CreateCronReportRequest()
-        request.item.CopyFrom(cronreport.raw_message)
+        request.cronreport.CopyFrom(cronreport.raw_message)
         try:
             response = self.__stub.CreateCronReport(request)
             return True
@@ -33,7 +33,7 @@ class CronReportClient:
 
     def update(self, cronreport: CronReport) -> bool:
         request = UpdateCronReportRequest()
-        request.item.CopyFrom(cronreport.raw_message)
+        request.cronreport.CopyFrom(cronreport.raw_message)
         try:
             self.__stub.UpdateCronReport(request)
             return True
@@ -49,7 +49,7 @@ class CronReportClient:
         request.name = name
         try:
             response = self.__stub.GetCronReport(request)
-            return CronReport(response.item, self)
+            return CronReport(response.cronreport, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class CronReportClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListCronReports(request)
-            return [CronReport(item, self) for item in response.items.items]
+            return [CronReport(item, self) for item in response.cronreports.items]
         except grpc.RpcError as err:
             error = err
 

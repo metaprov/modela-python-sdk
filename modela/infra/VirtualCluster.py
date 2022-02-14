@@ -21,7 +21,7 @@ class VirtualClusterClient:
 
     def create(self, virtualcluster: VirtualCluster) -> bool:
         request = CreateVirtualClusterRequest()
-        request.item.CopyFrom(virtualcluster.raw_message)
+        request.virtualcluster.CopyFrom(virtualcluster.raw_message)
         try:
             response = self.__stub.CreateVirtualCluster(request)
             return True
@@ -33,7 +33,7 @@ class VirtualClusterClient:
 
     def update(self, virtualcluster: VirtualCluster) -> bool:
         request = UpdateVirtualClusterRequest()
-        request.item.CopyFrom(virtualcluster.raw_message)
+        request.virtualcluster.CopyFrom(virtualcluster.raw_message)
         try:
             self.__stub.UpdateVirtualCluster(request)
             return True
@@ -49,7 +49,7 @@ class VirtualClusterClient:
         request.name = name
         try:
             response = self.__stub.GetVirtualCluster(request)
-            return VirtualCluster(response.item, self)
+            return VirtualCluster(response.virtualcluster, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class VirtualClusterClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListVirtualClusters(request)
-            return [VirtualCluster(item, self) for item in response.items.items]
+            return [VirtualCluster(item, self) for item in response.virtualclusters.items]
         except grpc.RpcError as err:
             error = err
 

@@ -25,6 +25,7 @@ class Test_Modela_dataproduct(unittest.TestCase):
             dataproduct.delete()
         finally:
             pass
+        time.sleep(0.1)
         assert type(dataproduct) == DataProduct
         dataproduct.submit()
 

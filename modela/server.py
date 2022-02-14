@@ -331,15 +331,45 @@ class Modela:
     def DataProducts(self):
         return self.__dataproduct_client
 
-    def DataProduct(self, namespace="", name="") -> DataProduct:
-        return DataProduct(MDDataProduct(), self.DataProducts, namespace, name)
+    def DataProduct(self, namespace="", name="", servingsite: str = None,
+                 lab: str = None, task_type: TaskType = TaskType.BinaryClassification, default_workload: Workload = None,
+                 default_bucket: str = None, notification_setting: NotificationSetting = None) -> DataProduct:
+        """
+        :param namespace: The target namespace of the resource.
+        :param name: The name of the resource.
+        :param servingsite: The default Serving Site of the Data Product
+        :param lab: The default Lab of the Data Product
+        :param task_type: The default task type of the Data Product
+        :param default_workload: The default workload of the Data Product
+        :param default_bucket: The default bucket used for all Data Product resources.
+        :param notification_setting: The default notification settings used for all Data Product resources.
+        """
+        return DataProduct(MDDataProduct(), self.DataProducts, namespace, name, servingsite, lab, task_type,
+                           default_workload, default_bucket, notification_setting)
 
     @property
     def DataSources(self):
         return self.__datasource_client
 
-    def DataSource(self, namespace="", name="") -> DataSource:
-        return DataSource(MDDataSource(), self.DataSources, namespace, name)
+    def DataSource(self, namespace="", name="", infer_file: str = None,
+                 infer_dataframe: pandas.DataFrame = None, target_column: str = "", file_type: FlatFileType = FlatFileType.Csv,
+                 task_type: TaskType = None, csv_config: CsvFileFormat = None, excel_config: ExcelNotebookFormat = None) -> DataSource:
+        """
+        :param namespace: The target namespace of the resource.
+        :param name: The name of the resource.
+        :param infer_file: If specified, the SDK will attempt read a file with the given path and will upload the
+            contents of the file to the Modela API for analysis. The analysed columns will be applied to the Data Source.
+        :param infer_dataframe: If specified, the  Pandas DataFrame will be serialized and uploaded to the Modela
+            API for analysis. The analysed columns will be applied to the Data Source.
+        :param target_column: The name of the target column used when training a model. This parameter only has effect
+            when `infer_file` or `infer_dataframe` is specified.
+        :param file_type: The file type of raw data, used when ingesting a Dataset.
+        :param task_type: The target task type in relation to the data being used.
+        :param csv_config: The CSV file format of the raw data.
+        :param excel_config: The Excel file format of the raw data.
+        """
+        return DataSource(MDDataSource(), self.DataSources, namespace, name, infer_file, infer_dataframe, target_column,
+                          file_type, task_type, csv_config, excel_config)
 
     @property
     def DataPipelineRuns(self):
@@ -359,15 +389,35 @@ class Modela:
     def DataProductVersions(self):
         return self.__dataproductversion_client
 
-    def DataProductVersion(self, namespace="", name="") -> DataProductVersion:
-        return DataProductVersion(MDDataProductVersion(), self.DataProductVersions, namespace, name)
+    def DataProductVersion(self, namespace="", name="", baseline: bool = False, previous_version: str = None) -> DataProductVersion:
+        """
+        :param namespace: The target namespace of the resource.
+        :param name: The name of the resource.
+        :param baseline: If this version is baseline, then the objects of previous version will be garbage collected.
+        :param previous_version: The name of the previous version.
+        """
+        return DataProductVersion(MDDataProductVersion(), self.DataProductVersions, namespace, name, baseline, previous_version)
 
     @property
     def Datasets(self):
         return self.__dataset_client
 
-    def Dataset(self, namespace="", name="") -> Dataset:
-        return Dataset(MDDataset(), self.Datasets, namespace, name)
+    def Dataset(self, namespace="", name="", datasource: Union[DataSource, str] = "",
+                 dataframe: pandas.DataFrame = None, data_file: str = None, workload: Workload = None,
+                 sample: SampleSettings = None, task_type: TaskType = None) -> Dataset:
+        """
+        :param namespace: The target namespace of the resource.
+        :param name: The name of the resource.
+        :param datasource: If specified as a string, the SDK will attempt to find a Data Source resource with the given name.
+            If specified as a Data Source object, or if one was found with the given name, it will be applied to the Dataset.
+        :param dataframe: If specified, the Pandas Dataframe will be serialized and uploaded for ingestion with the Dataset resource.
+        :param data_file: If specified, the SDK will attempt read a file with the given path and will upload the
+            contents of the file for ingestion with the Dataset resource.
+        :param workload: The resource requirements which will be allocated for Dataset ingestion.
+        :param sample: The sample settings of the dataset, which if enabled will ingest a Dataset with a portion of the uploaded data.
+        :param task_type: The target task type in relation to the data being used.
+        """
+        return Dataset(MDDataset(), self.Datasets, namespace, name, datasource, dataframe, data_file, workload, sample, task_type)
 
     @property
     def Entitys(self):

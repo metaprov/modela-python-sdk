@@ -21,7 +21,7 @@ class VirtualVolumeClient:
 
     def create(self, virtualvolume: VirtualVolume) -> bool:
         request = CreateVirtualVolumeRequest()
-        request.item.CopyFrom(virtualvolume.raw_message)
+        request.virtualvolume.CopyFrom(virtualvolume.raw_message)
         try:
             response = self.__stub.CreateVirtualVolume(request)
             return True
@@ -33,7 +33,7 @@ class VirtualVolumeClient:
 
     def update(self, virtualvolume: VirtualVolume) -> bool:
         request = UpdateVirtualVolumeRequest()
-        request.item.CopyFrom(virtualvolume.raw_message)
+        request.virtualvolume.CopyFrom(virtualvolume.raw_message)
         try:
             self.__stub.UpdateVirtualVolume(request)
             return True
@@ -49,7 +49,7 @@ class VirtualVolumeClient:
         request.name = name
         try:
             response = self.__stub.GetVirtualVolume(request)
-            return VirtualVolume(response.item, self)
+            return VirtualVolume(response.virtualvolume, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class VirtualVolumeClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListVirtualVolumes(request)
-            return [VirtualVolume(item, self) for item in response.items.items]
+            return [VirtualVolume(item, self) for item in response.virtualvolumes.items]
         except grpc.RpcError as err:
             error = err
 

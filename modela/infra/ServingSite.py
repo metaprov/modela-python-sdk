@@ -21,7 +21,7 @@ class ServingSiteClient:
 
     def create(self, servingsite: ServingSite) -> bool:
         request = CreateServingSiteRequest()
-        request.item.CopyFrom(servingsite.raw_message)
+        request.servingsite.CopyFrom(servingsite.raw_message)
         try:
             response = self.__stub.CreateServingSite(request)
             return True
@@ -33,7 +33,7 @@ class ServingSiteClient:
 
     def update(self, servingsite: ServingSite) -> bool:
         request = UpdateServingSiteRequest()
-        request.item.CopyFrom(servingsite.raw_message)
+        request.servingsite.CopyFrom(servingsite.raw_message)
         try:
             self.__stub.UpdateServingSite(request)
             return True
@@ -49,7 +49,7 @@ class ServingSiteClient:
         request.name = name
         try:
             response = self.__stub.GetServingSite(request)
-            return ServingSite(response.item, self)
+            return ServingSite(response.servingsite, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class ServingSiteClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListServingSites(request)
-            return [ServingSite(item, self) for item in response.items.items]
+            return [ServingSite(item, self) for item in response.servingsites.items]
         except grpc.RpcError as err:
             error = err
 

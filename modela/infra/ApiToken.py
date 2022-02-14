@@ -21,7 +21,7 @@ class ApiTokenClient:
 
     def create(self, apitoken: ApiToken) -> bool:
         request = CreateApiTokenRequest()
-        request.item.CopyFrom(apitoken.raw_message)
+        request.apitoken.CopyFrom(apitoken.raw_message)
         try:
             response = self.__stub.CreateApiToken(request)
             return True
@@ -33,7 +33,7 @@ class ApiTokenClient:
 
     def update(self, apitoken: ApiToken) -> bool:
         request = UpdateApiTokenRequest()
-        request.item.CopyFrom(apitoken.raw_message)
+        request.apitoken.CopyFrom(apitoken.raw_message)
         try:
             self.__stub.UpdateApiToken(request)
             return True
@@ -49,7 +49,7 @@ class ApiTokenClient:
         request.name = name
         try:
             response = self.__stub.GetApiToken(request)
-            return ApiToken(response.item, self)
+            return ApiToken(response.apitoken, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class ApiTokenClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListApiTokens(request)
-            return [ApiToken(item, self) for item in response.items.items]
+            return [ApiToken(item, self) for item in response.apitokens.items]
         except grpc.RpcError as err:
             error = err
 

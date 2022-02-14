@@ -21,7 +21,7 @@ class FeaturesetClient:
 
     def create(self, featureset: Featureset) -> bool:
         request = CreateFeaturesetRequest()
-        request.item.CopyFrom(featureset.raw_message)
+        request.featureset.CopyFrom(featureset.raw_message)
         try:
             response = self.__stub.CreateFeatureset(request)
             return True
@@ -33,7 +33,7 @@ class FeaturesetClient:
 
     def update(self, featureset: Featureset) -> bool:
         request = UpdateFeaturesetRequest()
-        request.item.CopyFrom(featureset.raw_message)
+        request.featureset.CopyFrom(featureset.raw_message)
         try:
             self.__stub.UpdateFeatureset(request)
             return True
@@ -49,7 +49,7 @@ class FeaturesetClient:
         request.name = name
         try:
             response = self.__stub.GetFeatureset(request)
-            return Featureset(response.item, self)
+            return Featureset(response.featureset, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class FeaturesetClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListFeaturesets(request)
-            return [Featureset(item, self) for item in response.items.items]
+            return [Featureset(item, self) for item in response.featuresets.items]
         except grpc.RpcError as err:
             error = err
 

@@ -21,7 +21,7 @@ class VirtualBucketClient:
 
     def create(self, virtualbucket: VirtualBucket) -> bool:
         request = CreateVirtualBucketRequest()
-        request.item.CopyFrom(virtualbucket.raw_message)
+        request.virtualbucket.CopyFrom(virtualbucket.raw_message)
         try:
             response = self.__stub.CreateVirtualBucket(request)
             return True
@@ -33,7 +33,7 @@ class VirtualBucketClient:
 
     def update(self, virtualbucket: VirtualBucket) -> bool:
         request = UpdateVirtualBucketRequest()
-        request.item.CopyFrom(virtualbucket.raw_message)
+        request.virtualbucket.CopyFrom(virtualbucket.raw_message)
         try:
             self.__stub.UpdateVirtualBucket(request)
             return True
@@ -49,7 +49,7 @@ class VirtualBucketClient:
         request.name = name
         try:
             response = self.__stub.GetVirtualBucket(request)
-            return VirtualBucket(response.item, self)
+            return VirtualBucket(response.virtualbucket, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class VirtualBucketClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListVirtualBuckets(request)
-            return [VirtualBucket(item, self) for item in response.items.items]
+            return [VirtualBucket(item, self) for item in response.virtualbuckets.items]
         except grpc.RpcError as err:
             error = err
 

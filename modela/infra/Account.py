@@ -21,7 +21,7 @@ class AccountClient:
 
     def create(self, account: Account) -> bool:
         request = CreateAccountRequest()
-        request.item.CopyFrom(account.raw_message)
+        request.account.CopyFrom(account.raw_message)
         try:
             response = self.__stub.CreateAccount(request)
             return True
@@ -33,7 +33,7 @@ class AccountClient:
 
     def update(self, account: Account) -> bool:
         request = UpdateAccountRequest()
-        request.item.CopyFrom(account.raw_message)
+        request.account.CopyFrom(account.raw_message)
         try:
             self.__stub.UpdateAccount(request)
             return True
@@ -49,7 +49,7 @@ class AccountClient:
         request.name = name
         try:
             response = self.__stub.GetAccount(request)
-            return Account(response.item, self)
+            return Account(response.account, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class AccountClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListAccounts(request)
-            return [Account(item, self) for item in response.items.items]
+            return [Account(item, self) for item in response.accounts.items]
         except grpc.RpcError as err:
             error = err
 

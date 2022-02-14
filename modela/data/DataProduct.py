@@ -10,10 +10,25 @@ from modela.ModelaException import ModelaException
 from typing import List, Union
 
 from modela.data.models import DataProductSpec
+from modela.infra.models import NotificationSetting, Workload
+from modela.training.common import TaskType
 
 
 class DataProduct(Resource):
-    def __init__(self, item: MDDataProduct = MDDataProduct(), client=None, namespace="", name=""):
+    def __init__(self, item: MDDataProduct = MDDataProduct(), client=None, namespace="", name="", servingsite: str = None,
+                 lab: str = None, task_type: TaskType = TaskType.BinaryClassification, default_workload: Workload = None,
+                 default_bucket: str = None, notification_setting: NotificationSetting = None):
+        """
+        :param client: The Data Product client repository, which can be obtained through an instance of Modela.
+        :param namespace: The target namespace of the resource.
+        :param name: The name of the resource.
+        :param servingsite: The default Serving Site of the Data Product
+        :param lab: The default Lab of the Data Product
+        :param task_type: The default task type of the Data Product
+        :param default_workload: The default workload of the Data Product
+        :param default_bucket: The default bucket used for all Data Product resources.
+        :param notification_setting: The default notification settings used for all Data Product resources.
+        """
         super().__init__(item, client, namespace=namespace, name=name)
 
     @property
@@ -31,7 +46,7 @@ class DataProductClient:
 
     def create(self, dataproduct: DataProduct) -> bool:
         request = CreateDataProductRequest()
-        request.item.CopyFrom(dataproduct.raw_message)
+        request.dataproduct.CopyFrom(dataproduct.raw_message)
         try:
             response = self.__stub.CreateDataProduct(request)
             return True
@@ -43,7 +58,7 @@ class DataProductClient:
 
     def update(self, dataproduct: DataProduct) -> bool:
         request = UpdateDataProductRequest()
-        request.item.CopyFrom(dataproduct.raw_message)
+        request.dataproduct.CopyFrom(dataproduct.raw_message)
         try:
             self.__stub.UpdateDataProduct(request)
             return True
@@ -84,7 +99,7 @@ class DataProductClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListDataProducts(request)
-            return [DataProduct(item, self) for item in response.items.items]
+            return [DataProduct(item, self) for item in response.dataproducts.items]
         except grpc.RpcError as err:
             error = err
 

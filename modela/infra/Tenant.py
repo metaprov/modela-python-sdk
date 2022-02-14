@@ -21,7 +21,7 @@ class TenantClient:
 
     def create(self, tenant: Tenant) -> bool:
         request = CreateTenantRequest()
-        request.item.CopyFrom(tenant.raw_message)
+        request.tenant.CopyFrom(tenant.raw_message)
         try:
             response = self.__stub.CreateTenant(request)
             return True
@@ -33,7 +33,7 @@ class TenantClient:
 
     def update(self, tenant: Tenant) -> bool:
         request = UpdateTenantRequest()
-        request.item.CopyFrom(tenant.raw_message)
+        request.tenant.CopyFrom(tenant.raw_message)
         try:
             self.__stub.UpdateTenant(request)
             return True
@@ -49,7 +49,7 @@ class TenantClient:
         request.name = name
         try:
             response = self.__stub.GetTenant(request)
-            return Tenant(response.item, self)
+            return Tenant(response.tenant, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class TenantClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListTenants(request)
-            return [Tenant(item, self) for item in response.items.items]
+            return [Tenant(item, self) for item in response.tenants.items]
         except grpc.RpcError as err:
             error = err
 

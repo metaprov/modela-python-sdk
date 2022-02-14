@@ -20,7 +20,7 @@ class DataSource(Resource):
         """
         :param client: The Data Source client repository, which can be obtained through an instance of Modela.
         :param namespace: The target namespace of the resource.
-        :param name: The desired name of the resource.
+        :param name: The name of the resource.
         :param infer_file: If specified, the SDK will attempt read a file with the given path and will upload the
             contents of the file to the Modela API for analysis. The analysed columns will be applied to the Data Source.
         :param infer_dataframe: If specified, the  Pandas DataFrame will be serialized and uploaded to the Modela
@@ -59,7 +59,7 @@ class DataSourceClient:
 
     def create(self, datasource: DataSource) -> bool:
         request = CreateDataSourceRequest()
-        request.item.CopyFrom(datasource.raw_message)
+        request.datasource.CopyFrom(datasource.raw_message)
         try:
             response = self.__stub.CreateDataSource(request)
             return True
@@ -71,7 +71,7 @@ class DataSourceClient:
 
     def update(self, datasource: DataSource) -> bool:
         request = UpdateDataSourceRequest()
-        request.item.CopyFrom(datasource.raw_message)
+        request.datasource.CopyFrom(datasource.raw_message)
         try:
             self.__stub.UpdateDataSource(request)
             return True
@@ -87,7 +87,7 @@ class DataSourceClient:
         request.name = name
         try:
             response = self.__stub.GetDataSource(request)
-            return DataSource(response.item, self)
+            return DataSource(response.datasource, self)
         except grpc.RpcError as err:
             error = err
 
@@ -112,7 +112,7 @@ class DataSourceClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListDataSources(request)
-            return [DataSource(item, self) for item in response.list.items]
+            return [DataSource(item, self) for item in response.datasources.items]
         except grpc.RpcError as err:
             error = err
 

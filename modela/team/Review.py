@@ -21,7 +21,7 @@ class ReviewClient:
 
     def create(self, review: Review) -> bool:
         request = CreateReviewRequest()
-        request.item.CopyFrom(review.raw_message)
+        request.review.CopyFrom(review.raw_message)
         try:
             response = self.__stub.CreateReview(request)
             return True
@@ -33,7 +33,7 @@ class ReviewClient:
 
     def update(self, review: Review) -> bool:
         request = UpdateReviewRequest()
-        request.item.CopyFrom(review.raw_message)
+        request.review.CopyFrom(review.raw_message)
         try:
             self.__stub.UpdateReview(request)
             return True
@@ -49,7 +49,7 @@ class ReviewClient:
         request.name = name
         try:
             response = self.__stub.GetReview(request)
-            return Review(response.item, self)
+            return Review(response.review, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class ReviewClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListReviews(request)
-            return [Review(item, self) for item in response.items.items]
+            return [Review(item, self) for item in response.reviews.items]
         except grpc.RpcError as err:
             error = err
 

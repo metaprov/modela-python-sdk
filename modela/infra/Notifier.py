@@ -21,7 +21,7 @@ class NotifierClient:
 
     def create(self, notifier: Notifier) -> bool:
         request = CreateNotifierRequest()
-        request.item.CopyFrom(notifier.raw_message)
+        request.notifier.CopyFrom(notifier.raw_message)
         try:
             response = self.__stub.CreateNotifier(request)
             return True
@@ -33,7 +33,7 @@ class NotifierClient:
 
     def update(self, notifier: Notifier) -> bool:
         request = UpdateNotifierRequest()
-        request.item.CopyFrom(notifier.raw_message)
+        request.notifier.CopyFrom(notifier.raw_message)
         try:
             self.__stub.UpdateNotifier(request)
             return True
@@ -49,7 +49,7 @@ class NotifierClient:
         request.name = name
         try:
             response = self.__stub.GetNotifier(request)
-            return Notifier(response.item, self)
+            return Notifier(response.notifier, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class NotifierClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListNotifiers(request)
-            return [Notifier(item, self) for item in response.items.items]
+            return [Notifier(item, self) for item in response.notifiers.items]
         except grpc.RpcError as err:
             error = err
 

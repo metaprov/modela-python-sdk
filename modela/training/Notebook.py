@@ -21,7 +21,7 @@ class NotebookClient:
 
     def create(self, notebook: Notebook) -> bool:
         request = CreateNotebookRequest()
-        request.item.CopyFrom(notebook.raw_message)
+        request.notebook.CopyFrom(notebook.raw_message)
         try:
             response = self.__stub.CreateNotebook(request)
             return True
@@ -33,7 +33,7 @@ class NotebookClient:
 
     def update(self, notebook: Notebook) -> bool:
         request = UpdateNotebookRequest()
-        request.item.CopyFrom(notebook.raw_message)
+        request.notebook.CopyFrom(notebook.raw_message)
         try:
             self.__stub.UpdateNotebook(request)
             return True
@@ -49,7 +49,7 @@ class NotebookClient:
         request.name = name
         try:
             response = self.__stub.GetNotebook(request)
-            return Notebook(response.item, self)
+            return Notebook(response.notebook, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class NotebookClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListNotebooks(request)
-            return [Notebook(item, self) for item in response.items.items]
+            return [Notebook(item, self) for item in response.notebooks.items]
         except grpc.RpcError as err:
             error = err
 

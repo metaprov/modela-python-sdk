@@ -21,7 +21,7 @@ class TodoClient:
 
     def create(self, todo: Todo) -> bool:
         request = CreateTodoRequest()
-        request.item.CopyFrom(todo.raw_message)
+        request.todo.CopyFrom(todo.raw_message)
         try:
             response = self.__stub.CreateTodo(request)
             return True
@@ -33,7 +33,7 @@ class TodoClient:
 
     def update(self, todo: Todo) -> bool:
         request = UpdateTodoRequest()
-        request.item.CopyFrom(todo.raw_message)
+        request.todo.CopyFrom(todo.raw_message)
         try:
             self.__stub.UpdateTodo(request)
             return True
@@ -49,7 +49,7 @@ class TodoClient:
         request.name = name
         try:
             response = self.__stub.GetTodo(request)
-            return Todo(response.item, self)
+            return Todo(response.todo, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class TodoClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListTodos(request)
-            return [Todo(item, self) for item in response.items.items]
+            return [Todo(item, self) for item in response.todos.items]
         except grpc.RpcError as err:
             error = err
 

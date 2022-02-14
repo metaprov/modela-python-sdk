@@ -1,7 +1,7 @@
 from abc import ABC
 
 from modela.data.common import *
-from modela.infra.models import Workload, NotificationSetting, OutputLogs, GitSettings
+from modela.infra.models import Workload, NotificationSetting, OutputLogs, GitSettings, ImageLocation
 from modela.training.common import *
 from modela.common import *
 from modela.Configuration import *
@@ -84,12 +84,6 @@ class CompilerSettings(Configuration):
     Targets: List[HardwareTarget] = field(default_factory=lambda: [])
 
 
-@dataclass
-class ImageLocation(Configuration):
-    Name: str = ""
-    RegistryConnectionName: str = ""
-
-
 # Typename collision workaround
 ColorType = Color
 ImageLocationType = ImageLocation
@@ -112,7 +106,7 @@ class DataProductSpec(Configuration):
     RetriesOnFailure: int = 3
     OnCallAccountName: str = ""
     Compilation: CompilerSettings = CompilerSettings()
-    ClearenceLevel: SecurityClearanceLevel = SecurityClearanceLevel.Unclassified
+    ClearanceLevel: SecurityClearanceLevel = SecurityClearanceLevel.Unclassified
     Priority: PriorityLevel = PriorityLevel.Medium
     Color: ColorType = ColorType.NoColor
     Governance: GovernanceSpec = GovernanceSpec()

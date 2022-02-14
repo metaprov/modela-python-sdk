@@ -21,7 +21,7 @@ class FeatureHistogramClient:
 
     def create(self, featurehistogram: FeatureHistogram) -> bool:
         request = CreateFeatureHistogramRequest()
-        request.item.CopyFrom(featurehistogram.raw_message)
+        request.featurehistogram.CopyFrom(featurehistogram.raw_message)
         try:
             response = self.__stub.CreateFeatureHistogram(request)
             return True
@@ -33,7 +33,7 @@ class FeatureHistogramClient:
 
     def update(self, featurehistogram: FeatureHistogram) -> bool:
         request = UpdateFeatureHistogramRequest()
-        request.item.CopyFrom(featurehistogram.raw_message)
+        request.featurehistogram.CopyFrom(featurehistogram.raw_message)
         try:
             self.__stub.UpdateFeatureHistogram(request)
             return True
@@ -49,7 +49,7 @@ class FeatureHistogramClient:
         request.name = name
         try:
             response = self.__stub.GetFeatureHistogram(request)
-            return FeatureHistogram(response.item, self)
+            return FeatureHistogram(response.featurehistogram, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class FeatureHistogramClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListFeatureHistograms(request)
-            return [FeatureHistogram(item, self) for item in response.items.items]
+            return [FeatureHistogram(item, self) for item in response.featurehistograms.items]
         except grpc.RpcError as err:
             error = err
 

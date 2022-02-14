@@ -21,7 +21,7 @@ class StudyClient:
 
     def create(self, study: Study) -> bool:
         request = CreateStudyRequest()
-        request.item.CopyFrom(study.raw_message)
+        request.study.CopyFrom(study.raw_message)
         try:
             response = self.__stub.CreateStudy(request)
             return True
@@ -33,7 +33,7 @@ class StudyClient:
 
     def update(self, study: Study) -> bool:
         request = UpdateStudyRequest()
-        request.item.CopyFrom(study.raw_message)
+        request.study.CopyFrom(study.raw_message)
         try:
             self.__stub.UpdateStudy(request)
             return True
@@ -49,7 +49,7 @@ class StudyClient:
         request.name = name
         try:
             response = self.__stub.GetStudy(request)
-            return Study(response.item, self)
+            return Study(response.study, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class StudyClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListStudys(request)
-            return [Study(item, self) for item in response.items.items]
+            return [Study(item, self) for item in response.studys.items]
         except grpc.RpcError as err:
             error = err
 

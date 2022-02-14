@@ -21,7 +21,7 @@ class FeatureClient:
 
     def create(self, feature: Feature) -> bool:
         request = CreateFeatureRequest()
-        request.item.CopyFrom(feature.raw_message)
+        request.feature.CopyFrom(feature.raw_message)
         try:
             response = self.__stub.CreateFeature(request)
             return True
@@ -33,7 +33,7 @@ class FeatureClient:
 
     def update(self, feature: Feature) -> bool:
         request = UpdateFeatureRequest()
-        request.item.CopyFrom(feature.raw_message)
+        request.feature.CopyFrom(feature.raw_message)
         try:
             self.__stub.UpdateFeature(request)
             return True
@@ -49,7 +49,7 @@ class FeatureClient:
         request.name = name
         try:
             response = self.__stub.GetFeature(request)
-            return Feature(response.item, self)
+            return Feature(response.feature, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class FeatureClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListFeatures(request)
-            return [Feature(item, self) for item in response.items.items]
+            return [Feature(item, self) for item in response.features.items]
         except grpc.RpcError as err:
             error = err
 

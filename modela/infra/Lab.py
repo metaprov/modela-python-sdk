@@ -21,7 +21,7 @@ class LabClient:
 
     def create(self, lab: Lab) -> bool:
         request = CreateLabRequest()
-        request.item.CopyFrom(lab.raw_message)
+        request.lab.CopyFrom(lab.raw_message)
         try:
             response = self.__stub.CreateLab(request)
             return True
@@ -33,7 +33,7 @@ class LabClient:
 
     def update(self, lab: Lab) -> bool:
         request = UpdateLabRequest()
-        request.item.CopyFrom(lab.raw_message)
+        request.lab.CopyFrom(lab.raw_message)
         try:
             self.__stub.UpdateLab(request)
             return True
@@ -49,7 +49,7 @@ class LabClient:
         request.name = name
         try:
             response = self.__stub.GetLab(request)
-            return Lab(response.item, self)
+            return Lab(response.lab, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class LabClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListLabs(request)
-            return [Lab(item, self) for item in response.items.items]
+            return [Lab(item, self) for item in response.labs.items]
         except grpc.RpcError as err:
             error = err
 

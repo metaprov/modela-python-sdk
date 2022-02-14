@@ -21,7 +21,7 @@ class NotebookRunClient:
 
     def create(self, notebookrun: NotebookRun) -> bool:
         request = CreateNotebookRunRequest()
-        request.item.CopyFrom(notebookrun.raw_message)
+        request.notebookrun.CopyFrom(notebookrun.raw_message)
         try:
             response = self.__stub.CreateNotebookRun(request)
             return True
@@ -33,7 +33,7 @@ class NotebookRunClient:
 
     def update(self, notebookrun: NotebookRun) -> bool:
         request = UpdateNotebookRunRequest()
-        request.item.CopyFrom(notebookrun.raw_message)
+        request.notebookrun.CopyFrom(notebookrun.raw_message)
         try:
             self.__stub.UpdateNotebookRun(request)
             return True
@@ -49,7 +49,7 @@ class NotebookRunClient:
         request.name = name
         try:
             response = self.__stub.GetNotebookRun(request)
-            return NotebookRun(response.item, self)
+            return NotebookRun(response.notebookrun, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class NotebookRunClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListNotebookRuns(request)
-            return [NotebookRun(item, self) for item in response.items.items]
+            return [NotebookRun(item, self) for item in response.notebookruns.items]
         except grpc.RpcError as err:
             error = err
 

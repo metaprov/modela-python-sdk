@@ -21,7 +21,7 @@ class PostMortemClient:
 
     def create(self, postmortem: PostMortem) -> bool:
         request = CreatePostMortemRequest()
-        request.item.CopyFrom(postmortem.raw_message)
+        request.postmortem.CopyFrom(postmortem.raw_message)
         try:
             response = self.__stub.CreatePostMortem(request)
             return True
@@ -33,7 +33,7 @@ class PostMortemClient:
 
     def update(self, postmortem: PostMortem) -> bool:
         request = UpdatePostMortemRequest()
-        request.item.CopyFrom(postmortem.raw_message)
+        request.postmortem.CopyFrom(postmortem.raw_message)
         try:
             self.__stub.UpdatePostMortem(request)
             return True
@@ -49,7 +49,7 @@ class PostMortemClient:
         request.name = name
         try:
             response = self.__stub.GetPostMortem(request)
-            return PostMortem(response.item, self)
+            return PostMortem(response.postmortem, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class PostMortemClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListPostMortems(request)
-            return [PostMortem(item, self) for item in response.items.items]
+            return [PostMortem(item, self) for item in response.postmortems.items]
         except grpc.RpcError as err:
             error = err
 

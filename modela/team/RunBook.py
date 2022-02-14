@@ -21,7 +21,7 @@ class RunBookClient:
 
     def create(self, runbook: RunBook) -> bool:
         request = CreateRunBookRequest()
-        request.item.CopyFrom(runbook.raw_message)
+        request.runbook.CopyFrom(runbook.raw_message)
         try:
             response = self.__stub.CreateRunBook(request)
             return True
@@ -33,7 +33,7 @@ class RunBookClient:
 
     def update(self, runbook: RunBook) -> bool:
         request = UpdateRunBookRequest()
-        request.item.CopyFrom(runbook.raw_message)
+        request.runbook.CopyFrom(runbook.raw_message)
         try:
             self.__stub.UpdateRunBook(request)
             return True
@@ -49,7 +49,7 @@ class RunBookClient:
         request.name = name
         try:
             response = self.__stub.GetRunBook(request)
-            return RunBook(response.item, self)
+            return RunBook(response.runbook, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class RunBookClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListRunBooks(request)
-            return [RunBook(item, self) for item in response.items.items]
+            return [RunBook(item, self) for item in response.runbooks.items]
         except grpc.RpcError as err:
             error = err
 

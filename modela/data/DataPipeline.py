@@ -21,7 +21,7 @@ class DataPipelineClient:
 
     def create(self, datapipeline: DataPipeline) -> bool:
         request = CreateDataPipelineRequest()
-        request.item.CopyFrom(datapipeline.raw_message)
+        request.datapipeline.CopyFrom(datapipeline.raw_message)
         try:
             response = self.__stub.CreateDataPipeline(request)
             return True
@@ -33,7 +33,7 @@ class DataPipelineClient:
 
     def update(self, datapipeline: DataPipeline) -> bool:
         request = UpdateDataPipelineRequest()
-        request.item.CopyFrom(datapipeline.raw_message)
+        request.datapipeline.CopyFrom(datapipeline.raw_message)
         try:
             self.__stub.UpdateDataPipeline(request)
             return True
@@ -49,7 +49,7 @@ class DataPipelineClient:
         request.name = name
         try:
             response = self.__stub.GetDataPipeline(request)
-            return DataPipeline(response.item, self)
+            return DataPipeline(response.datapipeline, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class DataPipelineClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListDataPipelines(request)
-            return [DataPipeline(item, self) for item in response.items.items]
+            return [DataPipeline(item, self) for item in response.datapipelines.items]
         except grpc.RpcError as err:
             error = err
 

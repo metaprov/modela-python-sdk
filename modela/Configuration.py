@@ -16,10 +16,10 @@ def convert_case(attr):
 
 class Configuration(object):
     """
-    Configuration is a base class for all dataclasses that represent Protobuf Messages for specification subclasses.
-    They serve to provide Python developers with fully typed (and tracked) interactions with Modela API objects. This class
+    Configuration is a base class for all dataclasses which reflect Protobuf Messages representing Modela API models.
+    It serves to provide fully typed (and tracked) interactions with the Modela API. This class
     provides methods for interacting with raw Protobuf Message types and automatically reading and propagating changes
-    from a Python dataclass to a Message, and vice-versa.
+    from a Python dataclass to a Protobuf Message, and vice-versa.
     """
 
     def __post_init__(self):  # Apply tracking to all list attributes post-initialization
@@ -28,8 +28,8 @@ class Configuration(object):
             if typing_utils.issubtype(annotation_type, List):
                 setattr(self, attribute, TrackedList(value, self, attribute))
 
-    def apply_field(self, attribute, value, message):
-        """ Apply a single attribute to a related Protobuf Message """
+    def apply_field(self, attribute, value, message: Message):
+        """ Apply a single attribute to a Protobuf Message."""
         if value is None:
             return
         real_field = convert_case(attribute)
@@ -49,8 +49,14 @@ class Configuration(object):
         else:
             setattr(message, real_field, value.value if isinstance(value, Enum) else (value or annotation_type()))
 
-    def apply_config(self, message):
-        """ Apply all attributes of a class to a Protobuf Message """
+    def apply_config(self, message: Message):
+        """
+        Apply all attributes of a Configuration to a Protobuf Message. If the message does not match the fields of the
+        Configuration, an error will be thrown.
+
+        :param message:
+        :rtype: Message
+        """
         for attribute, value in self.__dict__.items():
             if attribute == "_parent":
                 continue
@@ -58,8 +64,13 @@ class Configuration(object):
 
         return message
 
-    def copy_from(self, message):
-        """ Copy the contents of a Protobuf Message to a related dataclass """
+    def copy_from(self, message: Message):
+        """
+        Copy the attributes of a Protobuf Message to the attributes of the Configuration dataclass.
+
+        :param message: The Protobuf Message to copy data from.
+        :rtype: Configuration
+        """
         for attribute, value in self.__dict__.items():
             if attribute == "_parent":
                 continue
@@ -89,9 +100,17 @@ class Configuration(object):
         self._parent = message
         return self
 
-    def set_parent(self, model):
-        self._parent = model
-        self.apply_config(model)
+    def set_parent(self, message: Message):
+        """
+        Set the Configuration's related Protobuf Message. Each attribute of the configuration will be applied to the message.
+        If `message` does not contain the exact attributes of the configuration. All future changes to the Configuration
+        will be propagated to the message.
+
+        :rtype: Configuration
+        :param message: Protobuf Message which represents this Configuration.
+        """
+        self._parent = message
+        self.apply_config(message)
         return self
 
     def propagate_to_parent(self, attribute, value):
@@ -116,14 +135,9 @@ class Configuration(object):
 
 
 class ImmutableConfiguration(Configuration):
-    def apply_field(self, attribute, value, message):
-        raise TypeError("This configuration is immutable.")
-
-    def apply_config(self, message):
-        raise TypeError("This configuration is immutable.")
-
-    def set_parent(self, model):
-        raise TypeError("This configuration is immutable.")
+    """
+    ImmutableConfiguration represents Modela API objects which should not be changed by end-users.
+    """
 
     def __setattr__(self, attribute, value):
-        object.__setattr__(attribute, value)
+        object.__setattr__(self, attribute, value)

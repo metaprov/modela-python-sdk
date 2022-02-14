@@ -21,7 +21,7 @@ class FeaturePipelineRunClient:
 
     def create(self, featurepipelinerun: FeaturePipelineRun) -> bool:
         request = CreateFeaturePipelineRunRequest()
-        request.item.CopyFrom(featurepipelinerun.raw_message)
+        request.featurepipelinerun.CopyFrom(featurepipelinerun.raw_message)
         try:
             response = self.__stub.CreateFeaturePipelineRun(request)
             return True
@@ -33,7 +33,7 @@ class FeaturePipelineRunClient:
 
     def update(self, featurepipelinerun: FeaturePipelineRun) -> bool:
         request = UpdateFeaturePipelineRunRequest()
-        request.item.CopyFrom(featurepipelinerun.raw_message)
+        request.featurepipelinerun.CopyFrom(featurepipelinerun.raw_message)
         try:
             self.__stub.UpdateFeaturePipelineRun(request)
             return True
@@ -49,7 +49,7 @@ class FeaturePipelineRunClient:
         request.name = name
         try:
             response = self.__stub.GetFeaturePipelineRun(request)
-            return FeaturePipelineRun(response.item, self)
+            return FeaturePipelineRun(response.featurepipelinerun, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class FeaturePipelineRunClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListFeaturePipelineRuns(request)
-            return [FeaturePipelineRun(item, self) for item in response.items.items]
+            return [FeaturePipelineRun(item, self) for item in response.featurepipelineruns.items]
         except grpc.RpcError as err:
             error = err
 

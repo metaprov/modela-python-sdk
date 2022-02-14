@@ -1,8 +1,3 @@
-import _collections_abc
-import warnings
-from types import GenericAlias
-from typing import List, get_type_hints, get_args
-import typing_utils
 from google.protobuf.message import Message
 from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import ObjectMeta
 from modela.ModelaException import ResourceNotFoundException
@@ -89,7 +84,7 @@ class Resource:
             raise AttributeError("Object has no client repository")
 
     def default(self):
-        warnings.warn("default resource constructor is missing. resource may encounter errors on creation.")
+        print("warning: default resource constructor is missing. resource may encounter errors on creation.")
 
     @staticmethod
     def set_default_version(version):

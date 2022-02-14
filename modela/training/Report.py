@@ -21,7 +21,7 @@ class ReportClient:
 
     def create(self, report: Report) -> bool:
         request = CreateReportRequest()
-        request.item.CopyFrom(report.raw_message)
+        request.report.CopyFrom(report.raw_message)
         try:
             response = self.__stub.CreateReport(request)
             return True
@@ -33,7 +33,7 @@ class ReportClient:
 
     def update(self, report: Report) -> bool:
         request = UpdateReportRequest()
-        request.item.CopyFrom(report.raw_message)
+        request.report.CopyFrom(report.raw_message)
         try:
             self.__stub.UpdateReport(request)
             return True
@@ -49,7 +49,7 @@ class ReportClient:
         request.name = name
         try:
             response = self.__stub.GetReport(request)
-            return Report(response.item, self)
+            return Report(response.report, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class ReportClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListReports(request)
-            return [Report(item, self) for item in response.items.items]
+            return [Report(item, self) for item in response.reports.items]
         except grpc.RpcError as err:
             error = err
 

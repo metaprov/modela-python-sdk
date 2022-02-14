@@ -21,7 +21,7 @@ class ModelCompilerRunClient:
 
     def create(self, modelcompilerrun: ModelCompilerRun) -> bool:
         request = CreateModelCompilerRunRequest()
-        request.item.CopyFrom(modelcompilerrun.raw_message)
+        request.modelcompilerrun.CopyFrom(modelcompilerrun.raw_message)
         try:
             response = self.__stub.CreateModelCompilerRun(request)
             return True
@@ -33,7 +33,7 @@ class ModelCompilerRunClient:
 
     def update(self, modelcompilerrun: ModelCompilerRun) -> bool:
         request = UpdateModelCompilerRunRequest()
-        request.item.CopyFrom(modelcompilerrun.raw_message)
+        request.modelcompilerrun.CopyFrom(modelcompilerrun.raw_message)
         try:
             self.__stub.UpdateModelCompilerRun(request)
             return True
@@ -49,7 +49,7 @@ class ModelCompilerRunClient:
         request.name = name
         try:
             response = self.__stub.GetModelCompilerRun(request)
-            return ModelCompilerRun(response.item, self)
+            return ModelCompilerRun(response.modelcompilerrun, self)
         except grpc.RpcError as err:
             error = err
 
@@ -74,7 +74,7 @@ class ModelCompilerRunClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListModelCompilerRuns(request)
-            return [ModelCompilerRun(item, self) for item in response.items.items]
+            return [ModelCompilerRun(item, self) for item in response.modelcompilerruns.items]
         except grpc.RpcError as err:
             error = err
 
