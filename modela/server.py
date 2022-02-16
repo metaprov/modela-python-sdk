@@ -404,7 +404,7 @@ class Modela:
 
     def Dataset(self, namespace="", name="", datasource: Union[DataSource, str] = "",
                  dataframe: pandas.DataFrame = None, data_file: str = None, workload: Workload = None,
-                 sample: SampleSettings = None, task_type: TaskType = None) -> Dataset:
+                 sample: SampleSettings = None, task_type: TaskType = None, notification: NotificationSetting = None) -> Dataset:
         """
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
@@ -416,8 +416,10 @@ class Modela:
         :param workload: The resource requirements which will be allocated for Dataset ingestion.
         :param sample: The sample settings of the dataset, which if enabled will ingest a Dataset with a portion of the uploaded data.
         :param task_type: The target task type in relation to the data being used.
+        :param notification: The notification settings, which if enabled will forward events about this resource to a notifier.
         """
-        return Dataset(MDDataset(), self.Datasets, namespace, name, datasource, dataframe, data_file, workload, sample, task_type)
+        return Dataset(MDDataset(), self.Datasets, namespace, name, datasource, dataframe, data_file, workload,
+                       sample, task_type, notification)
 
     @property
     def Entitys(self):
@@ -753,7 +755,7 @@ class Modela:
         return self.__study_client
 
     def Study(self, namespace="", name="") -> Study:
-        return Study(MDStudy(), self.Studys, namespace, name)
+        return Study(MDStudy(), self.Studies, namespace, name)
 
     def close(self):
         if self._channel:

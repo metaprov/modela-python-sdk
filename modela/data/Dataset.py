@@ -10,14 +10,15 @@ from modela.ModelaException import ModelaException
 from typing import List, Union
 import pandas
 from modela.data.models import SampleSettings, DatasetSpec, DatasetStatus
-from modela.infra.models import Workload
+from modela.infra.models import Workload, NotificationSetting
 from modela.training.common import TaskType
 
 
 class Dataset(Resource):
     def __init__(self, item: MDDataset = MDDataset(), client=None, namespace="", name="", datasource: Union[DataSource, str] = "",
                  dataframe: pandas.DataFrame = None, data_file: str = None, workload: Workload = None,
-                 sample=SampleSettings(), task_type: TaskType = TaskType.BinaryClassification):
+                 sample=SampleSettings(), task_type: TaskType = TaskType.BinaryClassification,
+                 notification: NotificationSetting = None):
         """
         :param client: The Dataset client repository, which can be obtained through an instance of Modela.
         :param namespace: The target namespace of the resource.
@@ -30,6 +31,7 @@ class Dataset(Resource):
         :param workload: The resource requirements which will be allocated for Dataset ingestion.
         :param sample: The sample settings of the dataset, which if enabled will ingest a Dataset with a portion of the uploaded data.
         :param task_type: The target task type in relation to the data being used.
+        :param notification: The notification settings, which if enabled will forward events about this resource to a notifier.
         """
         super().__init__(item, client, namespace=namespace, name=name)
 
@@ -40,7 +42,6 @@ class Dataset(Resource):
     @property
     def status(self) -> DatasetStatus:
         return DatasetStatus().copy_from(self._object.spec)
-
 
     def default(self):
         DatasetSpec().apply_config(self._object.spec)

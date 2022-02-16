@@ -216,7 +216,7 @@ class GeneratedColumnSpec(ImmutableConfiguration):
 
 
 @dataclass
-class FeatureSelectionSpec(ImmutableConfiguration):
+class FeatureSelection(Configuration):
     Enabled: bool = True
     SamplePct: int = 100
     Embedding: bool = True
@@ -288,7 +288,7 @@ class FeatureEngineeringPipeline(ImmutableConfiguration):
 class FeatureEngineeringSpec(ImmutableConfiguration):
     Pipelines: List[FeatureEngineeringPipeline] = field(default_factory=lambda: [])
     Imbalance: ImbalanceHandling = ImbalanceHandling.ImbalanceAuto
-    Selection: FeatureSelectionSpec = None
+    Selection: FeatureSelection = None
 
 
 @dataclass
@@ -298,6 +298,8 @@ class EnsembleSpec(ImmutableConfiguration):
     Base: ClassicalEstimatorSpec = None
     Type: EnsembleType = None
 
+TrainingSpec = Training
+InterpretabilitySpec = Interpretability
 
 @dataclass
 class ModelSpec(ImmutableConfiguration):
@@ -315,7 +317,7 @@ class ModelSpec(ImmutableConfiguration):
     Estimator: ClassicalEstimatorSpec = None
     NlpEstimator: NLPEstimatorSpec = None
     Ensemble: EnsembleSpec = None
-    Training: Training = None
+    Training: TrainingSpec = None
     Serving: ServingSpec = None
     Tested: bool = False
     Aborted: bool = False
@@ -340,7 +342,7 @@ class ModelSpec(ImmutableConfiguration):
     ModelClass: ModelClassType = None
     TrialID: int = 0
     Governance: GovernanceSpec = None
-    Interpretability: Interpretability = None
+    Interpretability: InterpretabilitySpec = None
 
 
 @dataclass
@@ -431,6 +433,19 @@ class ModelStatus(ImmutableConfiguration):
     # Interpretability: InterpretabilityStatus = None
     Conditions: List[ModelCondition] = field(default_factory=lambda: [])
 
+@dataclass
+class Plot(ImmutableConfiguration):
+    Fname: str = ""
+    Img: bytes = ""
+    Name: str = ""
+    Title: str = ""
+    Url: str = ""
+
+@dataclass
+class ModelProfile(ImmutableConfiguration):
+    Name: str = ""
+    Importance: List[float] = field(default_factory=lambda: [])
+    Plots: List[Plot] = field(default_factory=lambda: [])
 
 @dataclass
 class AlgorithmSearchSpace(Configuration):
@@ -465,7 +480,7 @@ SamplerType = Sampler
 class ModelSearch(Configuration):
     Sampler: SamplerType = SamplerType.BayesianSearch
     Pruner: PrunerSettings = None
-    MaxCost: int = 100
+    MaxCost: int = 100 # Not Implemented
     MaxTime: int = 30
     MaxModels: int = 10
     MinScore: float = 0
@@ -491,14 +506,14 @@ class BaselineSettings(Configuration):
 class FeatureEngineeringSearch(Configuration):
     Enabled: bool = True
     ImbalancedHandler: ImbalanceHandling = ImbalanceHandling.ImbalanceAuto
-    Estimator: ClassicEstimator = None
+    Estimator: ClassicEstimator = ClassicEstimator.DecisionTreeClassifier # FIXME: Should auto detect
     MaxModels: int = 10
     MaxTime: int = 3600
     MaxTrainers: int = 1
     SamplePct: int = 100
     AutoRemove: bool = True
     Reuse: bool = False
-    FeatureSelectionTemplate: FeatureSelectionSpec = None
+    FeatureSelectionTemplate: FeatureSelection = None
 
 
 @dataclass
@@ -550,7 +565,7 @@ class StudySpec(Configuration):
     Template: bool = False
     Flagged: bool = False
     Notification: NotificationSetting = NotificationSetting()
-    ModelImage: ImageLocation = ImageLocation()
+    # ModelImage: ImageLocation = ImageLocation()
     Gc: GarbageCollection = GarbageCollection()
     Ttl: int = 0
 

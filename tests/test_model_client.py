@@ -20,7 +20,7 @@ class Test_Modela_model(unittest.TestCase):
 
     def test_1_get(self):
         list = self.modela.Models.list("iris-product")
-        model = self.modela.Model(namespace="iris-product", name="model-20220211-183936")
+        model = self.modela.Model(namespace="iris-product", name="model-20220211-184217")
         spec = model.spec
-        print(list[6].spec.Training)
+        prof = model.profile()
         assert type(spec) == ModelSpec

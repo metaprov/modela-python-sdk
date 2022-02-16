@@ -1,15 +1,16 @@
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import Model as MDModel
 from github.com.metaprov.modelaapi.services.model.v1.model_pb2_grpc import ModelServiceStub
-from github.com.metaprov.modelaapi.services.model.v1.model_pb2 import CreateModelRequest, \
-    UpdateModelRequest, \
-    DeleteModelRequest, GetModelRequest, ListModelsRequest
+from github.com.metaprov.modelaapi.services.model.v1.model_pb2 import \
+    DeleteModelRequest, GetModelRequest, ListModelsRequest, \
+    AbortModelRequest, CompileModelRequest, DeployModelRequest, DownloadModelRequest, \
+    PauseModelRequest, GetModelProfileRequest, PublishModelRequest, ResumeModelRequest, TestModelRequest
 
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
 from typing import List, Union
 
-from modela.training.models import ModelSpec, ModelStatus
+from modela.training.models import ModelSpec, ModelStatus, ModelProfile
 
 
 class Model(Resource):
@@ -40,6 +41,62 @@ class Model(Resource):
 
     def update(self):
         raise TypeError("Model resources cannot be updated.")
+
+    def profile(self) -> ModelProfile:
+        if hasattr(self._client, "profile"):
+            profile = self._client.profile(self.namespace, self.name)
+        else:
+            raise AttributeError("Object has no client repository")
+
+        return ModelProfile().copy_from(profile)
+
+    def abort(self):
+        if hasattr(self._client, "abort"):
+            self._client.abort(self.namespace, self.name)
+        else:
+            raise AttributeError("Object has no client repository")
+
+    def pause(self):
+        if hasattr(self._client, "pause"):
+            self._client.pause(self.namespace, self.name)
+        else:
+            raise AttributeError("Object has no client repository")
+
+    def resume(self):
+        if hasattr(self._client, "abort"):
+            self._client.resume(self.namespace, self.name)
+        else:
+            raise AttributeError("Object has no client repository")
+
+    def compile(self, target, compiler):
+        if hasattr(self._client, "compile"):
+            self._client.compile(self.namespace, self.name, target, compiler)
+        else:
+            raise AttributeError("Object has no client repository")
+
+    def publish(self):
+        if hasattr(self._client, "publish"):
+            self._client.publish(self.namespace, self.name)
+        else:
+            raise AttributeError("Object has no client repository")
+
+    def test(self):
+        if hasattr(self._client, "test"):
+            self._client.test(self.namespace, self.name)
+        else:
+            raise AttributeError("Object has no client repository")
+
+    def download(self) -> bytes:
+        if hasattr(self._client, "download"):
+            return self._client.download(self.namespace, self.name)
+        else:
+            raise AttributeError("Object has no client repository")
+
+    def deploy(self, predictor: str, replicas: int = 0, traffic: int = 0, role: str = ""):
+        if hasattr(self._client, "test"):
+            self._client.deploy(self.namespace, self.name, predictor, replicas, traffic, role)
+        else:
+            raise AttributeError("Object has no client repository")
 
 
 class ModelClient:
@@ -108,3 +165,125 @@ class ModelClient:
 
         ModelaException.process_error(error)
         return False
+
+    def abort(self, namespace: str, name: str) -> bool:
+        request = AbortModelRequest()
+        request.namespace = namespace
+        request.name = name
+        try:
+            response = self.__stub.AbortModel(request)
+            return True
+        except grpc.RpcError as err:
+            error = err
+
+        ModelaException.process_error(error)
+        return False
+
+    def compile(self, namespace: str, name: str, target: str, compiler: str) -> bool:
+        request = CompileModelRequest()
+        request.namespace = namespace
+        request.name = name
+        request.target = target
+        request.compiler = compiler
+        try:
+            response = self.__stub.CompileModel(request)
+            return True
+        except grpc.RpcError as err:
+            error = err
+
+        ModelaException.process_error(error)
+        return False
+
+    def deploy(self, namespace: str, name: str, predictor: str, replicas: int = 0,
+               traffic: int = 0, role: str = "") -> bool:
+        request = DeployModelRequest()
+        request.namespace = namespace
+        request.name = name
+        try:
+            response = self.__stub.DeployModel(request)
+            return True
+        except grpc.RpcError as err:
+            error = err
+
+        ModelaException.process_error(error)
+        return False
+
+    def download(self, namespace: str, name: str) -> bytes:
+        request = DownloadModelRequest()
+        request.namespace = namespace
+        request.name = name
+        try:
+            response = self.__stub.DownloadModel(request)
+            return response.raw
+        except grpc.RpcError as err:
+            error = err
+
+        ModelaException.process_error(error)
+        return False
+
+    def pause(self, namespace: str, name: str) -> bool:
+        request = PauseModelRequest()
+        request.namespace = namespace
+        request.name = name
+        try:
+            response = self.__stub.PauseModel(request)
+            return True
+        except grpc.RpcError as err:
+            error = err
+
+        ModelaException.process_error(error)
+        return False
+
+    def resume(self, namespace: str, name: str) -> bool:
+        request = ResumeModelRequest()
+        request.namespace = namespace
+        request.name = name
+        try:
+            response = self.__stub.ResumeModel(request)
+            return True
+        except grpc.RpcError as err:
+            error = err
+
+        ModelaException.process_error(error)
+        return False
+
+    def test(self, namespace: str, name: str) -> bool:
+        request = TestModelRequest()
+        request.namespace = namespace
+        request.name = name
+        try:
+            response = self.__stub.TestModel(request)
+            return True
+        except grpc.RpcError as err:
+            error = err
+
+        ModelaException.process_error(error)
+        return False
+
+    def profile(self, namespace: str, name: str) -> bool:
+        request = GetModelProfileRequest()
+        request.namespace = namespace
+        request.name = name
+        try:
+            response = self.__stub.GetModelProfile(request)
+            return response.profile
+        except grpc.RpcError as err:
+            error = err
+
+        ModelaException.process_error(error)
+        return False
+
+    def publish(self, namespace: str, name: str) -> bool:
+        request = PublishModelRequest()
+        request.namespace = namespace
+        request.name = name
+        try:
+            response = self.__stub.PublishModel(request)
+            return True
+        except grpc.RpcError as err:
+            error = err
+
+        ModelaException.process_error(error)
+        return False
+
+
