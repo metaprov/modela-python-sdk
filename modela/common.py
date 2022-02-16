@@ -82,3 +82,8 @@ class Time(Configuration):
 class ObjectReference(Configuration):
     Name: str = ""
     Namespace: str = ""
+
+@dataclass
+class SecretReference(Configuration):
+    Name: str = ""
+    Namespace: str = ""

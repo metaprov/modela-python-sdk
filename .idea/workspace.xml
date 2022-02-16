@@ -4,17 +4,10 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Organize project">
-      <change afterPath="$PROJECT_DIR$/tests/test_study_client.py" afterDir="false" />
+    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Training API methods, Study tests">
+      <change afterPath="$PROJECT_DIR$/modela/infra/common.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modela/infra/connection_models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/Configuration.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/Configuration.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/Resource.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/Resource.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/Dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/Model.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/Study.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Study.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_model_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_model_client.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,7 +74,7 @@
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\catalog" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests in test_study_client.py">
+  <component name="RunManager" selected="Go Build.go build modela-python-sdk gen_crd_docs.go">
     <configuration name="go build modela-python-sdk gen_crd_docs.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <working_directory value="$PROJECT_DIR$" />
@@ -227,15 +220,7 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python tests.Python tests in test_account_client.py" />
-      <item itemvalue="Python tests.Python tests in test_dataproducts_client.py" />
-      <item itemvalue="Python tests.Python tests in test_dataproductversion_client.py" />
-      <item itemvalue="Python tests.Python tests in test_dataset_client.py" />
-      <item itemvalue="Python tests.Python tests in test_datasources_client.py" />
-      <item itemvalue="Python tests.Python tests in test_model_client.py" />
-      <item itemvalue="Python tests.Python tests in test_study_client.py" />
-      <item itemvalue="Python tests.Unittests in test_configuration.py" />
-      <item itemvalue="Python tests.Python tests for test_modela_grpc_client.TestModela_python_client.test_predict" />
+      <item itemvalue="Go Build.go build modela-python-sdk gen_crd_docs.go" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -251,7 +236,7 @@
       <workItem from="1643654678216" duration="325000" />
       <workItem from="1643740588978" duration="37478000" />
       <workItem from="1644689597749" duration="17078000" />
-      <workItem from="1644770166852" duration="32988000" />
+      <workItem from="1644770166852" duration="34967000" />
     </task>
     <task id="LOCAL-00001" summary="fixed the client. upgrade version">
       <created>1630772236555</created>
@@ -309,7 +294,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644802068168</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Training API methods, Study tests">
+      <created>1644970168365</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1644970168365</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -325,6 +317,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="fixed the client. upgrade version" />
@@ -335,10 +328,7 @@
     <MESSAGE value="Structural changes, finished DataSource models and tests" />
     <MESSAGE value="DataProduct &amp; DataProductVersion Tests, Fix CRUD operations" />
     <MESSAGE value="Implement Model &amp; Study API models, other API changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement Model &amp; Study API models, other API changes" />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/modela_python_sdk$Unittests_in_test_configuration_py.coverage" NAME="Unittests in test_configuration.py Coverage Results" MODIFIED="1644708814891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1644969956454" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <MESSAGE value="Training API methods, Study tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Training API methods, Study tests" />
   </component>
 </project>
