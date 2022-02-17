@@ -16,7 +16,8 @@ class FeaturePipeline(Resource):
 
 
 class FeaturePipelineClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: FeaturePipelineServiceStub = stub
 
     def create(self, featurepipeline: FeaturePipeline) -> bool:

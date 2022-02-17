@@ -16,7 +16,8 @@ class Todo(Resource):
 
 
 class TodoClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: TodoServiceStub = stub
 
     def create(self, todo: Todo) -> bool:

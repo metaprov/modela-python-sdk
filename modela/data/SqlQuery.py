@@ -16,7 +16,8 @@ class SqlQuery(Resource):
 
 
 class SqlQueryClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: SqlQueryServiceStub = stub
 
     def create(self, sqlquery: SqlQuery) -> bool:

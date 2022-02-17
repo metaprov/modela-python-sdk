@@ -8,6 +8,7 @@ class Test_Modela_configurations(unittest.TestCase):
     def test_parent_propagation(self):
         conf = CsvFileFormat()
         dc = DataSource()
+
         conf.set_parent(dc._object.spec.csvfile)
         conf.ColumnDelimiter = Delimiter.CRLF
         assert dc._object.spec.csvfile.columnDelimiter == Delimiter.CRLF.value

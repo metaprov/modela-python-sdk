@@ -16,7 +16,8 @@ class FeaturePipelineRun(Resource):
 
 
 class FeaturePipelineRunClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: FeaturePipelineRunServiceStub = stub
 
     def create(self, featurepipelinerun: FeaturePipelineRun) -> bool:

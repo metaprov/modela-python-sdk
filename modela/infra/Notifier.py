@@ -16,7 +16,8 @@ class Notifier(Resource):
 
 
 class NotifierClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: NotifierServiceStub = stub
 
     def create(self, notifier: Notifier) -> bool:

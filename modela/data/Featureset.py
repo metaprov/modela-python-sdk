@@ -16,7 +16,8 @@ class Featureset(Resource):
 
 
 class FeaturesetClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: FeaturesetServiceStub = stub
 
     def create(self, featureset: Featureset) -> bool:

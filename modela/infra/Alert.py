@@ -16,7 +16,8 @@ class Alert(Resource):
 
 
 class AlertClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: AlertServiceStub = stub
 
     def create(self, alert: Alert) -> bool:

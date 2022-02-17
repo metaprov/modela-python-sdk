@@ -16,7 +16,8 @@ class Entity(Resource):
 
 
 class EntityClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: EntityServiceStub = stub
 
     def create(self, entity: Entity) -> bool:

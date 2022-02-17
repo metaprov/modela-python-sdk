@@ -16,7 +16,8 @@ class Notebook(Resource):
 
 
 class NotebookClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: NotebookServiceStub = stub
 
     def create(self, notebook: Notebook) -> bool:

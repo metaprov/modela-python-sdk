@@ -16,7 +16,8 @@ class Commit(Resource):
 
 
 class CommitClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: CommitServiceStub = stub
 
     def create(self, commit: Commit) -> bool:

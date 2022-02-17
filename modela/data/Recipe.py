@@ -16,7 +16,8 @@ class Recipe(Resource):
 
 
 class RecipeClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: RecipeServiceStub = stub
 
     def create(self, recipe: Recipe) -> bool:

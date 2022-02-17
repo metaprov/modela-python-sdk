@@ -7,7 +7,7 @@ from modela.training.models import StudySpec
 
 
 class Test_Modela_study(unittest.TestCase):
-    """Tests for `modela.data.DataSet`"""
+    """Tests for `modela.training.Study`"""
 
     def setUp(self):
         self.modela = Modela("localhost", 3000)
@@ -43,3 +43,8 @@ class Test_Modela_study(unittest.TestCase):
         study = self.modela.Study(namespace="iris-product", name="test")
         study.delete()
         self.assertRaises(ResourceNotFoundException, self.modela.Studies.get, "iris-product", "test")
+
+    def test_5_get_models(self):
+        study = self.modela.Studies.list("iris-product")[0]
+        assert len(study.models) > 0
+        print(study.best_model.name)

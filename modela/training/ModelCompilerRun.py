@@ -16,7 +16,8 @@ class ModelCompilerRun(Resource):
 
 
 class ModelCompilerRunClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: ModelCompilerRunServiceStub = stub
 
     def create(self, modelcompilerrun: ModelCompilerRun) -> bool:

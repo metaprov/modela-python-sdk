@@ -16,7 +16,8 @@ class NotebookRun(Resource):
 
 
 class NotebookRunClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: NotebookRunServiceStub = stub
 
     def create(self, notebookrun: NotebookRun) -> bool:

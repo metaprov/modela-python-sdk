@@ -16,7 +16,8 @@ class FeatureHistogram(Resource):
 
 
 class FeatureHistogramClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: FeatureHistogramServiceStub = stub
 
     def create(self, featurehistogram: FeatureHistogram) -> bool:

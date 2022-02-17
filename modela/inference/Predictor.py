@@ -16,7 +16,8 @@ class Predictor(Resource):
 
 
 class PredictorClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: PredictorServiceStub = stub
 
     def create(self, predictor: Predictor) -> bool:

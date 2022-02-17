@@ -16,7 +16,8 @@ class DataPipeline(Resource):
 
 
 class DataPipelineClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: DataPipelineServiceStub = stub
 
     def create(self, datapipeline: DataPipeline) -> bool:

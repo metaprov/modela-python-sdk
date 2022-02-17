@@ -16,7 +16,8 @@ class Meeting(Resource):
 
 
 class MeetingClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: MeetingServiceStub = stub
 
     def create(self, meeting: Meeting) -> bool:

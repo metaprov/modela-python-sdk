@@ -34,7 +34,8 @@ class DataProductVersion(Resource):
 
 
 class DataProductVersionClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: DataProductVersionServiceStub = stub
 
     def create(self, dataproductversion: DataProductVersion) -> bool:

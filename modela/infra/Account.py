@@ -16,7 +16,8 @@ class Account(Resource):
 
 
 class AccountClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: AccountServiceStub = stub
 
     def create(self, account: Account) -> bool:

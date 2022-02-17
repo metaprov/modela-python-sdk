@@ -541,3 +541,37 @@ class TriggerType(Enum):
     GithubEvent = "on-github-event"
     ConceptDrift = "on-concept-drift"
     PrefDegradation = "on-perf-degradation"
+
+
+class ReportConditionType(Enum):
+    ReportReady = "Ready"
+    ReportSent = "Sent"
+    ReportSaved = "Saved"
+
+
+class ReportPhase(Enum):
+    Pending = "Pending"
+    Running = "Running"
+    Completed = "Completed"
+    Failed = "IsFailed"
+
+
+class ReportFormat(Enum):
+    Pdf = "pdf"
+
+class ReportType(Enum):
+    BinaryClassificationModelReport = "binary-classification-model"
+    ForecastModelReport = "forecast-model"
+    RegressionModelReport = "regression-model"
+    MultiClassificationModelReport = "multi-classification-model"
+    TextClassificationModelReport = "text-classification-model"
+    ClassificationDatasetReport = "classification-dataset"
+    ForecastDatasetReport = "forecast-dataset"
+    TextClassificationDatasetReport = "text-classification-dataset"
+    RegressionDatasetReport = "regression-dataset"
+    SummaryReport = "summary-report"
+    CustomReport = "custom-report"
+    StudyReport = "study-report"
+    ForecastReport = "forecast-report"
+    FeatureReport = "feature-report"
+    InvalidReport = "invalid-report"

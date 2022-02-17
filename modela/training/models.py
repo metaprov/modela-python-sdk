@@ -1,52 +1,25 @@
 from dataclasses import dataclass, field
 from typing import List
 
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ModelValidation as MDModelValidation
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import Model as MDModel
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ModelSpec as MDModelSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import EnsembleSpec as MDEnsembleSpec
-
 from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import Measurement as MDMeasurement
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ModelCondition as MDModelCondition
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
     HyperParameterValue as MDHyperParameterValue
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    ClassicalEstimatorSpec as MDClassicalEstimatorSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    ChatbotEstimatorSpec as MDChatbotEstimatorSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    NLPEstimatorSpec as MDNLPEstimatorSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    FeatureEngineeringSpec as MDFeatureEngineeringSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
     FeatureEngineeringPipeline as MDFeatureEngineeringPipeline
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
     FeatureImportance as MDFeatureImportance
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    SuccessiveHalvingSpec as MDSuccessiveHalvingSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import DataSplitSpec as MDDataSplitSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import TrainingSpec as MDTrainingSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ServingSpec as MDServingSpec
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import StudyCondition as MDStudyCondition
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
     TextPipelineSpec as MDTextPipelineSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    ImagePipelineSpec as MDImagePipelineSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    VideoPipelineSpec as MDVideoPipelineSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    AudioPipelineSpec as MDAudioPipelineSpec
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
     ResourceConsumption as MDResourceConsumption
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import DataHashes as MDDataHashes
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
     GeneratedColumnSpec as MDGeneratedColumnSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    FeatureSelectionSpec as MDFeatureSelectionSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    InterpretabilitySpec as MDInterpretabilitySpec
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import FeaturePair as MDFeaturePair
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import SegmentSpec as MDSegmentSpec
+from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ReportCondition as MDReportCondition
 
 from modela.Configuration import Configuration, ImmutableConfiguration
 from modela.common import PriorityLevel, Time, StatusError, ConditionStatus, ObjectReference
@@ -298,8 +271,10 @@ class EnsembleSpec(ImmutableConfiguration):
     Base: ClassicalEstimatorSpec = None
     Type: EnsembleType = None
 
+
 TrainingSpec = Training
 InterpretabilitySpec = Interpretability
+
 
 @dataclass
 class ModelSpec(ImmutableConfiguration):
@@ -433,6 +408,7 @@ class ModelStatus(ImmutableConfiguration):
     # Interpretability: InterpretabilityStatus = None
     Conditions: List[ModelCondition] = field(default_factory=lambda: [])
 
+
 @dataclass
 class Plot(ImmutableConfiguration):
     Fname: str = ""
@@ -441,11 +417,13 @@ class Plot(ImmutableConfiguration):
     Title: str = ""
     Url: str = ""
 
+
 @dataclass
 class ModelProfile(ImmutableConfiguration):
     Name: str = ""
     Importance: List[float] = field(default_factory=lambda: [])
     Plots: List[Plot] = field(default_factory=lambda: [])
+
 
 @dataclass
 class AlgorithmSearchSpace(Configuration):
@@ -480,7 +458,7 @@ SamplerType = Sampler
 class ModelSearch(Configuration):
     Sampler: SamplerType = SamplerType.BayesianSearch
     Pruner: PrunerSettings = None
-    MaxCost: int = 100 # Not Implemented
+    MaxCost: int = 100  # Not Implemented
     MaxTime: int = 30
     MaxModels: int = 10
     MinScore: float = 0
@@ -506,7 +484,7 @@ class BaselineSettings(Configuration):
 class FeatureEngineeringSearch(Configuration):
     Enabled: bool = True
     ImbalancedHandler: ImbalanceHandling = ImbalanceHandling.ImbalanceAuto
-    Estimator: ClassicEstimator = ClassicEstimator.DecisionTreeClassifier # FIXME: Should auto detect
+    Estimator: ClassicEstimator = ClassicEstimator.DecisionTreeClassifier  # FIXME: Should auto detect
     MaxModels: int = 10
     MaxTime: int = 3600
     MaxTrainers: int = 1
@@ -632,3 +610,45 @@ class StudyStatus(ImmutableConfiguration):
     BestFE: FeatureEngineeringSpec = None
     Gc: GarbageCollectionStatus = None
     Conditions: List[StudyCondition] = field(default_factory=lambda: [])
+
+
+@dataclass
+class ReportCondition(Configuration):
+    Type: ReportConditionType = None
+    Status: ConditionStatus = None
+    LastTransitionTime: Time = None
+    Reason: str = ""
+    Message: str = ""
+
+    def to_message(self) -> MDReportCondition:
+        return self.set_parent(MDReportCondition()).parent
+
+
+MDReportType = ReportType
+
+
+@dataclass
+class ReportSpec(Configuration):
+    VersionName: str = "v0.0.1"
+    EntityRef: ObjectReference = None
+    Location: DataLocation = DataLocation(BucketName="modela")
+    ReportType: MDReportType = None
+    Format: ReportFormat = ReportFormat.Pdf
+    NotifierName: str = ""
+    Owner: str = "no-one"
+    Resources: Workload = Workload("memory-large")
+    ActiveDeadlineSeconds: int = 600
+
+
+@dataclass
+class ReportStatus(Configuration):
+    StartTime: Time = None
+    EndTime: Time = None
+    Phase: ReportPhase = ReportPhase.Pending
+    Uri: str = ""
+    ObservedGeneration: int = 0
+    FailureReason: StatusError = None
+    FailureMessage: str = ""
+    Logs: OutputLogs = None
+    LastUpdated: Time = None
+    Conditions: List[ReportCondition] = field(default_factory=lambda: [])

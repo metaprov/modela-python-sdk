@@ -16,7 +16,8 @@ class LabelingPipeline(Resource):
 
 
 class LabelingPipelineClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: LabelingPipelineServiceStub = stub
 
     def create(self, labelingpipeline: LabelingPipeline) -> bool:

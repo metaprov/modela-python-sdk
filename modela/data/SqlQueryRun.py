@@ -16,7 +16,8 @@ class SqlQueryRun(Resource):
 
 
 class SqlQueryRunClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: SqlQueryRunServiceStub = stub
 
     def create(self, sqlqueryrun: SqlQueryRun) -> bool:

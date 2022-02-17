@@ -16,7 +16,8 @@ class ServingSite(Resource):
 
 
 class ServingSiteClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: ServingSiteServiceStub = stub
 
     def create(self, servingsite: ServingSite) -> bool:

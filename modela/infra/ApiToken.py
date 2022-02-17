@@ -16,7 +16,8 @@ class ApiToken(Resource):
 
 
 class ApiTokenClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: ApiTokenServiceStub = stub
 
     def create(self, apitoken: ApiToken) -> bool:

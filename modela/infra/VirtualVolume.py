@@ -16,7 +16,8 @@ class VirtualVolume(Resource):
 
 
 class VirtualVolumeClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: VirtualVolumeServiceStub = stub
 
     def create(self, virtualvolume: VirtualVolume) -> bool:

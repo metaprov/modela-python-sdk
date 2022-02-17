@@ -16,7 +16,8 @@ class License(Resource):
 
 
 class LicenseClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: LicenseServiceStub = stub
 
     def create(self, license: License) -> bool:

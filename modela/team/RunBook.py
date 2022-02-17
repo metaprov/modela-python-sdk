@@ -16,7 +16,8 @@ class RunBook(Resource):
 
 
 class RunBookClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: RunBookServiceStub = stub
 
     def create(self, runbook: RunBook) -> bool:

@@ -16,7 +16,8 @@ class Lab(Resource):
 
 
 class LabClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: LabServiceStub = stub
 
     def create(self, lab: Lab) -> bool:

@@ -16,7 +16,8 @@ class VirtualCluster(Resource):
 
 
 class VirtualClusterClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: VirtualClusterServiceStub = stub
 
     def create(self, virtualcluster: VirtualCluster) -> bool:

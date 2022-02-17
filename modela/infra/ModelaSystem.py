@@ -16,7 +16,8 @@ class ModelaSystem(Resource):
 
 
 class ModelaSystemClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: ModelaSystemServiceStub = stub
 
     def create(self, modelasystem: ModelaSystem) -> bool:

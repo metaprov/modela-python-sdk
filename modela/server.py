@@ -6,7 +6,6 @@ from grpc import (  # type: ignore
     StreamStreamClientInterceptor,
 )
 
-
 from github.com.metaprov.modelaapi.services.datapipelinerun.v1 import datapipelinerun_pb2_grpc
 from github.com.metaprov.modelaapi.services.datapipeline.v1 import datapipeline_pb2_grpc
 from github.com.metaprov.modelaapi.services.dataproduct.v1 import dataproduct_pb2_grpc
@@ -122,19 +121,19 @@ from modela.training.Study import *
 
 class Modela:
     def __init__(
-        self,
-        host="localhost",
-        port=3000,
-        interceptors: Optional[
-            List[
-                Union[
-                    UnaryUnaryClientInterceptor,
-                    UnaryStreamClientInterceptor,
-                    StreamUnaryClientInterceptor,
-                    StreamStreamClientInterceptor,
+            self,
+            host="localhost",
+            port=3000,
+            interceptors: Optional[
+                List[
+                    Union[
+                        UnaryUnaryClientInterceptor,
+                        UnaryStreamClientInterceptor,
+                        StreamUnaryClientInterceptor,
+                        StreamStreamClientInterceptor,
+                    ]
                 ]
-            ]
-        ] = None,
+            ] = None,
     ):
         """Initializer.
            Creates a gRPC channel for connecting to the server.
@@ -154,171 +153,169 @@ class Modela:
             )
 
         self.__datapipelinerun_stub = datapipelinerun_pb2_grpc.DataPipelineRunServiceStub(self._channel)
-        self.__datapipelinerun_client = DataPipelineRunClient(self.__datapipelinerun_stub)
+        self.__datapipelinerun_client = DataPipelineRunClient(self.__datapipelinerun_stub, self)
 
         self.__datapipeline_stub = datapipeline_pb2_grpc.DataPipelineServiceStub(self._channel)
-        self.__datapipeline_client = DataPipelineClient(self.__datapipeline_stub)
+        self.__datapipeline_client = DataPipelineClient(self.__datapipeline_stub, self)
 
         self.__dataproduct_stub = dataproduct_pb2_grpc.DataProductServiceStub(self._channel)
-        self.__dataproduct_client = DataProductClient(self.__dataproduct_stub)
+        self.__dataproduct_client = DataProductClient(self.__dataproduct_stub, self)
 
         self.__dataproductversion_stub = dataproductversion_pb2_grpc.DataProductVersionServiceStub(self._channel)
-        self.__dataproductversion_client = DataProductVersionClient(self.__dataproductversion_stub)
+        self.__dataproductversion_client = DataProductVersionClient(self.__dataproductversion_stub, self)
 
         self.__dataset_stub = dataset_pb2_grpc.DatasetServiceStub(self._channel)
-        self.__dataset_client = DatasetClient(self.__dataset_stub)
+        self.__dataset_client = DatasetClient(self.__dataset_stub, self)
 
         self.__datasource_stub = datasource_pb2_grpc.DataSourceServiceStub(self._channel)
-        self.__datasource_client = DataSourceClient(self.__datasource_stub)
+        self.__datasource_client = DataSourceClient(self.__datasource_stub, self)
 
         self.__entity_stub = entity_pb2_grpc.EntityServiceStub(self._channel)
-        self.__entity_client = EntityClient(self.__entity_stub)
+        self.__entity_client = EntityClient(self.__entity_stub, self)
 
         self.__featurehistogram_stub = featurehistogram_pb2_grpc.FeatureHistogramServiceStub(self._channel)
-        self.__featurehistogram_client = FeatureHistogramClient(self.__featurehistogram_stub)
+        self.__featurehistogram_client = FeatureHistogramClient(self.__featurehistogram_stub, self)
 
         self.__featurepipelinerun_stub = featurepipelinerun_pb2_grpc.FeaturePipelineRunServiceStub(self._channel)
-        self.__featurepipelinerun_client = FeaturePipelineRunClient(self.__featurepipelinerun_stub)
+        self.__featurepipelinerun_client = FeaturePipelineRunClient(self.__featurepipelinerun_stub, self)
 
         self.__featurepipeline_stub = featurepipeline_pb2_grpc.FeaturePipelineServiceStub(self._channel)
-        self.__featurepipeline_client = FeaturePipelineClient(self.__featurepipeline_stub)
+        self.__featurepipeline_client = FeaturePipelineClient(self.__featurepipeline_stub, self)
 
         self.__feature_stub = feature_pb2_grpc.FeatureServiceStub(self._channel)
-        self.__feature_client = FeatureClient(self.__feature_stub)
+        self.__feature_client = FeatureClient(self.__feature_stub, self)
 
         self.__featureset_stub = featureset_pb2_grpc.FeaturesetServiceStub(self._channel)
-        self.__featureset_client = FeaturesetClient(self.__featureset_stub)
+        self.__featureset_client = FeaturesetClient(self.__featureset_stub, self)
 
         self.__labelingpipelinerun_stub = labelingpipelinerun_pb2_grpc.LabelingPipelineRunServiceStub(self._channel)
-        self.__labelingpipelinerun_client = LabelingPipelineRunClient(self.__labelingpipelinerun_stub)
+        self.__labelingpipelinerun_client = LabelingPipelineRunClient(self.__labelingpipelinerun_stub, self)
 
         self.__labelingpipeline_stub = labelingpipeline_pb2_grpc.LabelingPipelineServiceStub(self._channel)
-        self.__labelingpipeline_client = LabelingPipelineClient(self.__labelingpipeline_stub)
+        self.__labelingpipeline_client = LabelingPipelineClient(self.__labelingpipeline_stub, self)
 
         self.__reciperun_stub = reciperun_pb2_grpc.RecipeRunServiceStub(self._channel)
-        self.__reciperun_client = RecipeRunClient(self.__reciperun_stub)
+        self.__reciperun_client = RecipeRunClient(self.__reciperun_stub, self)
 
         self.__recipe_stub = recipe_pb2_grpc.RecipeServiceStub(self._channel)
-        self.__recipe_client = RecipeClient(self.__recipe_stub)
+        self.__recipe_client = RecipeClient(self.__recipe_stub, self)
 
         self.__sqlquery_stub = sqlquery_pb2_grpc.SqlQueryServiceStub(self._channel)
-        self.__sqlquery_client = SqlQueryClient(self.__sqlquery_stub)
+        self.__sqlquery_client = SqlQueryClient(self.__sqlquery_stub, self)
 
         self.__sqlqueryrun_stub = sqlqueryrun_pb2_grpc.SqlQueryRunServiceStub(self._channel)
-        self.__sqlqueryrun_client = SqlQueryRunClient(self.__sqlqueryrun_stub)
+        self.__sqlqueryrun_client = SqlQueryRunClient(self.__sqlqueryrun_stub, self)
 
         self.__webrequestrun_stub = webrequestrun_pb2_grpc.WebRequestRunServiceStub(self._channel)
-        self.__webrequestrun_client = WebRequestRunClient(self.__webrequestrun_stub)
+        self.__webrequestrun_client = WebRequestRunClient(self.__webrequestrun_stub, self)
 
         self.__webrequest_stub = webrequest_pb2_grpc.WebRequestServiceStub(self._channel)
-        self.__webrequest_client = WebRequestClient(self.__webrequest_stub)
+        self.__webrequest_client = WebRequestClient(self.__webrequest_stub, self)
 
         self.__cronprediction_stub = cronprediction_pb2_grpc.CronPredictionServiceStub(self._channel)
-        self.__cronprediction_client = CronPredictionClient(self.__cronprediction_stub)
+        self.__cronprediction_client = CronPredictionClient(self.__cronprediction_stub, self)
 
         self.__curtain_stub = curtain_pb2_grpc.CurtainServiceStub(self._channel)
-        self.__curtain_client = CurtainClient(self.__curtain_stub)
+        self.__curtain_client = CurtainClient(self.__curtain_stub, self)
 
         self.__dataapp_stub = dataapp_pb2_grpc.DataAppServiceStub(self._channel)
-        self.__dataapp_client = DataAppClient(self.__dataapp_stub)
+        self.__dataapp_client = DataAppClient(self.__dataapp_stub, self)
 
         self.__prediction_stub = prediction_pb2_grpc.PredictionServiceStub(self._channel)
-        self.__prediction_client = PredictionClient(self.__prediction_stub)
+        self.__prediction_client = PredictionClient(self.__prediction_stub, self)
 
         self.__predictor_stub = predictor_pb2_grpc.PredictorServiceStub(self._channel)
-        self.__predictor_client = PredictorClient(self.__predictor_stub)
+        self.__predictor_client = PredictorClient(self.__predictor_stub, self)
 
         self.__account_stub = account_pb2_grpc.AccountServiceStub(self._channel)
-        self.__account_client = AccountClient(self.__account_stub)
+        self.__account_client = AccountClient(self.__account_stub, self)
 
         self.__alert_stub = alert_pb2_grpc.AlertServiceStub(self._channel)
-        self.__alert_client = AlertClient(self.__alert_stub)
+        self.__alert_client = AlertClient(self.__alert_stub, self)
 
         self.__apitoken_stub = apitoken_pb2_grpc.ApiTokenServiceStub(self._channel)
-        self.__apitoken_client = ApiTokenClient(self.__apitoken_stub)
+        self.__apitoken_client = ApiTokenClient(self.__apitoken_stub, self)
 
         self.__attachment_stub = attachment_pb2_grpc.AttachmentServiceStub(self._channel)
-        self.__attachment_client = AttachmentClient(self.__attachment_stub)
+        self.__attachment_client = AttachmentClient(self.__attachment_stub, self)
 
         self.__commit_stub = commit_pb2_grpc.CommitServiceStub(self._channel)
-        self.__commit_client = CommitClient(self.__commit_stub)
+        self.__commit_client = CommitClient(self.__commit_stub, self)
 
         self.__connection_stub = connection_pb2_grpc.ConnectionServiceStub(self._channel)
-        self.__connection_client = ConnectionClient(self.__connection_stub)
+        self.__connection_client = ConnectionClient(self.__connection_stub, self)
 
         self.__lab_stub = lab_pb2_grpc.LabServiceStub(self._channel)
-        self.__lab_client = LabClient(self.__lab_stub)
+        self.__lab_client = LabClient(self.__lab_stub, self)
 
         self.__license_stub = license_pb2_grpc.LicenseServiceStub(self._channel)
-        self.__license_client = LicenseClient(self.__license_stub)
+        self.__license_client = LicenseClient(self.__license_stub, self)
 
         self.__modelasystem_stub = modelasystem_pb2_grpc.ModelaSystemServiceStub(self._channel)
-        self.__modelasystem_client = ModelaSystemClient(self.__modelasystem_stub)
+        self.__modelasystem_client = ModelaSystemClient(self.__modelasystem_stub, self)
 
         self.__notifier_stub = notifier_pb2_grpc.NotifierServiceStub(self._channel)
-        self.__notifier_client = NotifierClient(self.__notifier_stub)
+        self.__notifier_client = NotifierClient(self.__notifier_stub, self)
 
         self.__servingsite_stub = servingsite_pb2_grpc.ServingSiteServiceStub(self._channel)
-        self.__servingsite_client = ServingSiteClient(self.__servingsite_stub)
+        self.__servingsite_client = ServingSiteClient(self.__servingsite_stub, self)
 
         self.__tenant_stub = tenant_pb2_grpc.TenantServiceStub(self._channel)
-        self.__tenant_client = TenantClient(self.__tenant_stub)
+        self.__tenant_client = TenantClient(self.__tenant_stub, self)
 
         self.__virtualbucket_stub = virtualbucket_pb2_grpc.VirtualBucketServiceStub(self._channel)
-        self.__virtualbucket_client = VirtualBucketClient(self.__virtualbucket_stub)
+        self.__virtualbucket_client = VirtualBucketClient(self.__virtualbucket_stub, self)
 
         self.__virtualcluster_stub = virtualcluster_pb2_grpc.VirtualClusterServiceStub(self._channel)
-        self.__virtualcluster_client = VirtualClusterClient(self.__virtualcluster_stub)
+        self.__virtualcluster_client = VirtualClusterClient(self.__virtualcluster_stub, self)
 
         self.__virtualvolume_stub = virtualvolume_pb2_grpc.VirtualVolumeServiceStub(self._channel)
-        self.__virtualvolume_client = VirtualVolumeClient(self.__virtualvolume_stub)
+        self.__virtualvolume_client = VirtualVolumeClient(self.__virtualvolume_stub, self)
 
         self.__meeting_stub = meeting_pb2_grpc.MeetingServiceStub(self._channel)
-        self.__meeting_client = MeetingClient(self.__meeting_stub)
+        self.__meeting_client = MeetingClient(self.__meeting_stub, self)
 
         self.__postmortem_stub = postmortem_pb2_grpc.PostMortemServiceStub(self._channel)
-        self.__postmortem_client = PostMortemClient(self.__postmortem_stub)
+        self.__postmortem_client = PostMortemClient(self.__postmortem_stub, self)
 
         self.__review_stub = review_pb2_grpc.ReviewServiceStub(self._channel)
-        self.__review_client = ReviewClient(self.__review_stub)
+        self.__review_client = ReviewClient(self.__review_stub, self)
 
         self.__runbook_stub = runbook_pb2_grpc.RunBookServiceStub(self._channel)
-        self.__runbook_client = RunBookClient(self.__runbook_stub)
+        self.__runbook_client = RunBookClient(self.__runbook_stub, self)
 
         self.__todo_stub = todo_pb2_grpc.TodoServiceStub(self._channel)
-        self.__todo_client = TodoClient(self.__todo_stub)
+        self.__todo_client = TodoClient(self.__todo_stub, self)
 
         self.__cronreport_stub = cronreport_pb2_grpc.CronReportServiceStub(self._channel)
-        self.__cronreport_client = CronReportClient(self.__cronreport_stub)
+        self.__cronreport_client = CronReportClient(self.__cronreport_stub, self)
 
         self.__modelautobuilder_stub = modelautobuilder_pb2_grpc.ModelAutobuilderServiceStub(self._channel)
-        self.__modelautobuilder_client = ModelAutobuilderClient(self.__modelautobuilder_stub)
+        self.__modelautobuilder_client = ModelAutobuilderClient(self.__modelautobuilder_stub, self)
 
         self.__modelcompilerrun_stub = modelcompilerrun_pb2_grpc.ModelCompilerRunServiceStub(self._channel)
-        self.__modelcompilerrun_client = ModelCompilerRunClient(self.__modelcompilerrun_stub)
+        self.__modelcompilerrun_client = ModelCompilerRunClient(self.__modelcompilerrun_stub, self)
 
         self.__modelpipelinerun_stub = modelpipelinerun_pb2_grpc.ModelPipelineRunServiceStub(self._channel)
-        self.__modelpipelinerun_client = ModelPipelineRunClient(self.__modelpipelinerun_stub)
+        self.__modelpipelinerun_client = ModelPipelineRunClient(self.__modelpipelinerun_stub, self)
 
         self.__modelpipeline_stub = modelpipeline_pb2_grpc.ModelPipelineServiceStub(self._channel)
-        self.__modelpipeline_client = ModelPipelineClient(self.__modelpipeline_stub)
+        self.__modelpipeline_client = ModelPipelineClient(self.__modelpipeline_stub, self)
 
         self.__model_stub = model_pb2_grpc.ModelServiceStub(self._channel)
-        self.__model_client = ModelClient(self.__model_stub)
+        self.__model_client = ModelClient(self.__model_stub, self)
 
         self.__notebookrun_stub = notebookrun_pb2_grpc.NotebookRunServiceStub(self._channel)
-        self.__notebookrun_client = NotebookRunClient(self.__notebookrun_stub)
+        self.__notebookrun_client = NotebookRunClient(self.__notebookrun_stub, self)
 
         self.__notebook_stub = notebook_pb2_grpc.NotebookServiceStub(self._channel)
-        self.__notebook_client = NotebookClient(self.__notebook_stub)
+        self.__notebook_client = NotebookClient(self.__notebook_stub, self)
 
         self.__report_stub = report_pb2_grpc.ReportServiceStub(self._channel)
-        self.__report_client = ReportClient(self.__report_stub)
+        self.__report_client = ReportClient(self.__report_stub, self)
 
         self.__study_stub = study_pb2_grpc.StudyServiceStub(self._channel)
-        self.__study_client = StudyClient(self.__study_stub)
-
-
+        self.__study_client = StudyClient(self.__study_stub, self)
 
     @property
     def Accounts(self):
@@ -332,8 +329,9 @@ class Modela:
         return self.__dataproduct_client
 
     def DataProduct(self, namespace="", name="", servingsite: str = None,
-                 lab: str = None, task_type: TaskType = TaskType.BinaryClassification, default_workload: Workload = None,
-                 default_bucket: str = None, notification_setting: NotificationSetting = None) -> DataProduct:
+                    lab: str = None, task_type: TaskType = TaskType.BinaryClassification,
+                    default_workload: Workload = None,
+                    default_bucket: str = None, notification_setting: NotificationSetting = None) -> DataProduct:
         """
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
@@ -352,9 +350,13 @@ class Modela:
         return self.__datasource_client
 
     def DataSource(self, namespace="", name="", infer_file: str = None,
-                 infer_dataframe: pandas.DataFrame = None, target_column: str = "", file_type: FlatFileType = FlatFileType.Csv,
-                 task_type: TaskType = None, csv_config: CsvFileFormat = None, excel_config: ExcelNotebookFormat = None) -> DataSource:
+                   infer_dataframe: pandas.DataFrame = None, target_column: str = "",
+                   file_type: FlatFileType = FlatFileType.Csv,
+                   task_type: TaskType = None, csv_config: CsvFileFormat = None,
+                   excel_config: ExcelNotebookFormat = None) -> DataSource:
         """
+        Fetch or create a new Model resource
+
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
         :param infer_file: If specified, the SDK will attempt read a file with the given path and will upload the
@@ -363,7 +365,7 @@ class Modela:
             API for analysis. The analysed columns will be applied to the Data Source.
         :param target_column: The name of the target column used when training a model. This parameter only has effect
             when `infer_file` or `infer_dataframe` is specified.
-        :param file_type: The file type of raw data, used when ingesting a Dataset.
+        :param file_type: The file type of raw data, used when ingesting a Dataset. Only applicable for flat files.
         :param task_type: The target task type in relation to the data being used.
         :param csv_config: The CSV file format of the raw data.
         :param excel_config: The Excel file format of the raw data.
@@ -389,23 +391,30 @@ class Modela:
     def DataProductVersions(self):
         return self.__dataproductversion_client
 
-    def DataProductVersion(self, namespace="", name="", baseline: bool = False, previous_version: str = None) -> DataProductVersion:
+    def DataProductVersion(self, namespace="", name="", baseline: bool = False,
+                           previous_version: str = None) -> DataProductVersion:
         """
+        Fetch or create a new Data Product Version resource
+
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
         :param baseline: If this version is baseline, then the objects of previous version will be garbage collected.
         :param previous_version: The name of the previous version.
         """
-        return DataProductVersion(MDDataProductVersion(), self.DataProductVersions, namespace, name, baseline, previous_version)
+        return DataProductVersion(MDDataProductVersion(), self.DataProductVersions, namespace, name, baseline,
+                                  previous_version)
 
     @property
     def Datasets(self):
         return self.__dataset_client
 
     def Dataset(self, namespace="", name="", datasource: Union[DataSource, str] = "",
-                 dataframe: pandas.DataFrame = None, data_file: str = None, workload: Workload = None,
-                 sample: SampleSettings = None, task_type: TaskType = None, notification: NotificationSetting = None) -> Dataset:
+                dataframe: pandas.DataFrame = None, data_file: str = None, workload: Workload = None,
+                sample: SampleSettings = None, task_type: TaskType = None,
+                notification: NotificationSetting = None) -> Dataset:
         """
+        Fetch or create a new Dataset resource
+
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
         :param datasource: If specified as a string, the SDK will attempt to find a Data Source resource with the given name.
@@ -748,6 +757,13 @@ class Modela:
         return self.__report_client
 
     def Report(self, namespace="", name="") -> Report:
+        """
+        :param namespace: The target namespace of the resource.
+        :param name: The name of the resource.
+        :param entity: An object reference to an existing resource on the cluster.
+        :param report_type: The type of report being generated; this should correspond with the type of entity being
+            referenced (e.g. RegressionModelReport for a regression Model resource)
+        """
         return Report(MDReport(), self.Reports, namespace, name)
 
     @property

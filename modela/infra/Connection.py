@@ -16,7 +16,8 @@ class Connection(Resource):
 
 
 class ConnectionClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: ConnectionServiceStub = stub
 
     def create(self, connection: Connection) -> bool:

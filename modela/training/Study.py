@@ -6,10 +6,11 @@ from github.com.metaprov.modelaapi.services.study.v1.study_pb2 import CreateStud
     GetStudyProfileRequest, CreateStudyProfileRequest, AbortStudyRequest, PauseStudyRequest, ResumeStudyRequest
 
 from modela.Resource import Resource
-from modela.ModelaException import ModelaException
+from modela.ModelaException import ModelaException, ResourceNotFoundException
 from typing import List, Union
 
 from modela.data.Dataset import Dataset
+from modela.training.Model import Model
 from modela.training.common import TaskType
 from modela.training.models import *
 
@@ -61,14 +62,17 @@ class Study(Resource):
     def status(self) -> StudyStatus:
         return StudyStatus().copy_from(self._object.status)
 
+    def default(self):
+        StudySpec().apply_config(self._object.spec)
+
     def abort(self):
-        if hasattr(self._client, "abort"):
+        if hasattr(self, "_client"):
             self._client.abort(self.namespace, self.name)
         else:
             raise AttributeError("Object has no client repository")
 
     def pause(self):
-        if hasattr(self._client, "pause"):
+        if hasattr(self, "_client"):
             self._client.pause(self.namespace, self.name)
         else:
             raise AttributeError("Object has no client repository")
@@ -79,12 +83,25 @@ class Study(Resource):
         else:
             raise AttributeError("Object has no client repository")
 
-    def default(self):
-        StudySpec().apply_config(self._object.spec)
+    @property
+    def models(self) -> List[Model]:
+        if hasattr(self, "_client"):
+            return self._client.modela.Models.list(self.namespace, {'study': self.name})
+        else:
+            raise AttributeError("Object has no client repository")
+
+    @property
+    def best_model(self) -> Model:
+        if hasattr(self, "_client"):
+            return self._client.modela.Models.get(self.namespace, self._object.status.bestModel)
+        else:
+            raise AttributeError("Object has no client repository")
+
 
 
 class StudyClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: StudyServiceStub = stub
 
     def create(self, study: Study) -> bool:
@@ -203,11 +220,11 @@ class StudyClient:
         return False
 
     def create_profile(self, namespace: str, name: str) -> bool:
-        request = ResumeStudyRequest()
+        request = CreateStudyProfileRequest()
         request.namespace = namespace
         request.name = name
         try:
-            response = self.__stub.ResumeStudy(request)
+            response = self.__stub.CreateStudyProfile(request)
             return True
         except grpc.RpcError as err:
             error = err

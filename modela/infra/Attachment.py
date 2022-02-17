@@ -16,7 +16,8 @@ class Attachment(Resource):
 
 
 class AttachmentClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: AttachmentServiceStub = stub
 
     def create(self, attachment: Attachment) -> bool:

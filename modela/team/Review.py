@@ -16,7 +16,8 @@ class Review(Resource):
 
 
 class ReviewClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: ReviewServiceStub = stub
 
     def create(self, review: Review) -> bool:

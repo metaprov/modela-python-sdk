@@ -7,7 +7,7 @@ from modela.training.models import ModelSpec
 import pprint
 
 class Test_Modela_model(unittest.TestCase):
-    """Tests for `modela.data.DataSet`"""
+    """Tests for `modela.training.Model`"""
 
     def setUp(self):
         self.modela = Modela("localhost", 3000)
@@ -22,5 +22,5 @@ class Test_Modela_model(unittest.TestCase):
         list = self.modela.Models.list("iris-product")
         model = self.modela.Model(namespace="iris-product", name="model-20220211-184217")
         spec = model.spec
-        prof = model.profile()
+        print(model.report)
         assert type(spec) == ModelSpec

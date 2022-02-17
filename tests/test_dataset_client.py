@@ -3,8 +3,7 @@ import unittest
 from modela.ModelaException import *
 from modela.data.Dataset import Dataset
 from modela.server import Modela
-from modela.data.models import DatasetSpec
-
+from modela import *
 
 class Test_Modela_dataset(unittest.TestCase):
     """Tests for `modela.data.DataSet`"""

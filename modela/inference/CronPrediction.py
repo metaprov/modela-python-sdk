@@ -16,7 +16,8 @@ class CronPrediction(Resource):
 
 
 class CronPredictionClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: CronPredictionServiceStub = stub
 
     def create(self, cronprediction: CronPrediction) -> bool:

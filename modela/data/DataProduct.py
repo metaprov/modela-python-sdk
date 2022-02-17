@@ -41,7 +41,8 @@ class DataProduct(Resource):
 
 
 class DataProductClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: DataProductServiceStub = stub
 
     def create(self, dataproduct: DataProduct) -> bool:

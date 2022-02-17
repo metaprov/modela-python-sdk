@@ -16,7 +16,8 @@ class PostMortem(Resource):
 
 
 class PostMortemClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: PostMortemServiceStub = stub
 
     def create(self, postmortem: PostMortem) -> bool:

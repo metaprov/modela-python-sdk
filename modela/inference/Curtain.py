@@ -16,7 +16,8 @@ class Curtain(Resource):
 
 
 class CurtainClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: CurtainServiceStub = stub
 
     def create(self, curtain: Curtain) -> bool:

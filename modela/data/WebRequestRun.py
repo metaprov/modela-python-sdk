@@ -16,7 +16,8 @@ class WebRequestRun(Resource):
 
 
 class WebRequestRunClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: WebRequestRunServiceStub = stub
 
     def create(self, webrequestrun: WebRequestRun) -> bool:

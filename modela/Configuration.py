@@ -1,4 +1,4 @@
-from abc import ABCMeta, ABC
+from dataclasses import dataclass
 from typing import List, get_type_hints, get_args
 import typing_utils
 from google.protobuf.message import Message
@@ -132,7 +132,6 @@ class Configuration(object):
             value = TrackedList(value, self, attribute)
 
         super().__setattr__(attribute, value)
-
 
 class ImmutableConfiguration(Configuration):
     """

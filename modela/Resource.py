@@ -11,7 +11,9 @@ class Resource:
 
     def __init__(self, resource: Message, client=None, name="", namespace=""):
         self._object: Message = resource
-        self._client = client
+        if client is not None:
+            self._client = client
+
         if name != "" and namespace != "":
             if hasattr(self._client, "get"):
                 try:
@@ -60,31 +62,31 @@ class Resource:
         """
         Submit will create the resource on the cluster if it does not exist.
         """
-        if hasattr(self._client, "create"):
+        if hasattr(self, "_client"):
             self._client.create(self, **kwargs)
         else:
             raise AttributeError("Object has no client repository")
 
     def update(self):
-        if hasattr(self._client, "update"):
+        if hasattr(self, "_client"):
             self._client.update(self)
         else:
             raise AttributeError("Object has no client repository")
 
     def delete(self):
-        if hasattr(self._client, "delete"):
+        if hasattr(self, "_client"):
             self._client.delete(self.namespace, self.name)
         else:
             raise AttributeError("Object has no client repository")
 
     def sync(self):
-        if hasattr(self._client, "get"):
+        if hasattr(self, "_client"):
             self._object = self._client.get(self.namespace, self.name).raw_message
         else:
             raise AttributeError("Object has no client repository")
 
     def default(self):
-        print("Resource {0} is missing a default constructor; you may encounter creation errors.".format(
+        print("Resource {0} is missing a default constructor; you may encounter errors upon creation.".format(
             self.__class__.__name__))
 
     @staticmethod

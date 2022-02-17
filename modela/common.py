@@ -80,8 +80,13 @@ class Time(Configuration):
 
 @dataclass
 class ObjectReference(Configuration):
-    Name: str = ""
+    """
+    A Object Reference defines the location of a resource on the current operational cluster, denoted by the namespace
+    of the resource and the name of the resource which exists on that namespace.
+    """
+
     Namespace: str = ""
+    Name: str = ""
 
 @dataclass
 class SecretReference(Configuration):

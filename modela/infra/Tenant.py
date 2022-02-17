@@ -16,7 +16,8 @@ class Tenant(Resource):
 
 
 class TenantClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: TenantServiceStub = stub
 
     def create(self, tenant: Tenant) -> bool:

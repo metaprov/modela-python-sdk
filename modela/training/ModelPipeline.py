@@ -16,7 +16,8 @@ class ModelPipeline(Resource):
 
 
 class ModelPipelineClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: ModelPipelineServiceStub = stub
 
     def create(self, modelpipeline: ModelPipeline) -> bool:

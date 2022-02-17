@@ -16,7 +16,8 @@ class VirtualBucket(Resource):
 
 
 class VirtualBucketClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: VirtualBucketServiceStub = stub
 
     def create(self, virtualbucket: VirtualBucket) -> bool:

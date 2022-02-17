@@ -11,6 +11,7 @@ from typing import List, Union
 import pandas
 from modela.data.models import SampleSettings, DatasetSpec, DatasetStatus
 from modela.infra.models import Workload, NotificationSetting
+from modela.training.Report import Report
 from modela.training.common import TaskType
 
 
@@ -46,11 +47,23 @@ class Dataset(Resource):
     def default(self):
         DatasetSpec().apply_config(self._object.spec)
 
+    @property
+    def report(self) -> Report:
+        if hasattr(self, "_client"):
+            if self._object.status.reportName != "":
+                return self._client.modela.Report(namespace=self.namespace, name=self._object.status.reportName)
+            else:
+                print("Dataset {0} has no report.")
+        else:
+            raise AttributeError("Object has no client repository")
+
+
 
 
 
 class DatasetClient:
-    def __init__(self, stub):
+    def __init__(self, stub, modela):
+        self.modela = modela
         self.__stub: DatasetServiceStub = stub
 
     def create(self, dataset: Dataset) -> bool:
