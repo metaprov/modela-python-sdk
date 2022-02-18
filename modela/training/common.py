@@ -476,7 +476,7 @@ class Pruner(Enum):
     NonePruner = "none"
     PatientPruner = "patient"
     MedianPruner = "median"
-    PrcentilePruner = "percentile"
+    PercentilePruner = "percentile"
     SHPruner = "sh"
     HyperbandPruner = "hyperband"
     ThresholdPruner = "threshold"
@@ -492,7 +492,7 @@ class AlgorithmFilter(Enum):
 
 class StudyPhase(Enum):
     ModelPending = "Pending"
-    Spliting = "Spliting"
+    Splitting = "Spliting"
     Splitted = "Splitted"
     EngineeringFeature = "EngineeringFeatures"
     FeatureEngineered = "FeaturesEngineered"
@@ -522,7 +522,7 @@ class StudyConditionType(Enum):
     StudyFeatureEngineered = "StudyFeaturesEngineered"
     StudyBaselined = "StudyBaselined"
     StudySearched = "StudySearched"
-    StudyEnsambleCreated = "ModelsEnsembleCreated"
+    StudyEnsembleCreated = "ModelsEnsembleCreated"
     StudyTested = "ModelTested"
     StudyReported = "Reported"
     StudyProfiled = "Profiled"
@@ -559,6 +559,7 @@ class ReportPhase(Enum):
 class ReportFormat(Enum):
     Pdf = "pdf"
 
+
 class ReportType(Enum):
     BinaryClassificationModelReport = "binary-classification-model"
     ForecastModelReport = "forecast-model"
@@ -575,3 +576,58 @@ class ReportType(Enum):
     ForecastReport = "forecast-report"
     FeatureReport = "feature-report"
     InvalidReport = "invalid-report"
+
+
+class ModelAutobuilderConditionType(Enum):
+    Ready = "Ready"
+    DataProductReady = "DataProductReady"
+    DataProductVersionReady = "DataProductVersionReady"
+    DataSourceReady = "DataSourceReady"
+    DatasetCompleted = "DatasetCompleted"
+    StudyCompleted = "StudyCompleted"
+    PredictorReady = "PredictorReady"
+    DataAppReady = "DataAppReady"
+    Saved = "Saved"
+
+
+class ModelAutobuilderPhase(Enum):
+    Pending = "Pending"
+    DataSourceRunning = "DataSourceRunning"
+    DataSourceReady = "DataSourceReady"
+    DatasetRunning = "DatasetRunning"
+    DatasetCompleted = "DatasetCompleted"
+    StudyRunning = "StudyRunning"
+    StudyCompleted = "StudyCompleted"
+    PredictorRunning = "PredictorRunning"
+    PredictorCompleted = "PredictorCompleted"
+    DataAppRunning = "DataAppRunning"
+    DataAppCompleted = "DataAppCompleted"
+    Completed = "Completed"
+    Aborted = "Aborted"
+    Failed = "Failed"
+
+
+class ModelValidationType(Enum):
+    ModelTest = "model-test"
+    PredictionCountDrift = "prediction-count-drift"
+    PredictionLatencyDrift = "prediction-latency-drift"
+    PredictionLatencySkew = "prediction-latency-skew"
+    ModelPrefSkew = "model-pref-skew"
+    ModelPrefDrift = "model-pref-drift"
+    CategoricalColumnSkew = "cat-column-skew"
+    CategoricalColumnDrift = "cat-column-drift"
+    NumericalColumnSkew = "numerical-column-skew"
+    NumericalColumnDrift = "numerical-column-drift"
+    MissingValueDrift = "missing-values-drift"
+    MissingValueSkew = "missing-values-skew"
+    ColumnStatSkew = "column-stat-skew"
+    ColumnStatDrift = "column-stat-drift"
+
+
+class Aggregate(Enum):
+    Min = "min"
+    Max = "max"
+    Avg = "avg"
+    Median = "median"
+    Stddev = "stddev"
+    Var = "var"

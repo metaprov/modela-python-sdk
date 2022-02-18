@@ -20,13 +20,54 @@ from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 impo
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import FeaturePair as MDFeaturePair
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import SegmentSpec as MDSegmentSpec
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ReportCondition as MDReportCondition
-
+from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
+    ModelAutobuilderCondition as MDModelAutobuilderCondition
+from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ModelValidation as MDModelValidation
+from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ModelValidationResult as MDModelValidationResult
 from modela.Configuration import Configuration, ImmutableConfiguration
-from modela.common import PriorityLevel, Time, StatusError, ConditionStatus, ObjectReference
+from modela.common import PriorityLevel, Time, StatusError, ConditionStatus, ObjectReference, Freq
 from modela.data.common import DataType
-from modela.data.models import DataLocation, GovernanceSpec, CompilerSettings, Correlation, ImageLocation
+from modela.data.models import DataLocation, GovernanceSpec, CompilerSettings, Correlation, DataSourceSpec
+from modela.inference.common import AccessType
 from modela.infra.models import Workload, OutputLogs, NotificationSetting
 from modela.training.common import *
+
+
+@dataclass
+class ModelValidation(Configuration):
+    Type: ModelValidationType = None
+    PrevModel: str = ""
+    DatasetName: str = ""
+    DriftFreq: Freq = None
+    DriftInterval: int = 0
+    Column: str = ""
+    Metric: Metric = None
+    Min: float = 0
+    Max: float = 0
+    MinPercent: float = 0
+    MaxPercent: float = 0
+    Agg: Aggregate = None
+
+    def to_message(self) -> MDModelValidation:
+        return self.set_parent(MDModelValidation()).parent
+
+
+@dataclass
+class ModelValidationResult(Configuration):
+    Type: str = ""
+    DatasetName: str = ""
+    ModelName: str = ""
+    Column: str = ""
+    Error: str = ""
+    Metric: Metric = None
+    ActualValue: float = 0
+    Passed: bool = False
+    At: Time = None
+    DurationInSec: int = 0
+
+
+    def to_message(self) -> MDModelValidationResult:
+        return self.set_parent(MDModelValidationResult()).parent
 
 
 @dataclass
@@ -652,3 +693,68 @@ class ReportStatus(Configuration):
     Logs: OutputLogs = None
     LastUpdated: Time = None
     Conditions: List[ReportCondition] = field(default_factory=lambda: [])
+
+
+@dataclass
+class ModelAutobuilderCondition(Configuration):
+    Type: ModelAutobuilderConditionType = None
+    Status: ConditionStatus = None
+    LastTransitionTime: Time = None
+    Reason: str = ""
+    Message: str = ""
+
+    def to_message(self) -> MDModelAutobuilderCondition:
+        return self.set_parent(MDModelAutobuilderCondition()).parent
+
+
+DataSourceTemplate = DataSourceSpec
+
+
+@dataclass
+class ModelAutobuilderSpec(Configuration):
+    DataProductName: str = ""
+    DataProductVersionName: str = ""
+    DatasourceName: str = ""
+    DatasetName: str = ""
+    Location: DataLocation = None
+    Task: TaskType = None
+    Objective: Metric = None
+    TargetColumn: str = ""
+    MaxTime: int = 60
+    MaxModels: int = 10
+    AccessMethod: AccessType = AccessType.ClusterPort
+    AutoScale: bool = False
+    Dataapp: bool = False
+    DataSourceSpec: DataSourceSpec = None
+    Trainers: int = 1
+    Sampler: SamplerType = None
+    Aborted: bool = False
+    Owner: str = "no-one"
+    Resources: Workload = None
+    LabRef: ObjectReference = ObjectReference(Namespace="default-tenant", Name="default-lab")
+
+
+@dataclass
+class ModelAutobuilderStatus(Configuration):
+    FlatFileName: str = ""
+    DataSourceName: str = ""
+    DatasetName: str = ""
+    StudyName: str = ""
+    BestModelName: str = ""
+    PredictorName: str = ""
+    ImageRepoName: str = ""
+    Phase: ModelAutobuilderPhase = ModelAutobuilderPhase.Pending
+    Rows: int = 0
+    Cols: int = 0
+    FileSize: int = 0
+    Models: int = 0
+    TrainedModels: int = 0
+    BestModelScore: float = 0
+    Estimator: ClassicalEstimatorSpec = None
+    StartTime: Time = None
+    EndTime: Time = None
+    ObservedGeneration: int = 0
+    FailureReason: StatusError = None
+    FailureMessage: str = ""
+    LastUpdated: Time = None
+    Conditions: List[ModelAutobuilderCondition] = field(default_factory=lambda: [])

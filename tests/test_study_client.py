@@ -3,7 +3,7 @@ import unittest
 from modela.ModelaException import *
 from modela.training.Study import Study
 from modela.server import Modela
-from modela.training.models import StudySpec
+from modela.training.models import StudySpec, ModelSearch, Ensemble, Training, DataSplit
 
 
 class Test_Modela_study(unittest.TestCase):
@@ -23,6 +23,9 @@ class Test_Modela_study(unittest.TestCase):
             pass
         assert type(study) == Study
         study.submit()
+        Study(client=self.modela.Studies,
+              search=ModelSearch(MaxTime=200, MaxModels=10), Ensemble=Ensemble(Enabled=True, Top=3),
+              training_parameters=Training(Split=DataSplit()), )
 
     def test_1_list(self):
         assert len(self.modela.Studies.list("iris-product")) >= 1

@@ -5,6 +5,7 @@ from github.com.metaprov.modelaapi.services.dataset.v1.dataset_pb2 import Create
     UpdateDatasetRequest, \
     DeleteDatasetRequest, GetDatasetRequest, ListDatasetsRequest
 
+from modela import DatasetPhase
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
 from typing import List, Union
@@ -57,6 +58,9 @@ class Dataset(Resource):
         else:
             raise AttributeError("Object has no client repository")
 
+    @property
+    def phase(self) -> DatasetPhase:
+        return self.status.Phase
 
 
 

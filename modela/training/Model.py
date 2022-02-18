@@ -11,6 +11,7 @@ from modela.ModelaException import ModelaException
 from typing import List, Union
 
 from modela.training.Report import Report
+from modela.training.common import ModelPhase
 from modela.training.models import ModelSpec, ModelStatus, ModelProfile
 
 
@@ -109,6 +110,10 @@ class Model(Resource):
         else:
             raise AttributeError("Object has no client repository")
 
+    @property
+    def phase(self) -> ModelPhase:
+        return self.status.Phase
+
 
 
 class ModelClient:
@@ -175,7 +180,7 @@ class ModelClient:
 
         try:
             response = self.__stub.ListModels(request)
-            return [Model(item, self) for item in response.items.items]
+            return [Model(item, self) for item in response.models.items]
         except grpc.RpcError as err:
             error = err
 

@@ -10,6 +10,7 @@ from modela.ModelaException import ModelaException, ResourceNotFoundException
 from typing import List, Union
 
 from modela.data.Dataset import Dataset
+from modela.infra.Lab import Lab
 from modela.training.Model import Model
 from modela.training.common import TaskType
 from modela.training.models import *
@@ -17,7 +18,7 @@ from modela.training.models import *
 
 class Study(Resource):
     def __init__(self, item: MDStudy = MDStudy(), client=None, namespace="", name="", dataset: Union[str, Dataset] = "",
-                 lab: ObjectReference = None, task_type: TaskType = TaskType.AutoDetectTask, search: ModelSearch = None,
+                 lab: Union[ObjectReference, Lab] = None, task_type: TaskType = None, search: ModelSearch = None,
                  fe_search: FeatureEngineeringSearch = None, baseline: BaselineSettings = None,
                  ensemble: Ensemble = None,
                  training_parameters: Training = None, interpretability: Interpretability = None,
@@ -53,6 +54,51 @@ class Study(Resource):
             other studies.
         """
         super().__init__(item, client, namespace=namespace, name=name)
+        if type(dataset) == Dataset:
+            dataset = dataset.name
+        self._object.spec.datasetName = dataset
+
+        if type(lab) == Lab:
+            lab = lab.reference
+        self.spec.LabRef = lab
+
+        if task_type is not None:
+            self._object.spec.taskType = task_type.value
+
+        if search is not None:
+            self.spec.Search = search
+
+        if fe_search is not None:
+            self.spec.FeSearch = fe_search
+
+        if baseline is not None:
+            self.spec.Baseline = baseline
+
+        if ensemble is not None:
+            self.spec.Ensembles = ensemble
+
+        if training_parameters is not None:
+            self.spec.TrainingTemplate = training_parameters
+
+        if interpretability is not None:
+            self.spec.Interpretability = interpretability
+
+        if schedule is not None:
+            self.spec.Schedule = schedule
+
+        if notification is not None:
+            self.spec.Notification = notification
+
+        if garbage_collect:
+            self.spec.Gc.CollectAtStudyEnd = True
+
+        if keep_best_models:
+            self.spec.Gc.KeepOnlyBestModelPerAlgorithm = True
+
+        self._object.spec.activeDeadlineSeconds = timeout
+        self._object.spec.template = template
+
+
 
     @property
     def spec(self) -> StudySpec:
@@ -96,6 +142,10 @@ class Study(Resource):
             return self._client.modela.Models.get(self.namespace, self._object.status.bestModel)
         else:
             raise AttributeError("Object has no client repository")
+
+    @property
+    def phase(self) -> StudyPhase:
+        return self.status.Phase
 
 
 

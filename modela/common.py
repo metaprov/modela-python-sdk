@@ -72,6 +72,28 @@ class HardwareTarget(Enum):
     RaspberryPi8MODELB = "raspberry-pi8-modela-b"
 
 
+class TriggerScheduleEventType(Enum):
+    Now = "now"
+    Once = "once"
+    Hourly = "hourly"
+    Daily = "daily"
+    Weekly = "weekly"
+    Monthly = "monthly"
+    Yearly = "yearly"
+    Cron = "cron"
+
+
+class Freq(Enum):
+    Seconds = "second"
+    Minutes = "minute"
+    Hours = "hour"
+    Days = "day"
+    Weeks = "week"
+    Months = "month"
+    Qtrs = "quarter"
+    Years = "year"
+
+
 @dataclass
 class Time(Configuration):
     Seconds: int = 0
@@ -87,6 +109,7 @@ class ObjectReference(Configuration):
 
     Namespace: str = ""
     Name: str = ""
+
 
 @dataclass
 class SecretReference(Configuration):

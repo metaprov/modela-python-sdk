@@ -1,5 +1,7 @@
 from google.protobuf.message import Message
 from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import ObjectMeta
+
+from modela import ObjectReference
 from modela.ModelaException import ResourceNotFoundException
 
 
@@ -57,6 +59,10 @@ class Resource:
     @property
     def raw_message(self) -> Message:
         return self._object
+
+    @property
+    def reference(self) -> ObjectReference:
+        return ObjectReference(Namespace=self.namespace, Name=self.name)
 
     def submit(self, **kwargs):
         """

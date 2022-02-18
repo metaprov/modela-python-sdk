@@ -4,75 +4,21 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Training API methods, Study tests">
-      <change afterPath="$PROJECT_DIR$/tests/test_report_client.py" afterDir="false" />
+    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Add Report API models &amp; functions">
+      <change afterPath="$PROJECT_DIR$/modela/inference/common.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modela/inference/models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modela/infra/FileService.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_file_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/Configuration.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/Configuration.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/Resource.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/Resource.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/DataPipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/DataPipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/DataPipelineRun.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/DataPipelineRun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/DataProduct.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/DataProduct.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/DataProductVersion.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/DataProductVersion.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/DataSource.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/DataSource.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/data/Dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/Entity.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Entity.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/Feature.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Feature.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/FeatureHistogram.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/FeatureHistogram.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/FeaturePipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/FeaturePipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/FeaturePipelineRun.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/FeaturePipelineRun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/Featureset.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Featureset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/LabelingPipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/LabelingPipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/LabelingPipelineRun.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/LabelingPipelineRun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/Recipe.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Recipe.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/RecipeRun.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/RecipeRun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/SqlQuery.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/SqlQuery.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/SqlQueryRun.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/SqlQueryRun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/WebRequest.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/WebRequest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/WebRequestRun.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/WebRequestRun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/inference/CronPrediction.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/CronPrediction.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/inference/Curtain.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/Curtain.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/inference/DataApp.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/DataApp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/inference/Prediction.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/Prediction.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/inference/Predictor.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/Predictor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/Account.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/Account.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/Alert.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/Alert.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/ApiToken.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/ApiToken.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/Attachment.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/Attachment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/Commit.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/Commit.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/Connection.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/Connection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/Lab.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/Lab.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/License.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/License.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/ModelaSystem.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/ModelaSystem.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/Notifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/Notifier.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/ServingSite.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/ServingSite.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/Tenant.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/Tenant.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/VirtualBucket.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/VirtualBucket.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/VirtualCluster.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/VirtualCluster.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/VirtualVolume.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/VirtualVolume.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/connection_models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/connection_models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/infra/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/team/Meeting.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/team/Meeting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/team/PostMortem.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/team/PostMortem.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/team/Review.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/team/Review.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/team/RunBook.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/team/RunBook.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/team/Todo.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/team/Todo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/CronReport.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/CronReport.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/training/Model.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/ModelAutobuilder.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/ModelAutobuilder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/ModelCompilerRun.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/ModelCompilerRun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/ModelPipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/ModelPipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/ModelPipelineRun.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/ModelPipelineRun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/Notebook.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Notebook.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/NotebookRun.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/NotebookRun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/Report.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Report.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/training/Study.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Study.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/training/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/common.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/training/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_configuration.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_configuration.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_dataset_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_dataset_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_model_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_model_client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_study_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_study_client.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -119,7 +65,7 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.modules.go.list.on.any.changes.was.set" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/test_report_client.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/test_file_service.py" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -140,7 +86,7 @@
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\catalog" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests in test_report_client.py">
+  <component name="RunManager" selected="Go Build.go build modela-python-sdk gen_crd_docs.go">
     <configuration name="go build modela-python-sdk gen_crd_docs.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <working_directory value="$PROJECT_DIR$" />
@@ -239,6 +185,21 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="Python tests in test_file_service.py" type="tests" factoryName="Autodetect" nameIsGenerated="true">
+      <module name="modela-python-sdk" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="C:\Users\liamm\PycharmProjects\modela-python-sdk\venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_file_service.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
     <configuration name="Python tests in test_model_client.py" type="tests" factoryName="Autodetect" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -301,16 +262,7 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python tests.Python tests in test_account_client.py" />
-      <item itemvalue="Python tests.Python tests in test_dataproducts_client.py" />
-      <item itemvalue="Python tests.Python tests in test_dataproductversion_client.py" />
-      <item itemvalue="Python tests.Python tests in test_report_client.py" />
-      <item itemvalue="Python tests.Python tests in test_dataset_client.py" />
-      <item itemvalue="Python tests.Python tests in test_datasources_client.py" />
-      <item itemvalue="Python tests.Python tests in test_model_client.py" />
-      <item itemvalue="Python tests.Python tests in test_study_client.py" />
-      <item itemvalue="Python tests.Unittests in test_configuration.py" />
-      <item itemvalue="Python tests.Python tests for test_modela_grpc_client.TestModela_python_client.test_predict" />
+      <item itemvalue="Go Build.go build modela-python-sdk gen_crd_docs.go" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -326,7 +278,7 @@
       <workItem from="1643654678216" duration="325000" />
       <workItem from="1643740588978" duration="37478000" />
       <workItem from="1644689597749" duration="17078000" />
-      <workItem from="1644770166852" duration="54260000" />
+      <workItem from="1644770166852" duration="72626000" />
     </task>
     <task id="LOCAL-00001" summary="fixed the client. upgrade version">
       <created>1630772236555</created>
@@ -398,7 +350,14 @@
       <option name="project" value="LOCAL" />
       <updated>1644972165916</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Add Report API models &amp; functions">
+      <created>1645057505413</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1645057505413</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -426,10 +385,11 @@
     <MESSAGE value="Implement Model &amp; Study API models, other API changes" />
     <MESSAGE value="Training API methods, Study tests" />
     <MESSAGE value="Connection API models" />
-    <option name="LAST_COMMIT_MESSAGE" value="Connection API models" />
+    <MESSAGE value="Add Report API models &amp; functions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Report API models &amp; functions" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/modela_python_sdk$Unittests_in_test_configuration_py.coverage" NAME="Unittests in test_configuration.py Coverage Results" MODIFIED="1645053367344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1645057122450" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1645144804743" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>

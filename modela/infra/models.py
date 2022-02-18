@@ -13,17 +13,11 @@ class NotificationSetting(Configuration):
     SuccessTTL: int = 3600
     NotifierName: str = ""
 
-    def to_message(self) -> MDNotificationSpec:
-        return self.set_parent(MDNotificationSpec()).parent
-
 
 @dataclass
 class Workload(Configuration):
     WorkloadClassName: str = ""
     Enable: bool = False
-
-    def to_message(self) -> MDResourceSpec:
-        return self.set_parent(MDResourceSpec()).parent
 
 
 @dataclass
@@ -33,9 +27,6 @@ class OutputLogs(Configuration):
 
     def to_message(self) -> MDLogs:
         return self.set_parent(MDLogs()).parent
-
-    def __post_init__(self):
-        self.Paths = TrackedList(self.Paths, self, "Paths")
 
 
 @dataclass

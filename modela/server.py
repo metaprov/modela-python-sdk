@@ -27,6 +27,7 @@ from github.com.metaprov.modelaapi.services.sqlqueryrun.v1 import sqlqueryrun_pb
 from github.com.metaprov.modelaapi.services.webrequestrun.v1 import webrequestrun_pb2_grpc
 from github.com.metaprov.modelaapi.services.webrequest.v1 import webrequest_pb2_grpc
 from github.com.metaprov.modelaapi.services.cronprediction.v1 import cronprediction_pb2_grpc
+from github.com.metaprov.modelaapi.services.fileservices.v1 import fileservices_pb2_grpc
 from github.com.metaprov.modelaapi.services.curtain.v1 import curtain_pb2_grpc
 from github.com.metaprov.modelaapi.services.dataapp.v1 import dataapp_pb2_grpc
 from github.com.metaprov.modelaapi.services.prediction.v1 import prediction_pb2_grpc
@@ -87,6 +88,7 @@ from modela.inference.Curtain import *
 from modela.inference.DataApp import *
 from modela.inference.Prediction import *
 from modela.inference.Predictor import *
+from modela.infra.FileService import *
 from modela.infra.Account import *
 from modela.infra.Alert import *
 from modela.infra.ApiToken import *
@@ -151,6 +153,9 @@ class Modela:
             self._channel = grpc.intercept_channel(  # type: ignore
                 self._channel, *interceptors
             )
+
+        self.__fileservice_stub = fileservices_pb2_grpc.FileServicesServiceStub(self._channel)
+        self.__fileservice_client = FileService(self.__fileservice_stub)
 
         self.__datapipelinerun_stub = datapipelinerun_pb2_grpc.DataPipelineRunServiceStub(self._channel)
         self.__datapipelinerun_client = DataPipelineRunClient(self.__datapipelinerun_stub, self)
@@ -431,7 +436,11 @@ class Modela:
                        sample, task_type, notification)
 
     @property
-    def Entitys(self):
+    def FileService(self):
+        return self.__fileservice_client
+
+    @property
+    def Entities(self):
         return self.__entity_client
 
     def Entity(self, namespace="", name="") -> Entity:
