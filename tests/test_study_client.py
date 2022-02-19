@@ -4,6 +4,7 @@ from modela.ModelaException import *
 from modela.training.Study import Study
 from modela.server import Modela
 from modela.training.models import StudySpec, ModelSearch, Ensemble, Training, DataSplit
+from modela import *
 
 
 class Test_Modela_study(unittest.TestCase):
@@ -24,8 +25,14 @@ class Test_Modela_study(unittest.TestCase):
         assert type(study) == Study
         study.submit()
         Study(client=self.modela.Studies,
-              search=ModelSearch(MaxTime=200, MaxModels=10), Ensemble=Ensemble(Enabled=True, Top=3),
-              training_parameters=Training(Split=DataSplit()), )
+              name="test-study",
+              namespace="iris-product",
+              dataset="iris",
+              task_type=TaskType.MultiClassification,
+              objective=Metric.Accuracy,
+              location=DataLocation(BucketName="modela"),
+              search=ModelSearch(MaxTime=200, MaxModels=20, Trainers=4,
+                                 SearchSpace=AlgorithmSearchSpace(Allowlist=[ClassicEstimator.LogisticRegression]))).submit()
 
     def test_1_list(self):
         assert len(self.modela.Studies.list("iris-product")) >= 1

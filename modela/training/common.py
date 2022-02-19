@@ -177,7 +177,7 @@ class FeatureSelection(Enum):
     DropConstantFeatures = "drop-constant-features"
     DropDuplicateFeatures = "drop-deplicated-features"
     DropCorrelatedFeatures = "drop-correlated-features"
-    MutalInformation = "mutal-information-feature-selection"
+    MutualInformation = "mutal-information"
     ChiSquare = "chisquare-fearture-selection"
     Anova = "anova-feature-selection"
     StepForward = "step-forward-feature-selection"

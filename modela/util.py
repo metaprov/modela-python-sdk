@@ -113,8 +113,9 @@ class TrackedList(_collections_abc.MutableSequence):
 
 
     def pop(self, i=-1):
-        return self.data.pop(i)
+        p = self.data.pop(i)
         self.propagate()
+        return p
 
     def remove(self, item):
         self.data.remove(item)

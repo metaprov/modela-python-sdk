@@ -202,7 +202,7 @@ class PredictorSpec(Configuration):
     ForewardCurtain: str = ""
     BackwardCurtain: str = ""
     Type: PredictorType = PredictorType.Online
-    Task: TaskType = TaskType.UnknownTask
+    Task: TaskType = None
     PredictionThreshold: float = 0
     Monitor: MonitorSpec = None
     Auth: PredictorAuthSpec = None

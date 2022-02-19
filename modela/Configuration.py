@@ -36,7 +36,10 @@ class Configuration(object):
         annotation_type = get_type_hints(self)[attribute]
         if typing_utils.issubtype(annotation_type, List):
             del getattr(message, real_field)[:]
-            if issubclass(get_args(annotation_type)[0], Enum) or isPrimitive(get_args(annotation_type)[0]()):
+            if issubclass(get_args(annotation_type)[0], Enum):
+                getattr(message, real_field).extend([model.value for model in value])
+
+            elif isPrimitive(get_args(annotation_type)[0]()):
                 getattr(message, real_field).extend(value)
             else:
                 getattr(message, real_field).extend([model.to_message() for model in value])
@@ -103,8 +106,8 @@ class Configuration(object):
     def set_parent(self, message: Message):
         """
         Set the Configuration's related Protobuf Message. Each attribute of the configuration will be applied to the message.
-        If `message` does not contain the exact attributes of the configuration. All future changes to the Configuration
-        will be propagated to the message.
+        If `message` does not contain the exact attributes of the configuration the function will fail. All future changes
+        to the Configuration will be propagated to the message.
 
         :rtype: Configuration
         :param message: Protobuf Message which represents this Configuration.

@@ -1,3 +1,4 @@
+import time
 import unittest
 
 from modela.ModelaException import *
@@ -20,6 +21,7 @@ class Test_Modela_dataset(unittest.TestCase):
             dataset.delete()
         finally:
             pass
+        time.sleep(0.2)
         assert type(dataset) == Dataset
         dataset.submit()
 

@@ -154,7 +154,7 @@ class Training(Configuration):
     CheckpointInterval: int = 10
     Sh: SuccessiveHalving = None
     Seed: float = 42
-    Resources: Workload = None
+    Resources: Workload = Workload("general-large")
     Gpu: bool = False
     Distributed: bool = False
     NodeCount: int = 1
@@ -231,7 +231,7 @@ class GeneratedColumnSpec(ImmutableConfiguration):
 
 @dataclass
 class FeatureSelection(Configuration):
-    Enabled: bool = True
+    Enabled: bool = False
     SamplePct: int = 100
     Embedding: bool = True
     Filter: bool = True
@@ -510,7 +510,7 @@ class ModelSearch(Configuration):
     SearchSpace: AlgorithmSearchSpace = AlgorithmSearchSpace()
     EarlyStopAfter: int = 0
     KeepOnlyTopModel: bool = True
-    Objective: Metric = Metric.Null
+    Objective: Metric = None
     Objective2: Metric = None
 
 
@@ -577,7 +577,7 @@ class StudySpec(Configuration):
     ModelImagePushed: bool = False
     ModelBenchmarked: bool = True
     ModelExplained: bool = True
-    Location: DataLocation = None
+    Location: DataLocation = DataLocation(BucketName="default-minio-bucket")
     Owner: str = "no-one"
     ActiveDeadlineSeconds: int = 600
     Compilation: CompilerSettings = None

@@ -100,7 +100,7 @@ class DatasetClient:
         request.name = name
         try:
             response = self.__stub.GetDataset(request)
-            return Dataset(response.item, self)
+            return Dataset(response.dataset, self)
         except grpc.RpcError as err:
             error = err
 

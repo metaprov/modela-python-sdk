@@ -17,13 +17,22 @@ from modela.training.models import *
 
 
 class Study(Resource):
-    def __init__(self, item: MDStudy = MDStudy(), client=None, namespace="", name="", dataset: Union[str, Dataset] = "",
-                 lab: Union[ObjectReference, Lab] = None, task_type: TaskType = None, search: ModelSearch = None,
-                 fe_search: FeatureEngineeringSearch = None, baseline: BaselineSettings = None,
+    def __init__(self, item: MDStudy = MDStudy(), client=None, namespace="", name="",
+                 dataset: Union[str, Dataset] = "",
+                 lab: Union[ObjectReference, Lab] = None,
+                 location: DataLocation = None,
+                 task_type: TaskType = None,
+                 objective: Metric = None,
+                 search: ModelSearch = None,
+                 fe_search: FeatureEngineeringSearch = None,
+                 baseline: BaselineSettings = None,
                  ensemble: Ensemble = None,
-                 training_parameters: Training = None, interpretability: Interpretability = None,
+                 trainer_template: Training = None,
+                 interpretability: Interpretability = None,
                  schedule: StudySchedule = None,
-                 notification: NotificationSetting = None, garbage_collect: bool = True, keep_best_models: bool = True,
+                 notification: NotificationSetting = None,
+                 garbage_collect: bool = True,
+                 keep_best_models: bool = True,
                  timeout: int = 600,
                  template: bool = False):
         """
@@ -33,15 +42,17 @@ class Study(Resource):
         :param name: The name of the resource.
         :param dataset: If specified as a string, the SDK will attempt to find a Dataset resource with the given name.
             If specified as a Dataset object, or if one was found with the given name, it will be used in the Study.
-        :param lab: The object reference to a lab as a training environment
+        :param lab: The object reference or Lab object for which all Study-related workloads will be performed under.
+        :param location: The data location which specifies where to store study artifacts.
         :param task_type: The ML task type of the Study
+        :param objective: The objective metric relevant to the task type.
         :param search: The search parameters define how many models to sample
         :param fe_search: The feature engineering search parameters of the Study
         :param baseline: The baseline settings for the Study, which if enabled will train an unoptimized model of each
             algorithm type for benchmarking.
         :param ensemble: The ensemble settings for the Study, which if enabled will combine the top estimators of
             the study after the initial model search.
-        :param training_parameters: The training template for each model created by the Study.
+        :param trainer_template: The training template for each model created by the Study.
         :param interpretability: The interpretability settings for the Study, which when enabled can produce ICE, LIME,
             and Shap value plots
         :param schedule: The schedule for the study to run chronically
@@ -62,8 +73,17 @@ class Study(Resource):
             lab = lab.reference
         self.spec.LabRef = lab
 
+        if location is not None:
+            self.spec.Location = location
+
         if task_type is not None:
-            self._object.spec.taskType = task_type.value
+            self._object.spec.task = task_type.value
+
+        if objective is not None:
+            self._object.spec.search.objective = objective.value
+            self.spec.Search.Objective = objective
+            self.spec.Search.Objective2 = objective
+
 
         if search is not None:
             self.spec.Search = search
@@ -77,8 +97,8 @@ class Study(Resource):
         if ensemble is not None:
             self.spec.Ensembles = ensemble
 
-        if training_parameters is not None:
-            self.spec.TrainingTemplate = training_parameters
+        if trainer_template is not None:
+            self.spec.TrainingTemplate = trainer_template
 
         if interpretability is not None:
             self.spec.Interpretability = interpretability
