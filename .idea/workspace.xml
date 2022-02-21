@@ -4,25 +4,25 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Add Report API models &amp; functions">
-      <change afterPath="$PROJECT_DIR$/modela/inference/common.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modela/infra/FileService.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_file_service.py" afterDir="false" />
+    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Add Predictor resource">
+      <change afterPath="$PROJECT_DIR$/modela/inference/InferenceService.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_inference_service.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_predictor_client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/Configuration.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/Configuration.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/Resource.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/Resource.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/Dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/inference/Predictor.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/Predictor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/inference/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/infra/FileService.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/FileService.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/Model.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/training/ModelAutobuilder.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/ModelAutobuilder.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/training/Study.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Study.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/training/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/common.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/training/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/util.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_dataset_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_dataset_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_modela_grpc_client.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_study_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_study_client.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -50,6 +50,18 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/tests/test_predictor_client.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/tests/test_study_client.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/modela/inference/models.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/modela/inference/Prediction.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/modela/inference/Predictor.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/modela/infra/Connection.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/modela/__init__.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/modela/common.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/modela/training/Study.py" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/modela/infra/ModelaSystem.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -69,7 +81,7 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.modules.go.list.on.any.changes.was.set" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/test_file_service.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/test_inference_service.py" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -90,7 +102,7 @@
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\catalog" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests in test_study_client.py">
+  <component name="RunManager" selected="Python tests.Python tests in test_inference_service.py">
     <configuration name="go build modela-python-sdk gen_crd_docs.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <working_directory value="$PROJECT_DIR$" />
@@ -204,6 +216,21 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="Python tests in test_inference_service.py" type="tests" factoryName="Autodetect" nameIsGenerated="true">
+      <module name="modela-python-sdk" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="C:\Users\liamm\PycharmProjects\modela-python-sdk\venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_inference_service.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
     <configuration name="Python tests in test_model_client.py" type="tests" factoryName="Autodetect" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -216,6 +243,21 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_model_client.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests in test_predictor_client.py" type="tests" factoryName="Autodetect" nameIsGenerated="true">
+      <module name="modela-python-sdk" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="C:\Users\liamm\PycharmProjects\modela-python-sdk\venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_predictor_client.py&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
@@ -276,6 +318,8 @@
       <item itemvalue="Python tests.Python tests in test_report_client.py" />
       <item itemvalue="Python tests.Python tests in test_study_client.py" />
       <item itemvalue="Python tests.Unittests in test_configuration.py" />
+      <item itemvalue="Python tests.Python tests in test_predictor_client.py" />
+      <item itemvalue="Python tests.Python tests in test_inference_service.py" />
       <item itemvalue="Python tests.Python tests for test_modela_grpc_client.TestModela_python_client.test_predict" />
     </list>
   </component>
@@ -371,7 +415,14 @@
       <option name="project" value="LOCAL" />
       <updated>1645057505413</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Add Predictor resource">
+      <created>1645236264787</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1645236264787</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -400,10 +451,11 @@
     <MESSAGE value="Training API methods, Study tests" />
     <MESSAGE value="Connection API models" />
     <MESSAGE value="Add Report API models &amp; functions" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Report API models &amp; functions" />
+    <MESSAGE value="Add Predictor resource" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Predictor resource" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/modela_python_sdk$Unittests_in_test_configuration_py.coverage" NAME="Unittests in test_configuration.py Coverage Results" MODIFIED="1645053367344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1645235633726" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1645466064184" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>

@@ -103,7 +103,7 @@ class Time(Configuration):
 @dataclass
 class ObjectReference(Configuration):
     """
-    A Object Reference defines the location of a resource on the current operational cluster, denoted by the namespace
+    An Object Reference defines the location of a resource on the current operational cluster, denoted by the namespace
     of the resource and the name of the resource which exists on that namespace.
     """
 

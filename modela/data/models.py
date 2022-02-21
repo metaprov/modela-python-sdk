@@ -332,7 +332,7 @@ class ColumnRelationship(Configuration):
 
 @dataclass
 class CorrelationSetting(Configuration):
-    Float64: float = 50
+    Cutoff: float = 50
     Method: str = "pearson"
     Top: int = 10
 

@@ -5,6 +5,7 @@ from github.com.metaprov.modelaapi.services.predictor.v1.predictor_pb2 import Cr
     UpdatePredictorRequest, \
     DeletePredictorRequest, GetPredictorRequest, ListPredictorsRequest
 
+from modela import ObjectReference
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
 from typing import List, Union
@@ -18,7 +19,7 @@ from modela.training.Model import Model
 
 class Predictor(Resource):
     def __init__(self, item: MDPredictor = MDPredictor(), client=None, namespace="", name="",
-                 serving_site: Union[str, ServingSite] = None,
+                 serving_site: Union[ObjectReference, ServingSite, str] = "default-serving-site",
                  model: Union[Model, str] = None,
                  models: List[ModelDeploymentSpec] = [],
                  port: int = 3000,
@@ -32,7 +33,8 @@ class Predictor(Resource):
         :param client: The Predictor client repository, which can be obtained through an instance of Modela.
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
-        :param serving_site: The object reference or Serving Site object for which the predictor will be deployed under.
+        :param serving_site: The object reference, Serving Site object, or name under default-tenant for which the
+            predictor will be deployed under.
         :param model: The Model object or name that the predictor will serve predictions for. This parameter
             will instantiate the predictor with a singe default deployment specification for the model.
         :param models: The list of model deployment specifications that will be applied to the predictor.
@@ -50,6 +52,34 @@ class Predictor(Resource):
         """
         super().__init__(item, client, namespace=namespace, name=name)
 
+        if type(serving_site) == ServingSite:
+            serving_site = serving_site.reference
+        elif type(serving_site) == str:
+            serving_site = ObjectReference(Namespace="default-tenant", Name=serving_site)
+        self.spec.ServingsiteRef = serving_site
+
+        if model is not None:
+            if type(model) == Model:
+                model = model.name
+            self.spec.Models = [ModelDeploymentSpec(ModelName=model)]
+        else:
+            self.spec.Models = models
+
+        if port is not None:
+            self._object.spec.port = port
+
+        if path is not None:
+            self._object.spec.path = path
+
+        if access_type is not None:
+            self._object.spec.accessType = access_type.value
+
+        if replicas > 0:
+            self._object.spec.replicas = replicas
+
+        if workload is not None:
+            self.spec.Resources = workload
+
     @property
     def spec(self) -> PredictorSpec:
         return PredictorSpec().copy_from(self._object.spec)
@@ -61,7 +91,8 @@ class Predictor(Resource):
     def default(self):
         PredictorSpec().apply_config(self._object.spec)
 
-
+    def connect(self):
+        self.name
 
 class PredictorClient:
     def __init__(self, stub, modela):
@@ -118,9 +149,12 @@ class PredictorClient:
         ModelaException.process_error(error)
         return False
 
-    def list(self, namespace: str) -> Union[List[Predictor], bool]:
+    def list(self, namespace: str, labels: dict[str, str] = None) -> Union[List[Predictor], bool]:
         request = ListPredictorsRequest()
         request.namespace = namespace
+        if labels is not None:
+            request.labels.update(labels)
+
         try:
             response = self.__stub.ListPredictors(request)
             return [Predictor(item, self) for item in response.predictors.items]
@@ -129,5 +163,7 @@ class PredictorClient:
 
         ModelaException.process_error(error)
         return False
+
+
 
 

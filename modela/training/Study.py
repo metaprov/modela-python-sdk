@@ -11,6 +11,7 @@ from typing import List, Union
 
 from modela.data.Dataset import Dataset
 from modela.infra.Lab import Lab
+from modela.infra.VirtualBucket import VirtualBucket
 from modela.training.Model import Model
 from modela.training.common import TaskType
 from modela.training.models import *
@@ -19,8 +20,8 @@ from modela.training.models import *
 class Study(Resource):
     def __init__(self, item: MDStudy = MDStudy(), client=None, namespace="", name="",
                  dataset: Union[str, Dataset] = "",
-                 lab: Union[ObjectReference, Lab] = None,
-                 location: DataLocation = None,
+                 lab: Union[ObjectReference, Lab, str] = "default-lab",
+                 bucket: Union[VirtualBucket, str] = None,
                  task_type: TaskType = None,
                  objective: Metric = None,
                  search: ModelSearch = None,
@@ -42,8 +43,9 @@ class Study(Resource):
         :param name: The name of the resource.
         :param dataset: If specified as a string, the SDK will attempt to find a Dataset resource with the given name.
             If specified as a Dataset object, or if one was found with the given name, it will be used in the Study.
-        :param lab: The object reference or Lab object for which all Study-related workloads will be performed under.
-        :param location: The data location which specifies where to store study artifacts.
+        :param lab: The object reference, Lab object, or lab name under the default-tenant for which all Study-related
+            workloads will be performed under.
+        :param bucket: The Bucket object or name of the bucket which will store the Study artifacts
         :param task_type: The ML task type of the Study
         :param objective: The objective metric relevant to the task type.
         :param search: The search parameters define how many models to sample
@@ -71,10 +73,14 @@ class Study(Resource):
 
         if type(lab) == Lab:
             lab = lab.reference
+        elif type(lab) == str:
+            lab = ObjectReference(Namespace="default-tenant", Name=lab)
         self.spec.LabRef = lab
 
-        if location is not None:
-            self.spec.Location = location
+        if bucket is not None:
+            if type(bucket) == VirtualBucket:
+                bucket = bucket.name
+            self.spec.Location = DataLocation(BucketName=bucket)
 
         if task_type is not None:
             self._object.spec.task = task_type.value
@@ -82,8 +88,6 @@ class Study(Resource):
         if objective is not None:
             self._object.spec.search.objective = objective.value
             self.spec.Search.Objective = objective
-            self.spec.Search.Objective2 = objective
-
 
         if search is not None:
             self.spec.Search = search
@@ -224,9 +228,12 @@ class StudyClient:
         ModelaException.process_error(error)
         return False
 
-    def list(self, namespace: str) -> Union[List[Study], bool]:
+    def list(self, namespace: str, labels: dict[str, str] = None) -> Union[List[Study], bool]:
         request = ListStudyRequest()
         request.namespace = namespace
+        if labels is not None:
+            request.labels.update(labels)
+
         try:
             response = self.__stub.ListStudies(request)
             return [Study(item, self) for item in response.studies.items]

@@ -35,7 +35,7 @@ class DataBlockRequestIterable(object):
             hash = hashlib.new('md5', data_block).hexdigest()
             request = DataBlock(
                 name=self.name,
-                data=b"",
+                data="",
                 md5_hash=hash,
                 tenant=self.tenant,
                 dataProductName=self.data_product,

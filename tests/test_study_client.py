@@ -1,3 +1,4 @@
+import time
 import unittest
 
 from modela.ModelaException import *
@@ -18,21 +19,24 @@ class Test_Modela_study(unittest.TestCase):
 
     def test_0_create(self):
         study = self.modela.Study(namespace="iris-product", name="test")
+        study.spec.Location = DataLocation(BucketName="test")
         try:
             study.delete()
         finally:
             pass
+
+        time.sleep(0.1)
         assert type(study) == Study
         study.submit()
-        Study(client=self.modela.Studies,
-              name="test-study",
-              namespace="iris-product",
-              dataset="iris",
-              task_type=TaskType.MultiClassification,
-              objective=Metric.Accuracy,
-              location=DataLocation(BucketName="modela"),
-              search=ModelSearch(MaxTime=200, MaxModels=20, Trainers=4,
-                                 SearchSpace=AlgorithmSearchSpace(Allowlist=[ClassicEstimator.LogisticRegression]))).submit()
+        # Study(client=self.modela.Studies,
+        #       name="test-study",
+        #       namespace="iris-product",
+        #       dataset="iris",
+        #       task_type=TaskType.MultiClassification,
+        #       objective=Metric.Accuracy,
+        #       bucket="modela",
+        #       search=ModelSearch(MaxTime=200, MaxModels=20, Trainers=4,
+        #                          SearchSpace=AlgorithmSearchSpace(Allowlist=[ClassicEstimator.LogisticRegression]))).submit()
 
     def test_1_list(self):
         assert len(self.modela.Studies.list("iris-product")) >= 1

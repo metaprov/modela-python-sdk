@@ -88,6 +88,7 @@ from modela.inference.Curtain import *
 from modela.inference.DataApp import *
 from modela.inference.Prediction import *
 from modela.inference.Predictor import *
+from modela.inference.InferenceService import *
 from modela.infra.FileService import *
 from modela.infra.Account import *
 from modela.infra.Alert import *
@@ -444,7 +445,7 @@ class Modela:
         return self.__entity_client
 
     def Entity(self, namespace="", name="") -> Entity:
-        return Entity(MDEntity(), self.Entitys, namespace, name)
+        return Entity(MDEntity(), self.Entities, namespace, name)
 
     @property
     def FeatureHistograms(self):

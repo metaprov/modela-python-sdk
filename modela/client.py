@@ -266,6 +266,7 @@ class ModelaGrpcClient(object):
         request.payload   = payload
         request.labeled   = labeled
         request.metrics.extend(metrics)
+
         try:
             response = self._stub.Predict(request)
             return response.items

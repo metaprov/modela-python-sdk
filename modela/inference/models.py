@@ -10,6 +10,8 @@ from github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 imp
 from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import \
     ModelDeploymentStatus as MDModelDeploymentStatus
 from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import RunSchedule as MDRunSchedule
+from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1.grpcinferenceservice_pb2 import PredictRequest as MDPredictRequest
+
 from modela import Configuration, ConditionStatus, Time, ObjectReference, StatusError, TriggerScheduleEventType
 from modela.inference.common import PredictorConditionType, CanaryMetric, AccessType, PredictorType, \
     ModelDeploymentPhase
@@ -196,10 +198,10 @@ class PredictorSpec(Configuration):
     Replicas: int = 1
     AutoScaling: PredictorAutoScaling = None
     Owner: str = "no-one"
-    Resources: Workload = None
+    Resources: Workload = Workload("general-nano")
     Cache: PredictionCacheSpec = None
     # Store: OnlineFeaturestoreSpec = None
-    ForewardCurtain: str = ""
+    ForwardCurtain: str = ""
     BackwardCurtain: str = ""
     Type: PredictorType = PredictorType.Online
     Task: TaskType = None

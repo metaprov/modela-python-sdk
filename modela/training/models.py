@@ -236,7 +236,7 @@ class FeatureSelection(Configuration):
     Embedding: bool = True
     Filter: bool = True
     Wrapper: bool = True
-    Pipeline: List[FeatureSelection] = field(default_factory=lambda: [])
+    Pipeline: List[FeatureSelectionType] = field(default_factory=lambda: [])
     VarianceThresholdPct: int = 5
     CorrThreshold: int = 95
     TopN: int = 0
@@ -302,7 +302,7 @@ class FeatureEngineeringPipeline(ImmutableConfiguration):
 class FeatureEngineeringSpec(ImmutableConfiguration):
     Pipelines: List[FeatureEngineeringPipeline] = field(default_factory=lambda: [])
     Imbalance: ImbalanceHandling = ImbalanceHandling.ImbalanceAuto
-    Selection: FeatureSelection = None
+    Selection: FeatureSelection = FeatureSelection()
 
 
 @dataclass
@@ -532,7 +532,7 @@ class FeatureEngineeringSearch(Configuration):
     SamplePct: int = 100
     AutoRemove: bool = True
     Reuse: bool = False
-    FeatureSelectionTemplate: FeatureSelection = None
+    FeatureSelectionTemplate: FeatureSelection = FeatureSelection()
 
 
 @dataclass

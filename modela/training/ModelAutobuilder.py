@@ -70,9 +70,12 @@ class ModelAutobuilderClient:
         ModelaException.process_error(error)
         return False
 
-    def list(self, namespace: str) -> Union[List[ModelAutobuilder], bool]:
+    def list(self, namespace: str, labels: dict[str, str] = None) -> Union[List[ModelAutobuilder], bool]:
         request = ListModelAutobuildersRequest()
         request.namespace = namespace
+        if labels is not None:
+            request.labels.update(labels)
+
         try:
             response = self.__stub.ListModelAutobuilders(request)
             return [ModelAutobuilder(item, self) for item in response.modelautobuilders.items]

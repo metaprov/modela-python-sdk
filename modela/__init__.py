@@ -10,3 +10,5 @@ from modela.training.models import *
 from modela.training.common import *
 from modela.infra.models import *
 from modela.infra.common import *
+from modela.inference.models import *
+from modela.inference.common import *

@@ -172,14 +172,13 @@ class RelationshipArity(Enum):
     ManyToMany = "many-to-many"
 
 
-class FeatureSelection(Enum):
+class FeatureSelectionType(Enum):
     DropFeatures = "drop-features"
     DropConstantFeatures = "drop-constant-features"
     DropDuplicateFeatures = "drop-deplicated-features"
     DropCorrelatedFeatures = "drop-correlated-features"
     MutualInformation = "mutal-information"
     ChiSquare = "chisquare-fearture-selection"
-    Anova = "anova-feature-selection"
     StepForward = "step-forward-feature-selection"
     StepBackward = "step-backward-feature-selection"
     LassoRegression = "lasso-regression-feature-selection"
