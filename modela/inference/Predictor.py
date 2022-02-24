@@ -10,6 +10,7 @@ from modela.Resource import Resource
 from modela.ModelaException import ModelaException
 from typing import List, Union
 
+from modela.inference.InferenceService import InferenceService
 from modela.inference.common import AccessType
 from modela.inference.models import ModelDeploymentSpec, PredictorSpec, PredictorStatus
 from modela.infra.ServingSite import ServingSite
@@ -91,8 +92,14 @@ class Predictor(Resource):
     def default(self):
         PredictorSpec().apply_config(self._object.spec)
 
-    def connect(self):
-        self.name
+    def connect(self, node_ip="") -> InferenceService:
+        if self.spec.AccessType == AccessType.NodePort:
+            return InferenceService((node_ip if node_ip != "" else self.spec.Path), self.spec.NodePort)
+        elif self.spec.AccessType == AccessType.Ingress or self.spec.AccessType == AccessType.ClusterIP:
+            return InferenceService(self.spec.Path, "")
+        else:
+            return InferenceService(self.spec.Path, self.spec.Port)
+
 
 class PredictorClient:
     def __init__(self, stub, modela):
@@ -163,7 +170,3 @@ class PredictorClient:
 
         ModelaException.process_error(error)
         return False
-
-
-
-

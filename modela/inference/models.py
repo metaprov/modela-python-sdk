@@ -10,7 +10,8 @@ from github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 imp
 from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import \
     ModelDeploymentStatus as MDModelDeploymentStatus
 from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import RunSchedule as MDRunSchedule
-from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1.grpcinferenceservice_pb2 import PredictRequest as MDPredictRequest
+from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1.grpcinferenceservice_pb2 import \
+    PredictRequest as MDPredictRequest, ProbabilityValue as MDProbabilityValue, ShapValue as MDShapValue
 
 from modela import Configuration, ConditionStatus, Time, ObjectReference, StatusError, TriggerScheduleEventType
 from modela.inference.common import PredictorConditionType, CanaryMetric, AccessType, PredictorType, \
@@ -193,6 +194,7 @@ class PredictorSpec(Configuration):
     Progressive: ProgressiveSpec = None
     ArtifactsFolder: str = ""
     Port: int = 8080
+    NodePort: int = 30000
     Path: str = ""
     AccessType: PredictorAccessType = None
     Replicas: int = 1
@@ -208,3 +210,34 @@ class PredictorSpec(Configuration):
     PredictionThreshold: float = 0
     Monitor: MonitorSpec = None
     Auth: PredictorAuthSpec = None
+
+@dataclass
+class ProbabilityValue(Configuration):
+    Label: str = ""
+    Probability: float = 0
+
+    def to_message(self) -> MDProbabilityValue:
+        return self.set_parent(MDProbabilityValue()).parent
+
+@dataclass
+class ShapValue(Configuration):
+    Feature: str = ""
+    Value: float = 0
+
+    def to_message(self) -> MDShapValue:
+        return self.set_parent(MDShapValue()).parent
+
+
+@dataclass
+class PredictionResult(Configuration):
+    Success: bool = False
+    Score: float = 0
+    Label: str = ""
+    Probabilities: List[ProbabilityValue] = field(default_factory=lambda: [])
+    ShapValues: List[ShapValue] = field(default_factory=lambda: [])
+    MissingColumns: List[str] = field(default_factory=lambda: [])
+    OutOfBound: List[str] = field(default_factory=lambda: [])
+    BaseShapValue: float = 0
+
+
+

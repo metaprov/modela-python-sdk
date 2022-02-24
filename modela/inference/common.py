@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class AccessType(Enum):
-    ClusterPort = "cluster-port"
+    ClusterIP = "cluster-ip"
     NodePort = "node-port"
     LoadBalancer = "load-balancer"
     Ingress = "ingress"

@@ -722,7 +722,7 @@ class ModelAutobuilderSpec(Configuration):
     TargetColumn: str = ""
     MaxTime: int = 60
     MaxModels: int = 10
-    AccessMethod: AccessType = AccessType.ClusterPort
+    AccessMethod: AccessType = AccessType.ClusterIP
     AutoScale: bool = False
     Dataapp: bool = False
     DataSourceSpec: DataSourceSpec = None
