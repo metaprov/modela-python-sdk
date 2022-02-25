@@ -31,12 +31,12 @@ class DataBlockRequestIterable(object):
 
     def __next__(self):
         data_block = self.data[self.loc:self.loc + self.BLOCK_SIZE]
-        if data_block:
-            hash = hashlib.new('md5', data_block).hexdigest()
+        if len(data_block) > 0:
+            hash = hashlib.new('md5', str(data_block).encode('utf-8')).hexdigest()
             request = DataBlock(
                 name=self.name,
-                data="",
-                md5_hash=hash,
+                data=bytes(data_block, encoding='utf-8'),
+                md5_hash=str(hash),
                 tenant=self.tenant,
                 dataProductName=self.data_product,
                 dataProductVersion=self.version,

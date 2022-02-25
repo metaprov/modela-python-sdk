@@ -16,5 +16,5 @@ class Test_Modela_model(unittest.TestCase):
         self.modela.close()
 
     def test_upload(self):
-        self.modela.FileService.upload_file("test", "", "default-tenant", "iris-product", "v0.0.1",
+        self.modela.FileService.upload_file("test", "test123", "default-tenant", "iris-product", "v0.0.1",
                                             "modela", "dataset", "test")
