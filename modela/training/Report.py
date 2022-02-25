@@ -118,7 +118,7 @@ class ReportClient:
         ModelaException.process_error(error)
         return False
 
-    def list(self, namespace: str, labels: dict[str, str] = None) -> Union[List[Report], bool]:
+    def list(self, namespace: str, labels: dict = None) -> Union[List[Report], bool]:
         request = ListReportsRequest()
         request.namespace = namespace
         if labels is not None:

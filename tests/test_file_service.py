@@ -17,4 +17,4 @@ class Test_Modela_model(unittest.TestCase):
 
     def test_upload(self):
         self.modela.FileService.upload_file("test", "test123", "default-tenant", "iris-product", "v0.0.1",
-                                            "modela", "dataset", "test")
+                                            "default-minio-bucket", "dataset", "test")

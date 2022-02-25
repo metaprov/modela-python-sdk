@@ -228,7 +228,7 @@ class StudyClient:
         ModelaException.process_error(error)
         return False
 
-    def list(self, namespace: str, labels: dict[str, str] = None) -> Union[List[Study], bool]:
+    def list(self, namespace: str, labels: dict = None) -> Union[List[Study], bool]:
         request = ListStudyRequest()
         request.namespace = namespace
         if labels is not None:

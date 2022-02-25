@@ -156,7 +156,7 @@ class PredictorClient:
         ModelaException.process_error(error)
         return False
 
-    def list(self, namespace: str, labels: dict[str, str] = None) -> Union[List[Predictor], bool]:
+    def list(self, namespace: str, labels: dict = None) -> Union[List[Predictor], bool]:
         request = ListPredictorsRequest()
         request.namespace = namespace
         if labels is not None:

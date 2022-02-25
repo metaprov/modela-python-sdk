@@ -47,7 +47,7 @@ class DataBlockRequestIterable(object):
             self.loc += self.BLOCK_SIZE
             return request
         else:
-            return StopIteration
+            raise StopIteration
 
 
 class FileService:
@@ -65,4 +65,5 @@ class FileService:
                     resource_name: str):
         data_block_iterable = DataBlockRequestIterable(name, data, tenant, data_product,
                                                        version, bucket, resource_name, resource_type)
-        response = self.__stub.UploadChunk(data_block_iterable)
+        response = self.__stub.UploadChunk(data_block_iterable, timeout=20)
+        print(response)
