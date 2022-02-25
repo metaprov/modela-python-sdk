@@ -10,7 +10,7 @@ class Test_Modela_model(unittest.TestCase):
     """Tests for `modela.training.Model`"""
 
     def setUp(self):
-        self.modela = Modela("localhost", 3000)
+        self.modela = Modela("localhost", 3000, username="admin", password="admin")
 
     def tearDown(self):
         self.modela.close()

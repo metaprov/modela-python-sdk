@@ -1,4 +1,7 @@
 from typing import Optional
+
+import jwt
+from github.com.metaprov.modelaapi.services.account.v1.account_pb2 import AccountLoginRequest
 from grpc import (  # type: ignore
     UnaryUnaryClientInterceptor,
     UnaryStreamClientInterceptor,
@@ -127,6 +130,10 @@ class Modela:
             self,
             host="localhost",
             port=3000,
+            username: str = None,
+            password: str = None,
+            tenant="default-tenant",
+            api_token: str = None,
             interceptors: Optional[
                 List[
                     Union[
@@ -148,12 +155,25 @@ class Modela:
         Returns:
             None.
         """
-        self._channel = grpc.insecure_channel('{0}:{1}'.format(host, port))
+        if port is None:
+            self._channel = grpc.insecure_channel('{0}'.format(host))
+        else:
+            self._channel = grpc.insecure_channel('{0}:{1}'.format(host, port))
 
         if interceptors:
             self._channel = grpc.intercept_channel(  # type: ignore
                 self._channel, *interceptors
             )
+
+        self.__account_stub = account_pb2_grpc.AccountServiceStub(self._channel)
+        self.__account_client = AccountClient(self.__account_stub, self)
+
+        if username is not None:
+            login_request = AccountLoginRequest(namespace=tenant, name=username, password=password)
+            token = self.__account_stub.Login(login_request).token
+            # jwt.decode(token, algorithms=["HS256"], options={"verify_signature": False}))
+
+
 
         self.__fileservice_stub = fileservices_pb2_grpc.FileServicesServiceStub(self._channel)
         self.__fileservice_client = FileService(self.__fileservice_stub)
@@ -232,9 +252,6 @@ class Modela:
 
         self.__predictor_stub = predictor_pb2_grpc.PredictorServiceStub(self._channel)
         self.__predictor_client = PredictorClient(self.__predictor_stub, self)
-
-        self.__account_stub = account_pb2_grpc.AccountServiceStub(self._channel)
-        self.__account_client = AccountClient(self.__account_stub, self)
 
         self.__alert_stub = alert_pb2_grpc.AlertServiceStub(self._channel)
         self.__alert_client = AlertClient(self.__alert_stub, self)
@@ -414,27 +431,35 @@ class Modela:
     def Datasets(self):
         return self.__dataset_client
 
-    def Dataset(self, namespace="", name="", datasource: Union[DataSource, str] = "",
-                dataframe: pandas.DataFrame = None, data_file: str = None, workload: Workload = None,
-                sample: SampleSettings = None, task_type: TaskType = None,
+    def Dataset(self, namespace="", name="", gen_datasource: bool = False,
+                target_column: str = None, datasource: Union[DataSource, str] = None, bucket: str = "default-minio-bucket",
+                dataframe: pandas.DataFrame = None, data_file: str = None, raw_data: bytes = None,
+                workload: Workload = None, sample: SampleSettings = None, task_type: TaskType = None,
                 notification: NotificationSetting = None) -> Dataset:
         """
         Fetch or create a new Dataset resource
 
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
+        :param gen_datasource: If true, a Datasource resource will be created from the uploaded dataset and applied to
+            the Dataset resource.
+        :param target_column: If gen_datasource is enabled, then the target column of the data source must be specified.
+        :param bucket: The bucket which the raw dataset data will be uploaded to.
         :param datasource: If specified as a string, the SDK will attempt to find a Data Source resource with the given name.
             If specified as a Data Source object, or if one was found with the given name, it will be applied to the Dataset.
         :param dataframe: If specified, the Pandas Dataframe will be serialized and uploaded for ingestion with the Dataset resource.
         :param data_file: If specified, the SDK will attempt read a file with the given path and will upload the
             contents of the file for ingestion with the Dataset resource.
+        :param raw_data: If specified, the SDK will upload the given raw data for ingestion with the Dataset resource.
         :param workload: The resource requirements which will be allocated for Dataset ingestion.
         :param sample: The sample settings of the dataset, which if enabled will ingest a Dataset with a portion of the uploaded data.
         :param task_type: The target task type in relation to the data being used.
         :param notification: The notification settings, which if enabled will forward events about this resource to a notifier.
         """
-        return Dataset(MDDataset(), self.Datasets, namespace, name, datasource, dataframe, data_file, workload,
+        return Dataset(MDDataset(), self.Datasets, namespace, name, gen_datasource, target_column,
+                       datasource, bucket, dataframe, data_file, raw_data, workload,
                        sample, task_type, notification)
+
 
     @property
     def FileService(self):

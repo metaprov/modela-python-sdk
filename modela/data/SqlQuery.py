@@ -11,8 +11,8 @@ from typing import List, Union
 
 
 class SqlQuery(Resource):
-    def __init__(self, item: MDSqlQuery = MDSqlQuery(), client=None, namespace="", name=""):
-        super().__init__(item, client, namespace=namespace, name=name)
+    def __init__(self, item: MDSqlQuery = MDSqlQuery(), client=None, namespace="", name="", version=Resource.DefaultVersion):
+        super().__init__(item, client, namespace=namespace, name=name, version=version)
 
 
 class SqlQueryClient:

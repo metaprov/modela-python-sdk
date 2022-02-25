@@ -1,3 +1,5 @@
+import os.path
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import Dataset as MDDataset, DataSource
 from github.com.metaprov.modelaapi.services.dataset.v1.dataset_pb2_grpc import DatasetServiceStub
@@ -17,25 +19,51 @@ from modela.training.common import TaskType
 
 
 class Dataset(Resource):
-    def __init__(self, item: MDDataset = MDDataset(), client=None, namespace="", name="", datasource: Union[DataSource, str] = "",
-                 dataframe: pandas.DataFrame = None, data_file: str = None, workload: Workload = None,
-                 sample=SampleSettings(), task_type: TaskType = TaskType.BinaryClassification,
+    def __init__(self, item: MDDataset = MDDataset(), client=None, namespace="", name="", version=Resource.DefaultVersion,
+                 gen_datasource: bool = False,
+                 target_column: str = None,
+                 datasource: Union[DataSource, str] = None,
+                 bucket: str = "default-minio-bucket",
+                 dataframe: pandas.DataFrame = None,
+                 data_file: str = None,
+                 raw_data: bytes = None,
+                 workload: Workload = None,
+                 sample=SampleSettings(),
+                 task_type: TaskType = TaskType.BinaryClassification,
                  notification: NotificationSetting = None):
         """
         :param client: The Dataset client repository, which can be obtained through an instance of Modela.
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
+        :param gen_datasource: If true, a Datasource resource will be created from the uploaded dataset and applied to
+            the Dataset resource.
+        :param target_column: If gen_datasource is enabled, then the target column of the data source must be specified.
         :param datasource: If specified as a string, the SDK will attempt to find a Data Source resource with the given name.
             If specified as a Data Source, or if one was found with the given name, it will be applied to the Dataset.
+        :param bucket: The bucket which the raw dataset data will be uploaded to.
         :param dataframe: If specified, the Pandas Dataframe will be serialized and uploaded for ingestion with the Dataset resource.
         :param data_file: If specified, the SDK will attempt read a file with the given path and will upload the
             contents of the file for ingestion with the Dataset resource.
+        :param raw_data: If specified, the SDK will upload the given raw data for ingestion with the Dataset resource.
         :param workload: The resource requirements which will be allocated for Dataset ingestion.
         :param sample: The sample settings of the dataset, which if enabled will ingest a Dataset with a portion of the uploaded data.
         :param task_type: The target task type in relation to the data being used.
         :param notification: The notification settings, which if enabled will forward events about this resource to a notifier.
         """
-        super().__init__(item, client, namespace=namespace, name=name)
+        super().__init__(item, client, namespace=namespace, name=name, version=version)
+        # Upload data first
+        if data_file is not None:
+            with open(data_file, 'r') as f:
+                raw_data = f.read()
+            data_file = os.path.basename(data_file)
+        elif dataframe is not None:
+            raw_data = bytes(dataframe.to_csv(), encoding='utf-8')
+        elif raw_data is None:
+            raise ValueError("A file location, dataframe, or raw data must be specified when creating a Dataset.")
+
+        self.spec.Location = self._client.FileService.upload_file(data_file or name, raw_data, client.tenant, namespace, Resource.DefaultVersion,
+                                            "default-minio-bucket", "dataset", "test")
+
 
     @property
     def spec(self) -> DatasetSpec:
@@ -54,13 +82,21 @@ class Dataset(Resource):
             if self._object.status.reportName != "":
                 return self._client.modela.Report(namespace=self.namespace, name=self._object.status.reportName)
             else:
-                print("Dataset {0} has no report.")
+                print("Dataset {0} has no report.".format(self.name))
         else:
             raise AttributeError("Object has no client repository")
 
     @property
     def phase(self) -> DatasetPhase:
         return self.status.Phase
+
+    @property
+    def datasource(self) -> DataSource:
+        if hasattr(self, "_client"):
+            return self._client.modela.DataSource(self.namespace, self.spec.DatasourceName)
+        else:
+            raise AttributeError("Object has no client repository")
+
 
 
 

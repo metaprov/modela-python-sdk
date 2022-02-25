@@ -11,8 +11,8 @@ from typing import List, Union
 
 
 class ModelCompilerRun(Resource):
-    def __init__(self, item: MDModelCompilerRun = MDModelCompilerRun(), client=None, namespace="", name=""):
-        super().__init__(item, client, namespace=namespace, name=name)
+    def __init__(self, item: MDModelCompilerRun = MDModelCompilerRun(), client=None, namespace="", name="", version=Resource.DefaultVersion):
+        super().__init__(item, client, namespace=namespace, name=name, version=version)
 
 
 class ModelCompilerRunClient:

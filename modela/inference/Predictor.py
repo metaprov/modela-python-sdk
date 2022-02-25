@@ -19,7 +19,7 @@ from modela.training.Model import Model
 
 
 class Predictor(Resource):
-    def __init__(self, item: MDPredictor = MDPredictor(), client=None, namespace="", name="",
+    def __init__(self, item: MDPredictor = MDPredictor(), client=None, namespace="", name="", version=Resource.DefaultVersion,
                  serving_site: Union[ObjectReference, ServingSite, str] = "default-serving-site",
                  model: Union[Model, str] = None,
                  models: List[ModelDeploymentSpec] = [],
@@ -51,7 +51,7 @@ class Predictor(Resource):
         :param workload: The workload specification which determines the resources which will be allocated to the
             prediction service.
         """
-        super().__init__(item, client, namespace=namespace, name=name)
+        super().__init__(item, client, namespace=namespace, name=name, version=version)
 
         if type(serving_site) == ServingSite:
             serving_site = serving_site.reference

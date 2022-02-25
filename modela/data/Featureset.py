@@ -11,7 +11,7 @@ from typing import List, Union
 
 
 class Featureset(Resource):
-    def __init__(self, item: MDFeatureset = MDFeatureset(), client=None, namespace="", name=""):
+    def __init__(self, item: MDFeatureset = MDFeatureset(), client=None, namespace="", name="", version=Resource.DefaultVersion):
         super().__init__(item, client, namespace=namespace, name=name)
 
 

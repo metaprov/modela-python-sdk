@@ -12,7 +12,7 @@ from modela.inference.models import PredictionResult
 
 
 class InferenceService:
-    def __init__(self, host, port=None):
+    def __init__(self, host, port=None, version="v0.0.1"):
         if port != None:
             self._channel = grpc.insecure_channel(f'{host}:{port}')
         else:

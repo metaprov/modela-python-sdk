@@ -18,7 +18,7 @@ from modela.training.models import *
 
 
 class Study(Resource):
-    def __init__(self, item: MDStudy = MDStudy(), client=None, namespace="", name="",
+    def __init__(self, item: MDStudy = MDStudy(), client=None, namespace="", name="", version=Resource.DefaultVersion,
                  dataset: Union[str, Dataset] = "",
                  lab: Union[ObjectReference, Lab, str] = "default-lab",
                  bucket: Union[VirtualBucket, str] = None,
@@ -66,7 +66,7 @@ class Study(Resource):
         :param template: If the Study is a template it will not start a search and can only be used as a template for
             other studies.
         """
-        super().__init__(item, client, namespace=namespace, name=name)
+        super().__init__(item, client, namespace=namespace, name=name, version=version)
         if type(dataset) == Dataset:
             dataset = dataset.name
         self._object.spec.datasetName = dataset

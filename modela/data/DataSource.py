@@ -13,10 +13,13 @@ from modela.training.common import *
 
 
 class DataSource(Resource):
-    def __init__(self, item: MDDataSource = MDDataSource(), client=None, namespace="", name="", infer_file: str = None,
-                 infer_dataframe: pandas.DataFrame = None, target_column: str = "",
+    def __init__(self, item: MDDataSource = MDDataSource(), client=None, namespace="", name="", version=Resource.DefaultVersion,
+                 infer_file: str = None,
+                 infer_dataframe: pandas.DataFrame = None,
+                 target_column: str = "",
                  file_type: FlatFileType = FlatFileType.Csv,
-                 task_type: TaskType = TaskType.BinaryClassification, csv_config: CsvFileFormat = None,
+                 task_type: TaskType = TaskType.BinaryClassification,
+                 csv_config: CsvFileFormat = None,
                  excel_config: ExcelNotebookFormat = None):
         """
         :param client: The Data Source client repository, which can be obtained through an instance of Modela.
@@ -34,7 +37,7 @@ class DataSource(Resource):
         :param excel_config: The Excel file format of the raw data.
         """
 
-        super().__init__(item, client, namespace=namespace, name=name)
+        super().__init__(item, client, namespace=namespace, name=name, version=version)
 
     @property
     def spec(self) -> DataSourceSpec:

@@ -11,7 +11,7 @@ class Resource:
     """
     DefaultVersion = 'v0.0.1'
 
-    def __init__(self, resource: Message, client=None, name="", namespace=""):
+    def __init__(self, resource: Message, client=None, name="", namespace="", version='v0.0.1'):
         self._object: Message = resource
         if client is not None:
             self._client = client
@@ -26,7 +26,7 @@ class Resource:
                     self._object.metadata.namespace = namespace
                     self.default()
                     if hasattr(self._object.spec, 'versionName'):
-                        self._object.spec.versionName = Resource.DefaultVersion
+                        self._object.spec.versionName = version
 
             else:
                 print("Unable to lookup resource: object has no client repository")

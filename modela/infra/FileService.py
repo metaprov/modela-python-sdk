@@ -3,6 +3,8 @@ import hashlib
 from github.com.metaprov.modelaapi.services.fileservices.v1.fileservices_pb2 import DataBlock
 from github.com.metaprov.modelaapi.services.fileservices.v1.fileservices_pb2_grpc import FileServicesServiceStub
 
+from modela import DataLocation
+
 
 class DataBlockRequestIterable(object):
     BLOCK_SIZE = 20000
@@ -62,8 +64,10 @@ class FileService:
                     version: str,
                     bucket: str,
                     resource_type: str,
-                    resource_name: str):
+                    resource_name: str) -> DataLocation:
         data_block_iterable = DataBlockRequestIterable(name, data, tenant, data_product,
                                                        version, bucket, resource_name, resource_type)
+
+        print("Uploading file with length {0}".format(len(data)))
         response = self.__stub.UploadChunk(data_block_iterable, timeout=20)
-        print(response)
+        return DataLocation(BucketName=bucket, Path=response.key)

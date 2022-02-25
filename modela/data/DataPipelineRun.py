@@ -11,8 +11,8 @@ from typing import List, Union
 
 
 class DataPipelineRun(Resource):
-    def __init__(self, item: MDDataPipelineRun = MDDataPipelineRun(), client=None, namespace="", name=""):
-        super().__init__(item, client, namespace=namespace, name=name)
+    def __init__(self, item: MDDataPipelineRun = MDDataPipelineRun(), client=None, namespace="", name="", version=Resource.DefaultVersion):
+        super().__init__(item, client, namespace=namespace, name=name, version=version)
 
 
 class DataPipelineRunClient:

@@ -12,12 +12,13 @@ class Test_Modela_model(unittest.TestCase):
     """Tests for `modela.training.Model`"""
 
     def setUp(self):
-        self.modela = Modela("localhost", 3000)
+        self.modela = Modela("localhost", 3000, username="admin", password="admin")
 
     def tearDown(self):
         self.modela.close()
 
     def test_connect_predictor(self):
+        print(self.modela)
         predictor = self.modela.Predictor("iris-product", "test-predictor")
         #serve = predictor.connect(node_ip="172.21.52.228")
         serve = InferenceService("172.21.52.228", "30661")
