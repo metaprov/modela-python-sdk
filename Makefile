@@ -26,8 +26,10 @@ BROWSER := python3 -c "$$BROWSER_PYSCRIPT"
 help:
 	@python3 -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
+.PHONY: clean
 clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
 
+.PHONY: clean-build
 clean-build: ## remove build artifacts
 	rm -fr build/
 	rm -fr dist/
@@ -35,33 +37,41 @@ clean-build: ## remove build artifacts
 	find . -name '*.egg-info' -exec rm -fr {} +
 	find . -name '*.egg' -exec rm -f {} +
 
+.PHONY: clean-pyc
 clean-pyc: ## remove Python file artifacts
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
 	find . -name '__pycache__' -exec rm -fr {} +
 
+.PHONY: clean-test
 clean-test: ## remove test and coverage artifacts
 	rm -fr .tox/
 	rm -f .coverage
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
 
+.PHONY: lint
 lint: ## check style with flake8
 	flake8 modela_python_sdk tests
 
+.PHONY: test
 test: ## run tests quickly with the default Python
 	python3 setup.py test
 
+.PHONY: test-all
 test-all: ## run tests on every Python version with tox
 	tox
 
+.PHONY: coverage
 coverage: ## check code coverage quickly with the default Python
 	coverage run --source modela_python_sdk setup.py test
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html
 
+
+.PHONY: docs
 docs: ## generate Sphinx HTML documentation, including API docs
 	rm -f docs/modela_python_sdk.rst
 	rm -f docs/modules.rst
@@ -70,25 +80,32 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html
 
+.PHONY: servedocs
 servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
 
+.PHONY: release
 release: dist ## package and upload a release
 	twine upload dist/*
 
+.PHONY: dist
 dist: clean ## builds source and wheel package
 	python3 setup.py sdist
 	python3 setup.py bdist_wheel
 	ls -l dist
 
+.PHONY: install
 install: clean ## install the package to the active Python's site-packages
 	python3 setup.py install
 
+.PHONY: gen
 gen:
 	./hack/gen_pb.sh
 
+.PHONY: build
 build:
 	 poetry build
 
+.PHONY: publish
 publish:
 	 poetry publish
