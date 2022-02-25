@@ -36,7 +36,7 @@ class Configuration(object):
         annotation_type = get_type_hints(self)[attribute]
         if typing_utils.issubtype(annotation_type, List):
             del getattr(message, real_field)[:]
-            if issubclass(get_args(annotation_type)[0], Enum):
+            if issubclass(get_args(annotation_type)[0], Enum): 
                 getattr(message, real_field).extend([model.value for model in value])
 
             elif isPrimitive(get_args(annotation_type)[0]()):
