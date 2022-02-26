@@ -41,6 +41,7 @@ class Study(Resource):
         :param client: The Study client repository, which can be obtained through an instance of Modela.
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
+        :param version: The version of the resource.
         :param dataset: If specified as a string, the SDK will attempt to find a Dataset resource with the given name.
             If specified as a Dataset object, or if one was found with the given name, it will be used in the Study.
         :param lab: The object reference, Lab object, or lab name under the default-tenant for which all Study-related

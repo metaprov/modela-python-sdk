@@ -1,9 +1,11 @@
 import hashlib
 
+import grpc
 from github.com.metaprov.modelaapi.services.fileservices.v1.fileservices_pb2 import DataBlock
 from github.com.metaprov.modelaapi.services.fileservices.v1.fileservices_pb2_grpc import FileServicesServiceStub
 
 from modela import DataLocation
+from modela.ModelaException import ModelaException
 
 
 class DataBlockRequestIterable(object):
@@ -69,5 +71,10 @@ class FileService:
                                                        version, bucket, resource_name, resource_type)
 
         print("Uploading file with length {0}".format(len(data)))
-        response = self.__stub.UploadChunk(data_block_iterable, timeout=20)
-        return DataLocation(BucketName=bucket, Path=response.key)
+        try:
+            response = self.__stub.UploadChunk(data_block_iterable, timeout=20)
+            return DataLocation(BucketName=bucket, Path=response.key)
+        except grpc.RpcError as err:
+            error = err
+
+        ModelaException.process_error(error)

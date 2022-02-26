@@ -1,17 +1,20 @@
+import io
 import os.path
 
 import grpc
-from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import Dataset as MDDataset, DataSource
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import Dataset as MDDataset
 from github.com.metaprov.modelaapi.services.dataset.v1.dataset_pb2_grpc import DatasetServiceStub
 from github.com.metaprov.modelaapi.services.dataset.v1.dataset_pb2 import CreateDatasetRequest, \
     UpdateDatasetRequest, \
     DeleteDatasetRequest, GetDatasetRequest, ListDatasetsRequest
 
-from modela import DatasetPhase
+from modela import DatasetPhase, FlatFileType
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
 from typing import List, Union
 import pandas
+
+from modela.data.DataSource import DataSource
 from modela.data.models import SampleSettings, DatasetSpec, DatasetStatus
 from modela.infra.models import Workload, NotificationSetting
 from modela.training.Report import Report
@@ -19,7 +22,8 @@ from modela.training.common import TaskType
 
 
 class Dataset(Resource):
-    def __init__(self, item: MDDataset = MDDataset(), client=None, namespace="", name="", version=Resource.DefaultVersion,
+    def __init__(self, item: MDDataset = MDDataset(), client=None, namespace="", name="",
+                 version=Resource.DefaultVersion,
                  gen_datasource: bool = False,
                  target_column: str = None,
                  datasource: Union[DataSource, str] = None,
@@ -27,7 +31,7 @@ class Dataset(Resource):
                  dataframe: pandas.DataFrame = None,
                  data_file: str = None,
                  raw_data: bytes = None,
-                 workload: Workload = None,
+                 workload: Workload = Workload("general-large"),
                  sample=SampleSettings(),
                  task_type: TaskType = TaskType.BinaryClassification,
                  notification: NotificationSetting = None):
@@ -50,20 +54,55 @@ class Dataset(Resource):
         :param task_type: The target task type in relation to the data being used.
         :param notification: The notification settings, which if enabled will forward events about this resource to a notifier.
         """
+        self.default_resource = False
         super().__init__(item, client, namespace=namespace, name=name, version=version)
-        # Upload data first
+        if not self.default_resource:  # Ignore the rest of the constructor; datasets are immutable
+            return
+
+        if not gen_datasource:
+            if type(datasource) != DataSource:  # Fetch the data source in case we need to read the file type
+                datasource = client.modela.DataSource(namespace=namespace, name=datasource)
+
         if data_file is not None:
             with open(data_file, 'r') as f:
                 raw_data = f.read()
             data_file = os.path.basename(data_file)
         elif dataframe is not None:
-            raw_data = bytes(dataframe.to_csv(), encoding='utf-8')
-        elif raw_data is None:
-            raise ValueError("A file location, dataframe, or raw data must be specified when creating a Dataset.")
+            writer = io.BytesIO()
+            if datasource.spec.FileType == FlatFileType.Csv:
+                df_encoded = dataframe.to_csv()
+            if datasource.spec.FileType == FlatFileType.Parquet:
+                df_encoded = dataframe.to_parquet()
+            elif datasource.spec.FileType == FlatFileType.Excel:
+                dataframe.to_excel(writer)
+                df_encoded = writer.getvalue()
+            elif datasource.spec.FileType == FlatFileType.Json:
+                df_encoded = dataframe.to_json()
+            elif datasource.spec.FileType == FlatFileType.Feather:
+                dataframe.to_feather(writer)
+                df_encoded = writer.getvalue()
+            else:
+                raise TypeError(
+                    "Pandas cannot deserialize a dataframe to the file type {0}. Consider changing your data source file format."
+                        .format(datasource.spec.FileType))
+            raw_data = bytes(df_encoded, encoding='utf-8')
 
-        self.spec.Location = self._client.FileService.upload_file(data_file or name, raw_data, client.tenant, namespace, Resource.DefaultVersion,
-                                            "default-minio-bucket", "dataset", "test")
+        self.spec.Location = client.modela.FileService.upload_file(data_file or name, raw_data, client.modela.tenant,
+                                                                   namespace, version, bucket, "datasets", name)
 
+        if gen_datasource:
+            datasource = client.modela.DataSource(namespace=namespace, name=name + "_source", version=version,
+                                                  infer_bytes=raw_data, target_column=target_column)
+            datasource.submit()
+
+        self.spec.DatasourceName = datasource.name
+        self.spec.Resources = workload
+        self.spec.Task = task_type
+        if sample is not None:
+            self.spec.Sample = sample
+
+        if notification is not None:
+            self.spec.Notification = notification
 
     @property
     def spec(self) -> DatasetSpec:
@@ -74,6 +113,7 @@ class Dataset(Resource):
         return DatasetStatus().copy_from(self._object.spec)
 
     def default(self):
+        self.default_resource = True
         DatasetSpec().apply_config(self._object.spec)
 
     @property
@@ -96,9 +136,6 @@ class Dataset(Resource):
             return self._client.modela.DataSource(self.namespace, self.spec.DatasourceName)
         else:
             raise AttributeError("Object has no client repository")
-
-
-
 
 
 class DatasetClient:
@@ -167,5 +204,3 @@ class DatasetClient:
 
         ModelaException.process_error(error)
         return False
-
-

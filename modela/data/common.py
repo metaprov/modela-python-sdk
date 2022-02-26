@@ -57,6 +57,7 @@ class FlatFileType(Enum):
     Sas = "sas"
     Stata = "stata"
     Feather = "feather"
+    Parquet = "parquet"
 
 
 class DataType(Enum):

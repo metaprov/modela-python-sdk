@@ -155,6 +155,7 @@ class Modela:
         Returns:
             None.
         """
+        self.tenant = tenant
         if port is None:
             self._channel = grpc.insecure_channel('{0}'.format(host))
         else:
@@ -372,29 +373,33 @@ class Modela:
     def DataSources(self):
         return self.__datasource_client
 
-    def DataSource(self, namespace="", name="", infer_file: str = None,
-                   infer_dataframe: pandas.DataFrame = None, target_column: str = "",
-                   file_type: FlatFileType = FlatFileType.Csv,
+    def DataSource(self, namespace="", name="", version=Resource.DefaultVersion, bucket: str = "default-minio-bucket",
+                   infer_file: str = None, infer_dataframe: pandas.DataFrame = None, infer_bytes: bytes = None,
+                   target_column: str = "", file_type: FlatFileType = FlatFileType.Csv,
                    task_type: TaskType = None, csv_config: CsvFileFormat = None,
                    excel_config: ExcelNotebookFormat = None) -> DataSource:
         """
-        Fetch or create a new Model resource
-
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
-        :param infer_file: If specified, the SDK will attempt read a file with the given path and will upload the
-            contents of the file to the Modela API for analysis. The analysed columns will be applied to the Data Source.
-        :param infer_dataframe: If specified, the  Pandas DataFrame will be serialized and uploaded to the Modela
-            API for analysis. The analysed columns will be applied to the Data Source.
+        :param version: The version of the resource.
+        :param bucket: If data is provided for inference then a bucket must be provided.
+        :param infer_file: If specified, the SDK will attempt read a file with the given path and will upload it to
+            analyse the columns and generate a schema that will be applied to the resource.
+        :param infer_dataframe: If specified, the Pandas DataFrame will be serialized and uploaded to analyse
+            the columns and generate a schema that will be applied to the resource.
+        :param infer_bytes: If specified, the raw byte data will be uploaded to analyse
+            the columns and generate a schema that will be applied to the resource.
         :param target_column: The name of the target column used when training a model. This parameter only has effect
-            when `infer_file` or `infer_dataframe` is specified.
+            when data is uploaded to infer a schema.
         :param file_type: The file type of raw data, used when ingesting a Dataset. Only applicable for flat files.
+            If inferring from a dataframe, the file type will default to CSV.
         :param task_type: The target task type in relation to the data being used.
         :param csv_config: The CSV file format of the raw data.
         :param excel_config: The Excel file format of the raw data.
         """
-        return DataSource(MDDataSource(), self.DataSources, namespace, name, infer_file, infer_dataframe, target_column,
-                          file_type, task_type, csv_config, excel_config)
+
+        return DataSource(MDDataSource(), self.DataSources, namespace, name, version, bucket, infer_file,
+                          infer_dataframe, infer_bytes, target_column, file_type, task_type, csv_config, excel_config)
 
     @property
     def DataPipelineRuns(self):
@@ -431,16 +436,17 @@ class Modela:
     def Datasets(self):
         return self.__dataset_client
 
-    def Dataset(self, namespace="", name="", gen_datasource: bool = False,
+    def Dataset(self, namespace="", name="", gen_datasource: bool = False, version=Resource.DefaultVersion,
                 target_column: str = None, datasource: Union[DataSource, str] = None, bucket: str = "default-minio-bucket",
-                dataframe: pandas.DataFrame = None, data_file: str = None, raw_data: bytes = None,
-                workload: Workload = None, sample: SampleSettings = None, task_type: TaskType = None,
+                dataframe: pandas.DataFrame = None, data_file: str = None, data_bytes: bytes = None,
+                workload: Workload = Workload("general-large"), sample: SampleSettings = None, task_type: TaskType = None,
                 notification: NotificationSetting = None) -> Dataset:
         """
         Fetch or create a new Dataset resource
 
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
+        :param version: The version of the resource.
         :param gen_datasource: If true, a Datasource resource will be created from the uploaded dataset and applied to
             the Dataset resource.
         :param target_column: If gen_datasource is enabled, then the target column of the data source must be specified.
@@ -450,14 +456,14 @@ class Modela:
         :param dataframe: If specified, the Pandas Dataframe will be serialized and uploaded for ingestion with the Dataset resource.
         :param data_file: If specified, the SDK will attempt read a file with the given path and will upload the
             contents of the file for ingestion with the Dataset resource.
-        :param raw_data: If specified, the SDK will upload the given raw data for ingestion with the Dataset resource.
+        :param data_bytes: If specified, the SDK will upload the given raw data for ingestion with the Dataset resource.
         :param workload: The resource requirements which will be allocated for Dataset ingestion.
         :param sample: The sample settings of the dataset, which if enabled will ingest a Dataset with a portion of the uploaded data.
         :param task_type: The target task type in relation to the data being used.
         :param notification: The notification settings, which if enabled will forward events about this resource to a notifier.
         """
-        return Dataset(MDDataset(), self.Datasets, namespace, name, gen_datasource, target_column,
-                       datasource, bucket, dataframe, data_file, raw_data, workload,
+        return Dataset(MDDataset(), self.Datasets, namespace, name, version, gen_datasource, target_column,
+                       datasource, bucket, dataframe, data_file, data_bytes, workload,
                        sample, task_type, notification)
 
 

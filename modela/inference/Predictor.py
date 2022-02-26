@@ -34,6 +34,7 @@ class Predictor(Resource):
         :param client: The Predictor client repository, which can be obtained through an instance of Modela.
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
+        :param version: The version of the resource.
         :param serving_site: The object reference, Serving Site object, or name under default-tenant for which the
             predictor will be deployed under.
         :param model: The Model object or name that the predictor will serve predictions for. This parameter

@@ -4,13 +4,19 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Fix file service">
+    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Fix versioning, add auth, add dataset logic">
+      <change afterPath="$PROJECT_DIR$/tests/datasets/iris.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/ModelaException.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/ModelaException.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/DataSource.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/DataSource.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/data/Dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/inference/Predictor.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/Predictor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/infra/FileService.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/FileService.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_file_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_file_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_inference_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_inference_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/training/Study.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Study.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_datasources_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_datasources_client.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,11 +91,13 @@
       <recent name="\\wsl$\Ubuntu\home\tsagi\go\src\github.com\metaprov\modela-python-sdk\hack" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\tests\datasets" />
+      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\tests" />
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\infra" />
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\catalog" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests in test_file_service.py">
+  <component name="RunManager" selected="Python tests.Python tests in test_datasources_client.py">
     <configuration name="go build modela-python-sdk gen_crd_docs.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <working_directory value="$PROJECT_DIR$" />
@@ -324,7 +332,7 @@
       <workItem from="1643740588978" duration="37478000" />
       <workItem from="1644689597749" duration="17078000" />
       <workItem from="1644770166852" duration="72626000" />
-      <workItem from="1645739119270" duration="17321000" />
+      <workItem from="1645739119270" duration="29571000" />
     </task>
     <task id="LOCAL-00001" summary="fixed the client. upgrade version">
       <created>1630772236555</created>
@@ -438,7 +446,14 @@
       <option name="project" value="LOCAL" />
       <updated>1645809538990</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Fix versioning, add auth, add dataset logic">
+      <created>1645820994978</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1645820994978</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -472,10 +487,11 @@
     <MESSAGE value="Test inference service" />
     <MESSAGE value="Debug file service" />
     <MESSAGE value="Fix file service" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix file service" />
+    <MESSAGE value="Fix versioning, add auth, add dataset logic" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix versioning, add auth, add dataset logic" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/modela_python_sdk$Unittests_in_test_configuration_py.coverage" NAME="Unittests in test_configuration.py Coverage Results" MODIFIED="1645053367344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1645819290798" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1645836939792" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>

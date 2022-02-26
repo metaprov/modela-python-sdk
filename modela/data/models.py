@@ -1,5 +1,6 @@
 from abc import ABC
 
+from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import ColumnProfile as MDColumnProfile
 from modela.data.common import *
 from modela.infra.models import Workload, NotificationSetting, OutputLogs, GitSettings, ImageLocation
 from modela.training.common import *
@@ -427,6 +428,57 @@ class ColumnStatistics(Configuration):
 
     def to_message(self) -> MDColumnStatistics:
         return self.set_parent(MDColumnStatistics()).parent
+
+
+@dataclass
+class ColumnProfile(Configuration):
+    Name: str = ""
+    Count: int = 0
+    Type: str = 0
+    Missing: int = 0
+    PercentMissing: float = 0
+    Distinct: int = 0
+    Mean: float = 0
+    Mode: str = ""
+    Stddev: float = 0
+    Variance: float = 0
+    Min: float = 0
+    Max: float = 0
+    Kurtosis: float = 0
+    Skewness: float = 0
+    Sum: float = 0
+    Mad: float = 0
+    Zeros: float = 0
+    P25: float = 0
+    P50: float = 0
+    P75: float = 0
+    P100: float = 0
+    Iqr: float = 0
+    Cv: float = 0
+    Top: int = 0
+    Freq: int = 0
+    Ignore: bool = False
+    Target: bool = False
+    Invalid: int = 0
+    Importance: float = 0
+    Nullable: bool = False
+    HighCardinality: bool = False
+    HighCorrWithOtherFeatures: bool = False
+    LowCorrWithTarget: bool = False
+    HighMissingPct: bool = False
+    Skewed: bool = False
+    Id: bool = False
+    Constant: bool = False
+    Duplicate: bool = False
+    Reserved: bool = False
+    Outliers: int = 0
+    Completeness: float = 0
+    DistinctValueCount: float = 0
+    MostFreqValuesRatio: float = 0
+    IndexOfPeculiarity: float = 0
+    Values: List[str] = field(default_factory=lambda: [])
+    CorrToTarget: float = 0
+
 
 
 @dataclass

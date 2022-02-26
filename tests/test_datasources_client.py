@@ -17,6 +17,16 @@ class Test_Modela_datasource(unittest.TestCase):
     def tearDown(self):
         self.modela.close()
 
+    def test_0_infer_api(self):
+        with open('datasets/iris.csv') as f:
+            data = f.read()
+
+        loc = self.modela.FileService.upload_file("iris.csv", data, "default-tenant", "iris-product", "v0.0.1",
+                                            "default-minio-bucket", "dataset", "test")
+        infer = self.modela.DataSources.infer("iris-product", loc)
+        assert infer[0].Name == 'sepal.length'
+
+
     def test_0_create(self):
         datasource = self.modela.DataSource(namespace="iris-product", name="test")
         try:
@@ -25,6 +35,10 @@ class Test_Modela_datasource(unittest.TestCase):
             pass
         assert type(datasource) == DataSource
         datasource.submit()
+
+    def test_0_create_infer_file(self):
+        datasource = self.modela.DataSource(namespace="iris-product", name="test", infer_file='datasets/iris.csv')
+
 
     def test_1_list(self):
         assert len(self.modela.DataSources.list("iris-product")) >= 1
