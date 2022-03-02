@@ -12,17 +12,17 @@ class Test_Modela_model(unittest.TestCase):
     """Tests for `modela.training.Model`"""
 
     def setUp(self):
-        self.modela = Modela("localhost", 3000, username="admin", password="admin")
+        self.modela = Modela("modela-api-gateway.vcap.me", secure=True, tls_cert='tests/api_server.crt', username="admin", password="admin")
 
     def tearDown(self):
         self.modela.close()
 
     def test_connect_predictor(self):
-        print(self.modela)
-        predictor = self.modela.Predictor("iris-product", "test-predictor")
-        #serve = predictor.connect(node_ip="172.21.52.228")
-        serve = InferenceService("172.21.52.228", "30661")
+        predictor = self.modela.Predictor("iris-product", "test-ingress")
+        #serve = predictor.connect()
+        serve = InferenceService("serving.vcap.me", secure=True, tls_cert='tests/inference_server.crt')
         predictions = serve.predict("iris-product", "model-20220219-002120",
                                              "[{\"sepal.length\":4.6, \"sepal.width\":3.2, \"petal.length\":1.0, \"petal.width\":0.3}]",
                                     explain=True)
+        print(predictions)
         assert predictions[0].Label == "Setosa"

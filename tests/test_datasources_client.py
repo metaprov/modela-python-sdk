@@ -1,4 +1,7 @@
+import time
 import unittest
+
+import pandas
 
 from modela.ModelaException import *
 from modela.data.DataSource import DataSource
@@ -22,10 +25,9 @@ class Test_Modela_datasource(unittest.TestCase):
             data = f.read()
 
         loc = self.modela.FileService.upload_file("iris.csv", data, "default-tenant", "iris-product", "v0.0.1",
-                                            "default-minio-bucket", "dataset", "test")
+                                                  "default-minio-bucket", "datasources", "test")
         infer = self.modela.DataSources.infer("iris-product", loc)
         assert infer[0].Name == 'sepal.length'
-
 
     def test_0_create(self):
         datasource = self.modela.DataSource(namespace="iris-product", name="test")
@@ -33,12 +35,27 @@ class Test_Modela_datasource(unittest.TestCase):
             datasource.delete()
         finally:
             pass
+        time.sleep(0.1)
         assert type(datasource) == DataSource
         datasource.submit()
 
     def test_0_create_infer_file(self):
-        datasource = self.modela.DataSource(namespace="iris-product", name="test", infer_file='datasets/iris.csv')
+        datasource = self.modela.DataSource(namespace="iris-product", name="test", infer_file='datasets/iris.csv',
+                                            target_column="variety")
+        assert datasource.spec.Schema.Columns[0].Name == 'sepal.length'
+        assert datasource.spec.Schema.Columns[4].Target
 
+    def test_0_create_infer_bytes(self):
+        with open('datasets/iris.csv', 'rb') as f:
+            data = f.read()
+
+        datasource = self.modela.DataSource(namespace="iris-product", name="test", infer_bytes=data, target_column="variety")
+        assert datasource.spec.Schema.Columns[0].Name == 'sepal.length'
+
+    def test_0_create_infer_df(self):
+        df = pandas.read_csv('datasets/iris.csv')
+        datasource = self.modela.DataSource(namespace="iris-product", name="test", infer_dataframe=df, target_column="variety")
+        assert datasource.spec.Schema.Columns[0].Name == 'sepal.length'
 
     def test_1_list(self):
         assert len(self.modela.DataSources.list("iris-product")) >= 1

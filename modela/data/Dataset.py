@@ -1,5 +1,7 @@
 import io
 import os.path
+import random
+import time
 
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import Dataset as MDDataset
@@ -7,6 +9,7 @@ from github.com.metaprov.modelaapi.services.dataset.v1.dataset_pb2_grpc import D
 from github.com.metaprov.modelaapi.services.dataset.v1.dataset_pb2 import CreateDatasetRequest, \
     UpdateDatasetRequest, \
     DeleteDatasetRequest, GetDatasetRequest, ListDatasetsRequest
+from tqdm import tqdm, trange
 
 from modela import DatasetPhase, FlatFileType
 from modela.Resource import Resource
@@ -14,11 +17,13 @@ from modela.ModelaException import ModelaException
 from typing import List, Union
 import pandas
 
+from modela.data.common import *
 from modela.data.DataSource import DataSource
 from modela.data.models import SampleSettings, DatasetSpec, DatasetStatus
 from modela.infra.models import Workload, NotificationSetting
 from modela.training.Report import Report
 from modela.training.common import TaskType
+from modela.util import convert_size
 
 
 class Dataset(Resource):
@@ -26,11 +31,11 @@ class Dataset(Resource):
                  version=Resource.DefaultVersion,
                  gen_datasource: bool = False,
                  target_column: str = None,
-                 datasource: Union[DataSource, str] = None,
+                 datasource: Union[DataSource, str] = "",
                  bucket: str = "default-minio-bucket",
                  dataframe: pandas.DataFrame = None,
                  data_file: str = None,
-                 raw_data: bytes = None,
+                 data_bytes: bytes = None,
                  workload: Workload = Workload("general-large"),
                  sample=SampleSettings(),
                  task_type: TaskType = TaskType.BinaryClassification,
@@ -48,7 +53,7 @@ class Dataset(Resource):
         :param dataframe: If specified, the Pandas Dataframe will be serialized and uploaded for ingestion with the Dataset resource.
         :param data_file: If specified, the SDK will attempt read a file with the given path and will upload the
             contents of the file for ingestion with the Dataset resource.
-        :param raw_data: If specified, the SDK will upload the given raw data for ingestion with the Dataset resource.
+        :param data_bytes: If specified, the SDK will upload the given raw data for ingestion with the Dataset resource.
         :param workload: The resource requirements which will be allocated for Dataset ingestion.
         :param sample: The sample settings of the dataset, which if enabled will ingest a Dataset with a portion of the uploaded data.
         :param task_type: The target task type in relation to the data being used.
@@ -65,14 +70,14 @@ class Dataset(Resource):
 
         if data_file is not None:
             with open(data_file, 'r') as f:
-                raw_data = f.read()
+                data_bytes = f.read()
             data_file = os.path.basename(data_file)
         elif dataframe is not None:
             writer = io.BytesIO()
             if datasource.spec.FileType == FlatFileType.Csv:
-                df_encoded = dataframe.to_csv()
+                df_encoded = dataframe.to_csv(index=False)
             if datasource.spec.FileType == FlatFileType.Parquet:
-                df_encoded = dataframe.to_parquet()
+                df_encoded = dataframe.to_parquet(index=False)
             elif datasource.spec.FileType == FlatFileType.Excel:
                 dataframe.to_excel(writer)
                 df_encoded = writer.getvalue()
@@ -85,14 +90,16 @@ class Dataset(Resource):
                 raise TypeError(
                     "Pandas cannot deserialize a dataframe to the file type {0}. Consider changing your data source file format."
                         .format(datasource.spec.FileType))
-            raw_data = bytes(df_encoded, encoding='utf-8')
+            data_bytes = bytes(df_encoded, encoding='utf-8')
 
-        self.spec.Location = client.modela.FileService.upload_file(data_file or name, raw_data, client.modela.tenant,
-                                                                   namespace, version, bucket, "datasets", name)
+        if data_bytes is not None:
+            self.spec.Origin = client.modela.FileService.upload_file(data_file or name, data_bytes,
+                                                                     client.modela.tenant,
+                                                                     namespace, version, bucket, "datasets", name)
 
         if gen_datasource:
             datasource = client.modela.DataSource(namespace=namespace, name=name + "_source", version=version,
-                                                  infer_bytes=raw_data, target_column=target_column)
+                                                  infer_bytes=data_bytes, target_column=target_column)
             datasource.submit()
 
         self.spec.DatasourceName = datasource.name
@@ -110,7 +117,7 @@ class Dataset(Resource):
 
     @property
     def status(self) -> DatasetStatus:
-        return DatasetStatus().copy_from(self._object.spec)
+        return DatasetStatus().copy_from(self._object.status)
 
     def default(self):
         self.default_resource = True
@@ -136,6 +143,29 @@ class Dataset(Resource):
             return self._client.modela.DataSource(self.namespace, self.spec.DatasourceName)
         else:
             raise AttributeError("Object has no client repository")
+
+    def submit_and_visualize(self):
+        self.submit()
+        self.visualize()
+
+    def visualize(self):
+        desc = tqdm(total=0, position=0, bar_format='{desc}')
+        progress = tqdm(total=DatasetPhaseProgress["max_progress"], position=1, bar_format='{l_bar}{bar}',
+                        desc=self.name, leave=False, ncols=80, initial=DatasetPhaseProgress[self.phase])
+
+        while True:
+            self.sync()
+            desc.set_description('Current Phase: %s | Task Type: %s | File Size: %s | Rows: %s | Columns: %s ' %
+                                 (self.phase.name, self.spec.Task.name, convert_size(self.status.Statistics.FileSize),
+                                  "[Processing]" if self.status.Statistics.Rows == 0 else self.status.Statistics.Rows,
+                                  "[Processing]" if len(self.status.Statistics.Columns) == 0 else len(self.status.Statistics.Columns)))
+            progress.n = DatasetPhaseProgress[self.phase]
+            progress.last_print_n = DatasetPhaseProgress[self.phase]
+            progress.refresh()
+            time.sleep(0.5)
+
+        desc.close()
+        progress.close()
 
 
 class DatasetClient:

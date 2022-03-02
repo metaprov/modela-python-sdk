@@ -12,11 +12,17 @@ from modela.inference.models import PredictionResult
 
 
 class InferenceService:
-    def __init__(self, host, port=None, version="v0.0.1"):
-        if port != None:
-            self._channel = grpc.insecure_channel(f'{host}:{port}')
+    def __init__(self, host, port=None, secure=False, tls_cert=None, version="v0.0.1"):
+        if secure:
+            with open(tls_cert, 'rb') as f:
+                credentials = grpc.ssl_channel_credentials(f.read())
+
+            self._channel = grpc.secure_channel(f'{host}', credentials)
         else:
-            self._channel = grpc.insecure_channel(f'{host}')
+            if port != None:
+                self._channel = grpc.insecure_channel(f'{host}:{port}')
+            else:
+                self._channel = grpc.insecure_channel(f'{host}')
 
         self._stub = grpcinferenceservice_pb2_grpc.GRPCInferenceServiceStub(self._channel)
 

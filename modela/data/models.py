@@ -353,6 +353,7 @@ class DataSourceSpec(Configuration):
     VersionName: str = "v0.0.1"
     Description: str = ""
     FileType: FlatFileType = FlatFileType.Csv
+    Task: TaskType = TaskType.BinaryClassification
     Csvfile: CsvFileFormat = CsvFileFormat()
     ExcelNotebook: ExcelNotebookFormat = None
     DatasetType: DatasetType = DatasetType.Tabular
@@ -367,7 +368,7 @@ class DatasetSpec(Configuration):
     DatasourceName: str = ""
     Description: str = ""
     DisplayName: str = ""
-    Reported: bool = True
+    Reported: bool = False
     Snapshotted: bool = False
     Validate: bool = True
     Labeled: bool = True
@@ -546,5 +547,5 @@ class DatasetStatus(ImmutableConfiguration):
     Hash: str = ""
     Logs: OutputLogs = OutputLogs()
     DerivedFromDataset: str = ""
-    LastUpdated: int = None
+    LastUpdated: Time = None
     Conditions: List[DatasetCondition] = field(default_factory=lambda: [])

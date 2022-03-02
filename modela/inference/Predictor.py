@@ -57,7 +57,7 @@ class Predictor(Resource):
         if type(serving_site) == ServingSite:
             serving_site = serving_site.reference
         elif type(serving_site) == str:
-            serving_site = ObjectReference(Namespace="default-tenant", Name=serving_site)
+            serving_site = ObjectReference(Namespace=client.modela.tenant, Name=serving_site)
         self.spec.ServingsiteRef = serving_site
 
         if model is not None:
@@ -93,14 +93,33 @@ class Predictor(Resource):
     def default(self):
         PredictorSpec().apply_config(self._object.spec)
 
-    def connect(self, node_ip="") -> InferenceService:
-        if self.spec.AccessType == AccessType.NodePort:
+    def connect(self, node_ip="", connect_dns=False, connect_local=False, local_port: int=None) -> InferenceService:
+        """
+        Connect attempts to make a connection to the gRPC inference service client associated with the Predictor.
+
+        :rtype: InferenceService
+        :param node_ip: If the Predictor's access type is Ingress or LoadBalancer, any Kubernetes node IP of the cluster
+            hosting the current Modela interface must be provided. This IP can be found by executing the command
+            `kubectl get nodes -o wide`
+        :param connect_dns: If enabled, a connection attempt will be made using the DNS path associated
+            with the Predictor (e.g. `predictor.default-serving-site.svc.cluster.local`), which can only be accessed
+            from containers running inside the operational cluster.
+        :param connect_local: If enabled, a connection attempt will be made with localhost.  To connect using localhost,
+            you must port-forward the prediction proxy service by executing the command
+            `kubectl port-forward -n default-serving-site svc/my-predictor-name 3000:3000`
+        :param local_port: If connect_local is enabled, it will connect to this port.
+        :return: The InferenceService client connected to the prediction proxy service
+        """
+        if connect_dns:
+            return InferenceService(self.spec.Path, self.spec.Port)
+
+        if connect_local:
+            return InferenceService("vcap.me", local_port)
+
+        if self.spec.AccessType == AccessType.NodePort or self.spec.AccessType == AccessType.LoadBalancer:
             return InferenceService((node_ip if node_ip != "" else self.spec.Path), self.spec.NodePort)
         elif self.spec.AccessType == AccessType.Ingress or self.spec.AccessType == AccessType.ClusterIP:
             return InferenceService(self.spec.Path, "")
-        else:
-            return InferenceService(self.spec.Path, self.spec.Port)
-
 
 class PredictorClient:
     def __init__(self, stub, modela):

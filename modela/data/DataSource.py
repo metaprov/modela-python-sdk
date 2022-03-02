@@ -49,13 +49,12 @@ class DataSource(Resource):
         super().__init__(item, client, namespace=namespace, name=name, version=version)
 
         if infer_file is not None:
-            with open(infer_file, 'r') as f:
+            with open(infer_file, 'rb') as f:
                 infer_bytes = f.read()
             infer_file = os.path.basename(infer_file)
         elif infer_dataframe is not None:
             file_type = FlatFileType.Csv
-            infer_bytes = infer_dataframe.to_csv()
-
+            infer_bytes = infer_dataframe.to_csv(index=False)
         if infer_bytes is not None:
             infer_location = client.modela.FileService.upload_file(infer_file or name, infer_bytes, client.modela.tenant,
                                                                    namespace, version, bucket, "datasources", name)
@@ -70,8 +69,21 @@ class DataSource(Resource):
                 col.Enum = column.Values
                 if target_column == col.Name:
                     col.Target = True
+                    target_column = None
 
                 schema_columns.append(col)
+
+            if target_column != None:
+                print("WARNING: The target column {0} was not found in the dataset during inference.".format(target_column))
+
+
+        self.spec.FileType = file_type
+        self.spec.Task = task_type
+        if csv_config is not None:
+            self.spec.Csvfile = csv_config
+
+        if excel_config is not None:
+            self.spec.ExcelNotebook = excel_config
 
     @property
     def spec(self) -> DataSourceSpec:

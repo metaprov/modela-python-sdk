@@ -132,6 +132,8 @@ class Modela:
             port=3000,
             username: str = None,
             password: str = None,
+            secure=False,
+            tls_cert=None,
             tenant="default-tenant",
             api_token: str = None,
             interceptors: Optional[
@@ -156,10 +158,16 @@ class Modela:
             None.
         """
         self.tenant = tenant
-        if port is None:
-            self._channel = grpc.insecure_channel('{0}'.format(host))
+        if secure:
+            with open(tls_cert, 'rb') as f:
+                credentials = grpc.ssl_channel_credentials(f.read())
+
+            self._channel = grpc.secure_channel(f'{host}', credentials)
         else:
-            self._channel = grpc.insecure_channel('{0}:{1}'.format(host, port))
+            if port != None:
+                self._channel = grpc.insecure_channel(f'{host}:{port}')
+            else:
+                self._channel = grpc.insecure_channel(f'{host}')
 
         if interceptors:
             self._channel = grpc.intercept_channel(  # type: ignore
@@ -437,7 +445,7 @@ class Modela:
         return self.__dataset_client
 
     def Dataset(self, namespace="", name="", gen_datasource: bool = False, version=Resource.DefaultVersion,
-                target_column: str = None, datasource: Union[DataSource, str] = None, bucket: str = "default-minio-bucket",
+                target_column: str = None, datasource: Union[DataSource, str] = "", bucket: str = "default-minio-bucket",
                 dataframe: pandas.DataFrame = None, data_file: str = None, data_bytes: bytes = None,
                 workload: Workload = Workload("general-large"), sample: SampleSettings = None, task_type: TaskType = None,
                 notification: NotificationSetting = None) -> Dataset:
