@@ -5,13 +5,14 @@ from github.com.metaprov.modelaapi.services.model.v1.model_pb2 import \
     DeleteModelRequest, GetModelRequest, ListModelsRequest, \
     AbortModelRequest, CompileModelRequest, DeployModelRequest, DownloadModelRequest, \
     PauseModelRequest, GetModelProfileRequest, PublishModelRequest, ResumeModelRequest, TestModelRequest
+from tabulate import tabulate
 
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
 from typing import List, Union
 
 from modela.training.Report import Report
-from modela.training.common import ModelPhase
+from modela.training.common import ModelPhase, TaskType, Metric
 from modela.training.models import ModelSpec, ModelStatus, ModelProfile
 
 
@@ -114,6 +115,68 @@ class Model(Resource):
     def phase(self) -> ModelPhase:
         return self.status.Phase
 
+    @property
+    def details(self) -> str:
+        """
+        Generate a table about the details of the model.
+
+        :return: A table of the model's metrics and hyperparameters
+        """
+
+        return "Estimator: {0} | Trial #: {1}\n".format(self.spec.Estimator.AlgorithmName, self.spec.TrialID) + \
+                self.metrics + "\n" + self.hyperparameters
+
+    @property
+    def hyperparameters(self) -> str:
+        """
+        Generate a table with the hyperparameters of the model.
+        """
+        hyper_table = []
+        for parameters in self.spec.Estimator.Parameters:
+            hyper_table.append([parameters.Name, parameters.Value])
+
+        return tabulate(hyper_table, tablefmt='psql', headers=['Hyperparameter', 'Value'])
+
+    @property
+    def metrics(self) -> str:
+        """
+        Generate a table with the metrics of the model.
+        """
+        test_table, headers, headers_as_metric, status = [], ['Metric'], [], self.status
+        if self.spec.Task == TaskType.BinaryClassification:
+            metrics = ['Accuracy', 'Auc', 'F1', 'Log Loss', 'Precision', 'Recall']
+            headers_as_metric = [Metric.Accuracy, Metric.RocAuc, Metric.F1Binary, Metric.LogLoss, Metric.PrecisionBinary, Metric.RecallBinary]
+            test_table = [[metric] for metric in metrics]
+        elif self.spec.Task == TaskType.MultiClassification:
+            metrics = ['Accuracy', 'F1 Micro', 'F1 Macro', 'F1 Weighted', 'Precision Macro', 'Precision Micro', 'Precision Weighted',
+                       'Recall Macro', 'Recall Micro', 'Recall Weighted']
+            headers_as_metric = [Metric.Accuracy, Metric.F1Micro, Metric.F1Macro, Metric.F1Weighted, Metric.PrecisionMacro, Metric.PrecisionMicro,
+                                 Metric.PrecisionWeighted, Metric.RecallMacro, Metric.RecallMicro, Metric.RecallWeighted]
+            test_table = [[metric] for metric in metrics]
+        elif self.spec.Task == TaskType.Regression:
+            headers = []
+
+        if len(self.status.Cv) > 0:
+            headers.append("Validation")
+            for idx, metric in enumerate(headers_as_metric):
+                test_table[idx].append([x for x in status.Cv if x.Metric == metric][0].Value)
+
+        if len(self.status.Train) > 0:
+            headers.append("Train")
+            for idx, metric in enumerate(headers_as_metric):
+                test_table[idx].append([x for x in status.Train if x.Metric == metric][0].Value)
+
+        if len(self.status.Test) > 0:
+            headers.append("Test")
+            for idx, metric in enumerate(headers_as_metric):
+                test_table[idx].append([x for x in self.status.Test if x.Metric == metric][0].Value)
+
+        return tabulate(test_table, tablefmt='psql', headers=headers)
+
+
+    def __repr__(self):
+        return "<{0} model at {1}/{2}>".format(self.spec.Estimator.AlgorithmName, self.namespace, self.name)
+
 
 
 class ModelClient:
@@ -122,7 +185,7 @@ class ModelClient:
         self.modela = modela
 
     def create(self, model: Model) -> bool:
-        raise TypeError("Modela currently does not support the creation of custom models.")
+        raise TypeError("Modela does not support the creation of custom models in this release.")
         # request = CreateModelRequest()
         # request.model.CopyFrom(model.raw_message)
         # try:

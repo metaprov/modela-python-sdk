@@ -29,7 +29,7 @@ class DataBlockRequestIterable(object):
         self.resource_type = resource_type
         self.resource_name = resource_name
         self.loc = 0
-        self.pbar = tqdm(total=len(data), desc="Uploading", unit="bytes")
+        self.pbar = tqdm(total=len(data), desc="Uploading", unit="bytes", ncols=100)
 
     def __iter__(self):
         return self

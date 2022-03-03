@@ -69,7 +69,6 @@ class ModelValidationResult(Configuration):
     def to_message(self) -> MDModelValidationResult:
         return self.set_parent(MDModelValidationResult()).parent
 
-
 @dataclass
 class Measurement(ImmutableConfiguration):
     Metric: Metric = Metric.Null

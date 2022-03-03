@@ -369,7 +369,7 @@ class DatasetSpec(Configuration):
     DatasourceName: str = ""
     Description: str = ""
     DisplayName: str = ""
-    Reported: bool = False
+    Reported: bool = True
     Snapshotted: bool = False
     Validate: bool = True
     Labeled: bool = True

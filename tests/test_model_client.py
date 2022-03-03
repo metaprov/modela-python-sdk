@@ -18,9 +18,13 @@ class Test_Modela_model(unittest.TestCase):
     def test_0_list(self):
         assert len(self.modela.Models.list("iris-product")) >= 1
 
+    def test_0_print_details(self):
+        model = self.modela.Models.list("iris-product")[-1]
+        print(model.details)
+
+
     def test_1_get(self):
-        list = self.modela.Models.list("iris-product")
-        model = self.modela.Model(namespace="iris-product", name="model-20220211-184217")
+        model = self.modela.Models.list("iris-product")[0]
         spec = model.spec
-        print(model.report)
+        print(model)
         assert type(spec) == ModelSpec

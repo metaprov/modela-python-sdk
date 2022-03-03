@@ -9,7 +9,7 @@ from github.com.metaprov.modelaapi.services.dataset.v1.dataset_pb2_grpc import D
 from github.com.metaprov.modelaapi.services.dataset.v1.dataset_pb2 import CreateDatasetRequest, \
     UpdateDatasetRequest, \
     DeleteDatasetRequest, GetDatasetRequest, ListDatasetsRequest, GetDatasetProfileRequest
-from prettytable import PrettyTable
+from tabulate import tabulate
 from tqdm import tqdm, trange
 
 from modela import DatasetPhase, FlatFileType
@@ -151,40 +151,79 @@ class Dataset(Resource):
         self.visualize()
 
     def visualize(self):
-        desc = tqdm(total=0, position=0, bar_format='{desc}')
+        desc = tqdm(total=0, position=0, bar_format='{desc}Time Elapsed: {elapsed}')
         progress = tqdm(total=DatasetPhaseProgress["max_progress"], position=1, bar_format='{l_bar}{bar}',
-                        desc=self.name, leave=False, ncols=80, initial=DatasetPhaseProgress[self.phase])
+                        desc=self.name, ncols=80, initial=DatasetPhaseProgress[self.phase])
 
+        current_status = self.status
         try:
             while True:
                 self.sync()
-                desc.set_description('Current Phase: %s | Task Type: %s | File Size: %s | Rows: %s | Columns: %s ' %
+                if current_status == self.status:
+                    time.sleep(0.2)
+                    desc.refresh()
+                    continue
+
+                current_status = self.status
+                desc.set_description('Current Phase: %s | Task Type: %s | File Size: %s | Rows: %s | Columns: %s' %
                                      (self.phase.name, self.spec.Task.name, convert_size(self.status.Statistics.FileSize),
                                       "[Processing]" if self.status.Statistics.Rows == 0 else self.status.Statistics.Rows,
                                       "[Processing]" if len(self.status.Statistics.Columns) == 0 else len(self.status.Statistics.Columns)))
                 progress.n = DatasetPhaseProgress[self.phase]
                 progress.last_print_n = DatasetPhaseProgress[self.phase]
                 progress.refresh()
-                time.sleep(0.5)
+                if progress.n == DatasetPhaseProgress["max_progress"]:
+                    if self.phase == DatasetPhase.Ready:
+                        print("\n\n" + self.profile)
+                    else:
+                        progress.colour = "red"
+                        progress.refresh()
+                        print("\nDataset was failed or aborted.")
+
+                    break
+
+                time.sleep(0.2)
         except KeyboardInterrupt:
             pass
 
         desc.close()
         progress.close()
 
-    def _print_table(self) -> str:
-        table = PrettyTable(['Column', 'Data Type', 'Distinct', 'Missing', 'Mean',
-                             'STDDEV', 'Median', 'Min', 'Max', 'Skewness', 'Kurtosis'])
+    @property
+    def profile(self) -> str:
+        profile = self.get_profile()
+
+        table = []
+        for col in profile.Columns:
+            table.append([col.Name, col.Type, col.Distinct, col.Missing,
+                           '{0:.3g}'.format(col.Mean), '{0:.3g}'.format(col.Stddev), col.P50, col.Min, col.Max,
+                           '{0:.3g}'.format(col.CorrToTarget), '{0:.3g}'.format(col.Variance),
+                           '{0:.3g}'.format(col.Skewness), '{0:.3g}'.format(col.Kurtosis)])
+
+        table = tabulate(table, tablefmt='pretty', headers=['Column', 'Data Type', 'Distinct', 'Missing', 'Mean',
+                          'Stddev', 'Median', 'Min', 'Max', 'Corr. To Target', 'Variance', 'Skewness', 'Kurtosis'])
+        return table + "\n"
+        # TODO: jupyter support, print all viz plots in jupyter
+
+    @property
+    def details(self) -> str:
+
+        table = []
         for col in self.status.Statistics.Columns:
-            table.add_row([col.Name, col.Datatype.name, col.Distinct, col.Missing,
+            table.append([col.Name, col.Datatype.name, col.Distinct, col.Missing,
                            '{0:.3g}'.format(col.Mean), '{0:.3g}'.format(col.Stddev), col.P50, col.Min, col.Max,
                            '{0:.3g}'.format(col.Skewness), '{0:.3g}'.format(col.Kurtosis)])
 
-        return table.get_string() + "\n"
+        table = tabulate(table, tablefmt='pretty', headers=['Column', 'Data Type', 'Distinct', 'Missing', 'Mean',
+                                                            'Stddev', 'Median', 'Min', 'Max', 'Skewness', 'Kurtosis'])
+        return table + "\n"
 
-    def profile(self) -> DatasetProfile:
+    def get_profile(self) -> DatasetProfile:
+        if self._profile:
+            return self._profile
         if hasattr(self, "_client"):
-            return self._client.profile(self.namespace, self.name)
+            self._profile = self._client.profile(self.namespace, self.name)
+            return self._profile
         else:
             raise AttributeError("Object has no client repository")
 
@@ -192,7 +231,7 @@ class Dataset(Resource):
     def __repr__(self):
         out = super().__repr__()
         if len(self.status.Statistics.Columns) > 0:
-            out += "\n" + self._print_table()
+            out += "\n" + self.details
 
         return out
 

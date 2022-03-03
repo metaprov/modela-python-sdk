@@ -8,12 +8,10 @@ from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 impor
 
 @dataclass
 class NotificationSetting(Configuration):
-    OnError: bool = True
     ErrorTTL: int = 3600
-    OnSuccess: bool = False
     SuccessTTL: int = 3600
     NotifierName: str = ""
-
+    # FIXME: Implement dict types: Selector: dict = field(default_factory=lambda: {})
 
 @dataclass
 class Workload(Configuration):

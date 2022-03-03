@@ -43,11 +43,11 @@ class Test_Modela_dataset(unittest.TestCase):
         assert len(self.modela.Datasets.list("iris-product")) >= 1
 
     def test_1_print(self):
-        print(self.modela.Datasets.list("iris-product")[0])
+        print(self.modela.Datasets.list("iris-product")[-1])
 
     def test_1_profile(self):
         ds = self.modela.Datasets.list("iris-product")[1]
-        print(ds.profile().Columns)
+        print(ds._print_profile())
 
     def test_2_update(self):
         dataset = self.modela.Dataset(namespace="iris-product", name="test-ds")
@@ -71,10 +71,12 @@ class Test_Modela_dataset(unittest.TestCase):
 
 
 """ These tests should be run by an end-user. """
-def test_viz(self):
-    datasource = self.modela.DataSource(namespace="iris-product", name="iris")
-    dataset = self.modela.Dataset(namespace="iris-product", name="test-ds-3", data_file='tests/datasets/iris.csv',
-                                  datasource=datasource, task_type=TaskType.MultiClassification)
+def test_viz():
+    modela = Modela("localhost", 3000)
+    datasource = modela.DataSource(namespace="iris-product", name="iris")
+    dataset = modela.Dataset(namespace="iris-product", name="test-ds-4", data_file='tests/datasets/iris.csv',
+                             datasource=datasource, task_type=TaskType.MultiClassification)
     dataset.submit_and_visualize()
+    modela.close()
 
 
