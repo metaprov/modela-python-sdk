@@ -8,7 +8,8 @@ from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import D
 from github.com.metaprov.modelaapi.services.dataset.v1.dataset_pb2_grpc import DatasetServiceStub
 from github.com.metaprov.modelaapi.services.dataset.v1.dataset_pb2 import CreateDatasetRequest, \
     UpdateDatasetRequest, \
-    DeleteDatasetRequest, GetDatasetRequest, ListDatasetsRequest
+    DeleteDatasetRequest, GetDatasetRequest, ListDatasetsRequest, GetDatasetProfileRequest
+from prettytable import PrettyTable
 from tqdm import tqdm, trange
 
 from modela import DatasetPhase, FlatFileType
@@ -19,7 +20,7 @@ import pandas
 
 from modela.data.common import *
 from modela.data.DataSource import DataSource
-from modela.data.models import SampleSettings, DatasetSpec, DatasetStatus
+from modela.data.models import SampleSettings, DatasetSpec, DatasetStatus, DatasetProfile
 from modela.infra.models import Workload, NotificationSetting
 from modela.training.Report import Report
 from modela.training.common import TaskType
@@ -60,6 +61,7 @@ class Dataset(Resource):
         :param notification: The notification settings, which if enabled will forward events about this resource to a notifier.
         """
         self.default_resource = False
+        self._profile = None
         super().__init__(item, client, namespace=namespace, name=name, version=version)
         if not self.default_resource:  # Ignore the rest of the constructor; datasets are immutable
             return
@@ -153,19 +155,48 @@ class Dataset(Resource):
         progress = tqdm(total=DatasetPhaseProgress["max_progress"], position=1, bar_format='{l_bar}{bar}',
                         desc=self.name, leave=False, ncols=80, initial=DatasetPhaseProgress[self.phase])
 
-        while True:
-            self.sync()
-            desc.set_description('Current Phase: %s | Task Type: %s | File Size: %s | Rows: %s | Columns: %s ' %
-                                 (self.phase.name, self.spec.Task.name, convert_size(self.status.Statistics.FileSize),
-                                  "[Processing]" if self.status.Statistics.Rows == 0 else self.status.Statistics.Rows,
-                                  "[Processing]" if len(self.status.Statistics.Columns) == 0 else len(self.status.Statistics.Columns)))
-            progress.n = DatasetPhaseProgress[self.phase]
-            progress.last_print_n = DatasetPhaseProgress[self.phase]
-            progress.refresh()
-            time.sleep(0.5)
+        try:
+            while True:
+                self.sync()
+                desc.set_description('Current Phase: %s | Task Type: %s | File Size: %s | Rows: %s | Columns: %s ' %
+                                     (self.phase.name, self.spec.Task.name, convert_size(self.status.Statistics.FileSize),
+                                      "[Processing]" if self.status.Statistics.Rows == 0 else self.status.Statistics.Rows,
+                                      "[Processing]" if len(self.status.Statistics.Columns) == 0 else len(self.status.Statistics.Columns)))
+                progress.n = DatasetPhaseProgress[self.phase]
+                progress.last_print_n = DatasetPhaseProgress[self.phase]
+                progress.refresh()
+                time.sleep(0.5)
+        except KeyboardInterrupt:
+            pass
 
         desc.close()
         progress.close()
+
+    def _print_table(self) -> str:
+        table = PrettyTable(['Column', 'Data Type', 'Distinct', 'Missing', 'Mean',
+                             'STDDEV', 'Median', 'Min', 'Max', 'Skewness', 'Kurtosis'])
+        for col in self.status.Statistics.Columns:
+            table.add_row([col.Name, col.Datatype.name, col.Distinct, col.Missing,
+                           '{0:.3g}'.format(col.Mean), '{0:.3g}'.format(col.Stddev), col.P50, col.Min, col.Max,
+                           '{0:.3g}'.format(col.Skewness), '{0:.3g}'.format(col.Kurtosis)])
+
+        return table.get_string() + "\n"
+
+    def profile(self) -> DatasetProfile:
+        if hasattr(self, "_client"):
+            return self._client.profile(self.namespace, self.name)
+        else:
+            raise AttributeError("Object has no client repository")
+
+
+    def __repr__(self):
+        out = super().__repr__()
+        if len(self.status.Statistics.Columns) > 0:
+            out += "\n" + self._print_table()
+
+        return out
+
+
 
 
 class DatasetClient:
@@ -229,6 +260,19 @@ class DatasetClient:
         try:
             response = self.__stub.ListDatasets(request)
             return [Dataset(item, self) for item in response.datasets.items]
+        except grpc.RpcError as err:
+            error = err
+
+        ModelaException.process_error(error)
+        return False
+
+    def profile(self, namespace: str, name: str) -> DatasetProfile:
+        request = GetDatasetProfileRequest()
+        request.namespace = namespace
+        request.name = name
+        try:
+            response = self.__stub.GetDatasetProfile(request)
+            return DatasetProfile().copy_from(response.profile)
         except grpc.RpcError as err:
             error = err
 

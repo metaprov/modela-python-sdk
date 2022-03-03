@@ -3,6 +3,7 @@ from modela.Configuration import *
 from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import ResourceSpec as MDResourceSpec
 from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import NotificationSpec as MDNotificationSpec
 from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import Logs as MDLogs
+from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import ContainerLog as MDContainerLog
 
 
 @dataclass
@@ -21,9 +22,18 @@ class Workload(Configuration):
 
 
 @dataclass
+class ContainerLog(Configuration):
+    Job: str = ""
+    Container: str = ""
+    Key: str = ""
+
+    def to_message(self) -> MDContainerLog:
+        return self.set_parent(MDContainerLog()).parent
+
+@dataclass
 class OutputLogs(Configuration):
     BucketName: str = ""
-    Paths: List[str] = field(default_factory=lambda: [])
+    Containers: List[ContainerLog] = field(default_factory=lambda: [])
 
     def to_message(self) -> MDLogs:
         return self.set_parent(MDLogs()).parent

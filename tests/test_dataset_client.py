@@ -18,7 +18,8 @@ class Test_Modela_dataset(unittest.TestCase):
         self.modela.close()
 
     def test_0_create_datasource(self):
-        datasource = self.modela.DataSource(namespace="iris-product", name="test-create-ds", infer_file='datasets/iris.csv',
+        datasource = self.modela.DataSource(namespace="iris-product", name="test-create-ds",
+                                            infer_file='datasets/iris.csv',
                                             target_column="variety")
         try:
             datasource.delete()
@@ -37,8 +38,16 @@ class Test_Modela_dataset(unittest.TestCase):
         print(dataset._object)
         dataset.submit()
 
+
     def test_1_list(self):
         assert len(self.modela.Datasets.list("iris-product")) >= 1
+
+    def test_1_print(self):
+        print(self.modela.Datasets.list("iris-product")[0])
+
+    def test_1_profile(self):
+        ds = self.modela.Datasets.list("iris-product")[1]
+        print(ds.profile().Columns)
 
     def test_2_update(self):
         dataset = self.modela.Dataset(namespace="iris-product", name="test-ds")
@@ -54,12 +63,18 @@ class Test_Modela_dataset(unittest.TestCase):
 
     def test_4_delete(self):
         dataset = self.modela.Dataset(namespace="iris-product", name="test-ds")
-        #dataset.delete()
+        # dataset.delete()
         time.sleep(0.1)
         self.assertRaises(ResourceNotFoundException, self.modela.Datasets.get, "iris-product", "test-ds")
 
-    def test_viz(self):
-        datasource = self.modela.DataSource(namespace="iris-product", name="iris")
-        dataset = self.modela.Dataset(namespace="iris-product", name="test-ds-3", data_file='tests/datasets/iris.csv',
-                                      datasource=datasource, task_type=TaskType.MultiClassification)
-        dataset.submit_and_visualize()
+
+
+
+""" These tests should be run by an end-user. """
+def test_viz(self):
+    datasource = self.modela.DataSource(namespace="iris-product", name="iris")
+    dataset = self.modela.Dataset(namespace="iris-product", name="test-ds-3", data_file='tests/datasets/iris.csv',
+                                  datasource=datasource, task_type=TaskType.MultiClassification)
+    dataset.submit_and_visualize()
+
+

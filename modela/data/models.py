@@ -38,6 +38,7 @@ from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import \
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import Correlation as MDCorrelation
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import CorrelationSpec as MDCorrelationSpec
 
+from modela.common import Plot
 from modela.util import TrackedList
 
 
@@ -480,6 +481,18 @@ class ColumnProfile(Configuration):
     Values: List[str] = field(default_factory=lambda: [])
     CorrToTarget: float = 0
 
+    def to_message(self) -> MDColumnProfile:
+        return self.set_parent(MDColumnProfile()).parent
+
+@dataclass
+class DatasetProfile(Configuration):
+    Cols: int = 0
+    Rows: int = 0
+    Filesize: int = 0
+    Imbalance: bool = False
+    Plots: List[Plot] = field(default_factory=lambda: [])
+    Columns: List[ColumnProfile] = field(default_factory=lambda: [])
+    Hash: str = ""
 
 
 @dataclass

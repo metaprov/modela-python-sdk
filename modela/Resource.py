@@ -95,6 +95,9 @@ class Resource:
         print("Resource {0} is missing a default constructor; you may encounter errors upon creation.".format(
             self.__class__.__name__))
 
+    def __repr__(self):
+        return "<{0} Resource at {1}/{2}>".format(self.__class__.__name__, self.namespace, self.name)
+
     @staticmethod
     def set_default_version(version):
         Resource.DefaultVersion = version

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from modela.Configuration import Configuration
+from modela.Configuration import Configuration, ImmutableConfiguration
 
 
 class ConditionStatus(Enum):
@@ -115,3 +115,12 @@ class ObjectReference(Configuration):
 class SecretReference(Configuration):
     Name: str = ""
     Namespace: str = ""
+
+@dataclass
+class Plot(ImmutableConfiguration):
+    Fname: str = ""
+    Img: bytes = ""
+    Name: str = ""
+    Title: str = ""
+    Url: str = ""
+

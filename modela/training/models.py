@@ -25,7 +25,7 @@ from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 impo
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ModelValidation as MDModelValidation
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ModelValidationResult as MDModelValidationResult
 from modela.Configuration import Configuration, ImmutableConfiguration
-from modela.common import PriorityLevel, Time, StatusError, ConditionStatus, ObjectReference, Freq
+from modela.common import PriorityLevel, Time, StatusError, ConditionStatus, ObjectReference, Freq, Plot
 from modela.data.common import DataType
 from modela.data.models import DataLocation, GovernanceSpec, CompilerSettings, Correlation, DataSourceSpec
 from modela.inference.common import AccessType
@@ -448,15 +448,6 @@ class ModelStatus(ImmutableConfiguration):
     # GovernanceStatus: GovernanceStatus = None
     # Interpretability: InterpretabilityStatus = None
     Conditions: List[ModelCondition] = field(default_factory=lambda: [])
-
-
-@dataclass
-class Plot(ImmutableConfiguration):
-    Fname: str = ""
-    Img: bytes = ""
-    Name: str = ""
-    Title: str = ""
-    Url: str = ""
 
 
 @dataclass
