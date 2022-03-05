@@ -176,21 +176,21 @@ class Model(Resource):
     def get_cv_metric(self, metric: Metric) -> float:
         out_metric = [x for x in self.status.Cv if x.Metric == metric]
         if len(out_metric) == 0:
-            raise TypeError("{0} model does not support the {1} metric.".format(self.spec.Task.name, metric.name))
+            raise TypeError("{0} model does not have the {1} metric.".format(self.spec.Task.name, metric.name))
 
         return out_metric[0].Value
 
     def get_train_metric(self, metric: Metric) -> float:
         out_metric = [x for x in self.status.Train if x.Metric == metric]
         if len(out_metric) == 0:
-            raise TypeError("{0} model does not support the {1} metric.".format(self.spec.Task.name, metric.name))
+            raise TypeError("{0} model does not have the {1} metric..".format(self.spec.Task.name, metric.name))
 
         return out_metric[0].Value
 
     def get_test_metric(self, metric: Metric) -> float:
         out_metric = [x for x in self.status.Test if x.Metric == metric]
         if len(out_metric) == 0:
-            raise TypeError("{0} model does not support the {1} metric.".format(self.spec.Task.name, metric.name))
+            raise TypeError("{0} model does not have the {1} metric.".format(self.spec.Task.name, metric.name))
 
         return out_metric[0].Value
 

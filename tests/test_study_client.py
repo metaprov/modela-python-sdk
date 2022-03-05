@@ -67,7 +67,7 @@ def test_viz():
                task_type=TaskType.MultiClassification,
                objective=Metric.Accuracy,
                bucket="default-minio-bucket",
-               search=ModelSearch(MaxTime=200, MaxModels=10, Trainers=4))
+               search=ModelSearch(MaxTime=200, MaxModels=8, Trainers=4))
 
 
     study.submit_and_visualize(replace=True)

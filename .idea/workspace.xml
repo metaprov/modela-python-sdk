@@ -4,17 +4,10 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Add model detail viz">
+    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Implement study progress visualization">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/Resource.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/Resource.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/Dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/training/Model.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/training/Study.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Study.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_dataset_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_dataset_client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_study_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_study_client.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -405,7 +398,7 @@
       <workItem from="1644689597749" duration="17078000" />
       <workItem from="1644770166852" duration="72626000" />
       <workItem from="1645739119270" duration="63091000" />
-      <workItem from="1646172326741" duration="56355000" />
+      <workItem from="1646172326741" duration="65454000" />
     </task>
     <task id="LOCAL-00001" summary="fixed the client. upgrade version">
       <created>1630772236555</created>
@@ -554,7 +547,14 @@
       <option name="project" value="LOCAL" />
       <updated>1646351309490</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Implement study progress visualization">
+      <created>1646441511416</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1646441511416</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -593,14 +593,15 @@
     <MESSAGE value="Implement progress visualizations &amp; other bug fixes" />
     <MESSAGE value="Add dataset profile and repr" />
     <MESSAGE value="Add model detail viz" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add model detail viz" />
+    <MESSAGE value="Implement study progress visualization" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement study progress visualization" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/modela/training/Study.py</url>
-          <line>188</line>
+          <line>185</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>

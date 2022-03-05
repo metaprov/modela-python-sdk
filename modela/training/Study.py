@@ -163,19 +163,16 @@ class Study(Resource):
         desc = tqdm(total=0, position=0, bar_format='{desc}Time Elapsed: {elapsed}')
         bars = {}
 
-        current_status, objective = None, self.spec.Search.Objective
+        current_status, objective, cv_top, alg_top = None, self.spec.Search.Objective, 0, ""
         try:
             while True:
                 self.sync()
                 if current_status != self.status:
                     current_status = self.status
-                    desc.set_description('Phase: %s | Active Models: %d | Best Model: %s | Best Score: %s' %
+                    desc.set_description('Phase: %s | Active Models: %d | Best Algorithm: %s | Best Score: %s' %
                                          (_StudyPhaseToProgress[self.phase], current_status.Models,
-                                          ("%s model (%s)") % (self._client.modela.Model(self.namespace, current_status.BestModel).spec.Estimator.AlgorithmName,
-                                                               current_status.BestModel)
-                                          if current_status.BestModel != "" else "[Waiting]",
-                                          str(self._client.modela.Model(self.namespace, current_status.BestModel).get_cv_metric(objective))
-                                          if current_status.BestModel != "" else "[Waiting]"))
+                                          alg_top if alg_top != "" else "[Waiting]",
+                                          str(cv_top) if cv_top != 0 else "[Waiting]"))
 
                 desc.refresh()
                 models = self.models
@@ -187,17 +184,18 @@ class Study(Resource):
                             bar.close()
                         else:  # Otherwise, we need to shift all the bars down by one
                             _bars = [[mod, _bar] for mod, _bar in bars.items() if _bar.pos <= bar.pos]
-                            if len(_bars) <= 1: # Not supposed to happen; close the bar and move on
+                            if len(_bars) <= 1:  # Not supposed to happen; close the bar and move on
                                 bar.close()
                             else:
                                 _bars.sort(key=lambda bp: bp[1].pos, reverse=True)
-                                for idx in range(len(_bars)-1): # Copy bar data down the list and fix indexes
-                                    bar_forward, bar_current = _bars[idx+1][1], _bars[idx][1]
+                                for idx in range(len(_bars) - 1):  # Copy bar data down the list and fix indexes
+                                    bar_forward, bar_current = _bars[idx + 1][1], _bars[idx][1]
                                     bar_current.desc = bar_forward.desc
                                     bar_current.n = bar_forward.n
+                                    bar_current.postfix = bar_forward.postfix
                                     bar_current.refresh()
                                     if idx > 0:
-                                        bars[_bars[idx][0]] = _bars[idx-1][1]
+                                        bars[_bars[idx][0]] = _bars[idx - 1][1]
 
                                 bars[_bars[-1][0]] = _bars[-2][1]
                                 _bars[-1][1].close()
@@ -206,17 +204,66 @@ class Study(Resource):
 
                 for model in models:  # For each model, create a bar/update the bar of it already exists
                     if not (model.name in bars):
-                        bars[model.name] = tqdm(total=100, position=len(bars) + 1, bar_format='{l_bar}{bar}',
-                                                desc=model.name + " [Pending]", ncols=80, initial=0, leave=False)
+                        bars[model.name] = tqdm(total=100, position=len(bars) + 1,
+                                                bar_format='{desc} {percentage:3.0f}%|{bar}| {postfix}',
+                                                desc=model.name + " [Pending]", ncols=121, initial=0, leave=False)
                     else:
                         status = model.status  # Avoid multiple expensive calls to load configs
                         if bars[model.name].n != status.Progress:
                             bars[model.name].n = status.Progress
                             bars[model.name].refresh()
 
-                        dsc = "{0} [{1}]".format(model.name, status.Phase.name)
+                        dsc = "{0: <50} [{1}]:".format(model.name + "/" + model.spec.Estimator.AlgorithmName,
+                                                       status.Phase.name).ljust(62)
+                        postfix = "CV = [Waiting]"
+                        if len(status.Cv) > 0:
+                            postfix = "CV = {0}".format(model.get_cv_metric(objective))
+                            if model.get_cv_metric(objective) > cv_top:
+                                cv_top, alg_top = model.get_cv_metric(objective), model.spec.Estimator.AlgorithmName
+
+                        if len(status.Test) > 0:
+                            postfix = "CV = {0}, Test = {1}".format(model.get_cv_metric(objective),
+                                                                    model.get_test_metric(objective))
+
+                        class unappendable_str:  # Workaround for tqdm appending a comma before the postfix >:(
+                            def __init__(self, s):
+                                self.s = s
+
+                            def __str__(self):
+                                return self.s
+
                         if bars[model.name].desc != dsc:
                             bars[model.name].set_description_str(dsc)
+
+                        if str(bars[model.name].postfix) != postfix:
+                            bars[model.name].postfix = unappendable_str(postfix)
+                            bars[model.name].refresh()
+
+                if current_status.Phase == StudyPhase.Failed:
+                    desc.set_description("Phase: Failed | Error Message: {0}".format(current_status.FailureMessage))
+                    desc.colour = "red"
+                    desc.refresh()
+                    time.sleep(5)
+                    self.sync()
+                    if self.phase != StudyPhase.Failed:
+                        continue
+                    else:
+                        break
+                elif current_status.Phase == StudyPhase.Completed:
+                    model = self._client.modela.Model(self.namespace, current_status.BestModel)
+                    if model.phase != ModelPhase.Completed:
+                        continue
+
+                    desc.close()
+                    for bar in bars.values():
+                        bar.close()
+
+                    print("\n\n" + model.details)
+                    if self.spec.Search.Trainers <= 2:
+                        print("Want quicker training speeds? Get more parallel trainers at https://modela.ai")
+
+                    time.sleep(0.1)
+                    break
 
                 time.sleep(0.1)
 
