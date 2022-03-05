@@ -173,6 +173,26 @@ class Model(Resource):
 
         return tabulate(test_table, tablefmt='psql', headers=headers)
 
+    def get_cv_metric(self, metric: Metric) -> float:
+        out_metric = [x for x in self.status.Cv if x.Metric == metric]
+        if len(out_metric) == 0:
+            raise TypeError("{0} model does not support the {1} metric.".format(self.spec.Task.name, metric.name))
+
+        return out_metric[0].Value
+
+    def get_train_metric(self, metric: Metric) -> float:
+        out_metric = [x for x in self.status.Train if x.Metric == metric]
+        if len(out_metric) == 0:
+            raise TypeError("{0} model does not support the {1} metric.".format(self.spec.Task.name, metric.name))
+
+        return out_metric[0].Value
+
+    def get_test_metric(self, metric: Metric) -> float:
+        out_metric = [x for x in self.status.Test if x.Metric == metric]
+        if len(out_metric) == 0:
+            raise TypeError("{0} model does not support the {1} metric.".format(self.spec.Task.name, metric.name))
+
+        return out_metric[0].Value
 
     def __repr__(self):
         return "<{0} model at {1}/{2}>".format(self.spec.Estimator.AlgorithmName, self.namespace, self.name)

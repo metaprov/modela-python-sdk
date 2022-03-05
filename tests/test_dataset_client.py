@@ -74,9 +74,10 @@ class Test_Modela_dataset(unittest.TestCase):
 def test_viz():
     modela = Modela("localhost", 3000)
     datasource = modela.DataSource(namespace="iris-product", name="iris")
-    dataset = modela.Dataset(namespace="iris-product", name="test-ds-4", data_file='tests/datasets/iris.csv',
+    dataset = modela.Dataset(namespace="iris-product", name="test-ds-5", data_file='tests/datasets/iris.csv',
                              datasource=datasource, task_type=TaskType.MultiClassification)
-    dataset.submit_and_visualize()
-    modela.close()
 
+
+    dataset.submit_and_visualize(replace=True)
+    modela.close()
 

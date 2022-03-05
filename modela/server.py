@@ -819,8 +819,45 @@ class Modela:
     def Studies(self):
         return self.__study_client
 
-    def Study(self, namespace="", name="") -> Study:
-        return Study(MDStudy(), self.Studies, namespace, name)
+    def Study(self, namespace="", name="", version=Resource.DefaultVersion, dataset: Union[str, Dataset] = "",
+              lab: Union[ObjectReference, Lab, str] = "default-lab", bucket: Union[VirtualBucket, str] = None,
+              task_type: TaskType = None, objective: Metric = None, search: ModelSearch = None,
+              fe_search: FeatureEngineeringSearch = None, baseline: BaselineSettings = None,
+              ensemble: Ensemble = None, trainer_template: Training = None, interpretability: Interpretability = None,
+              schedule: StudySchedule = None, notification: NotificationSetting = None, garbage_collect: bool = True,
+              keep_best_models: bool = True, timeout: int = 600, template: bool = False) -> Study:
+        """
+        :param namespace: The target namespace of the resource.
+        :param name: The name of the resource.
+        :param version: The version of the resource.
+        :param dataset: If specified as a string, the SDK will attempt to find a Dataset resource with the given name.
+            If specified as a Dataset object, or if one was found with the given name, it will be used in the Study.
+        :param lab: The object reference, Lab object, or lab name under the default-tenant for which all Study-related
+            workloads will be performed under.
+        :param bucket: The Bucket object or name of the bucket which will store the Study artifacts
+        :param task_type: The ML task type of the Study
+        :param objective: The objective metric relevant to the task type.
+        :param search: The search parameters define how many models to sample
+        :param fe_search: The feature engineering search parameters of the Study
+        :param baseline: The baseline settings for the Study, which if enabled will train an unoptimized model of each
+            algorithm type for benchmarking.
+        :param ensemble: The ensemble settings for the Study, which if enabled will combine the top estimators of
+            the study after the initial model search.
+        :param trainer_template: The training template for each model created by the Study.
+        :param interpretability: The interpretability settings for the Study, which when enabled can produce ICE, LIME,
+            and Shap value plots
+        :param schedule: The schedule for the study to run chronically
+        :param notification: The notification settings, which if enabled will forward events about this resource to a notifier.
+        :param garbage_collect: If enabled, models which did not move past the testing stage will be garbage collected by
+            the system.
+        :param keep_best_models: If enabled, the best models from each algorithm will not be garbage collected.
+        :param timeout: The timeout in seconds after which the Study will fail.
+        :param template: If the Study is a template it will not start a search and can only be used as a template for
+            other studies.
+        """
+        return Study(MDStudy(), self.Studies, namespace, name, version, dataset, lab, bucket, task_type, objective,
+                     search, fe_search, baseline, ensemble, trainer_template, interpretability, schedule,
+                     notification, garbage_collect, keep_best_models, timeout, template)
 
     def close(self):
         if self._channel:

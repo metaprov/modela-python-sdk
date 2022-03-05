@@ -220,28 +220,6 @@ class DatasetPhase(Enum):
     Ready = "Ready"
 
 
-DatasetPhaseProgress = {
-    DatasetPhase.Pending: 0,
-    DatasetPhase.Generating: 1,
-    DatasetPhase.GenSuccess: 2,
-    DatasetPhase.ValidationRunning: 3,
-    DatasetPhase.ValidationSuccess: 4,
-    DatasetPhase.IngestRunning: 5,
-    DatasetPhase.IngestSuccess: 6,
-    DatasetPhase.ProfileRunning: 7,
-    DatasetPhase.ProfileSuccess: 8,
-    DatasetPhase.ReportRunning: 9,
-    DatasetPhase.ReportSuccess: 10,
-    DatasetPhase.SnapshotRunning: 10,
-    DatasetPhase.SnapshotSuccess: 10,
-    DatasetPhase.Failed: 11,
-    DatasetPhase.Aborted: 11,
-    DatasetPhase.Ready: 11,
-    "max_progress": 11,
-
-}
-
-
 class Color(Enum):
     Aliceblue = "aliceblue"
     Antiquewhite = "antiquewhite"

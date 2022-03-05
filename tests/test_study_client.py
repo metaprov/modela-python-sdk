@@ -20,23 +20,17 @@ class Test_Modela_study(unittest.TestCase):
     def test_0_create(self):
         study = self.modela.Study(namespace="iris-product", name="test")
         study.spec.Location = DataLocation(BucketName="test")
-        try:
-            study.delete()
-        finally:
-            pass
-
-        time.sleep(0.1)
         assert type(study) == Study
-        study.submit()
-        # Study(client=self.modela.Studies,
-        #       name="test-study",
-        #       namespace="iris-product",
-        #       dataset="iris",
-        #       task_type=TaskType.MultiClassification,
-        #       objective=Metric.Accuracy,
-        #       bucket="modela",
-        #       search=ModelSearch(MaxTime=200, MaxModels=20, Trainers=4,
-        #                          SearchSpace=AlgorithmSearchSpace(Allowlist=[ClassicEstimator.LogisticRegression]))).submit()
+        #study.submit(replace=True)
+        Study(client=self.modela.Studies,
+               name="test-study-2",
+               namespace="iris-product",
+               dataset="iris",
+               task_type=TaskType.MultiClassification,
+               objective=Metric.Accuracy,
+               bucket="default-minio-bucket",
+               search=ModelSearch(MaxTime=200, MaxModels=2, Trainers=2,
+                                  SearchSpace=AlgorithmSearchSpace(Allowlist=[ClassicEstimator.LogisticRegression]))).submit()
 
     def test_1_list(self):
         assert len(self.modela.Studies.list("iris-product")) >= 1
@@ -62,3 +56,20 @@ class Test_Modela_study(unittest.TestCase):
         study = self.modela.Studies.list("iris-product")[0]
         assert len(study.models) > 0
         print(study.best_model.name)
+
+""" These tests should be run by an end-user. """
+def test_viz():
+    modela = Modela("localhost", 3000)
+    study = modela.Study(
+               name="test-study-2",
+               namespace="iris-product",
+               dataset="iris",
+               task_type=TaskType.MultiClassification,
+               objective=Metric.Accuracy,
+               bucket="default-minio-bucket",
+               search=ModelSearch(MaxTime=200, MaxModels=10, Trainers=4))
+
+
+    study.submit_and_visualize(replace=True)
+    modela.close()
+

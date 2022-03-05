@@ -4,17 +4,18 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Add dataset profile and repr">
+    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Add model detail viz">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/Resource.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/Resource.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/data/Dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/FileService.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/FileService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/training/Model.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/training/Study.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Study.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/training/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/common.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/training/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements_dev.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements_dev.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_dataset_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_dataset_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_model_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_model_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_study_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_study_client.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +96,7 @@
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\catalog" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests in test_model_client.py">
+  <component name="RunManager" selected="Python tests.Python tests for test_study_client.Test_Modela_study.test_viz">
     <configuration name="go build modela-python-sdk gen_crd_docs.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <working_directory value="$PROJECT_DIR$" />
@@ -164,7 +165,7 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_modela_grpc_client.TestModela_python_client.test_predict" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for test_study_client.Test_Modela_study.test_viz" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -175,7 +176,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_modela_grpc_client.TestModela_python_client.test_predict&quot;" />
+      <option name="_new_target" value="&quot;test_study_client.Test_Modela_study.test_viz&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -373,14 +374,15 @@
       <item itemvalue="Python tests.Python tests in test_report_client.py" />
       <item itemvalue="Python tests.Python tests in test_study_client.py" />
       <item itemvalue="Python tests.Unittests in test_configuration.py" />
-      <item itemvalue="Python tests.Python tests for test_modela_grpc_client.TestModela_python_client.test_predict" />
       <item itemvalue="Python tests.Python tests for test_datasources_client.Test_Modela_datasource.test_0_create_infer_df" />
       <item itemvalue="Python tests.Python tests for test_datasources_client.Test_Modela_datasource.test_0_infer_api" />
       <item itemvalue="Python tests.Python tests for test_dataset_client.Test_Modela_dataset.test_1_print" />
       <item itemvalue="Python tests.Python tests for test_dataset_client.Test_Modela_dataset.test_1_profile" />
+      <item itemvalue="Python tests.Python tests for test_study_client.Test_Modela_study.test_viz" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests for test_study_client.Test_Modela_study.test_viz" />
         <item itemvalue="Python tests.Python tests for test_dataset_client.Test_Modela_dataset.test_1_print" />
         <item itemvalue="Python tests.Python tests for test_dataset_client.Test_Modela_dataset.test_1_profile" />
         <item itemvalue="Python tests.Python tests for test_datasources_client.Test_Modela_datasource.test_0_infer_api" />
@@ -403,7 +405,7 @@
       <workItem from="1644689597749" duration="17078000" />
       <workItem from="1644770166852" duration="72626000" />
       <workItem from="1645739119270" duration="63091000" />
-      <workItem from="1646172326741" duration="33004000" />
+      <workItem from="1646172326741" duration="56355000" />
     </task>
     <task id="LOCAL-00001" summary="fixed the client. upgrade version">
       <created>1630772236555</created>
@@ -545,7 +547,14 @@
       <option name="project" value="LOCAL" />
       <updated>1646273188661</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Add model detail viz">
+      <created>1646351309490</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1646351309490</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -583,10 +592,22 @@
     <MESSAGE value="Implement more dataset &amp; datasource logic" />
     <MESSAGE value="Implement progress visualizations &amp; other bug fixes" />
     <MESSAGE value="Add dataset profile and repr" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add dataset profile and repr" />
+    <MESSAGE value="Add model detail viz" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add model detail viz" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/modela/training/Study.py</url>
+          <line>188</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/modela_python_sdk$Unittests_in_test_configuration_py.coverage" NAME="Unittests in test_configuration.py Coverage Results" MODIFIED="1645053367344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1646351076764" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1646439328822" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
 </project>

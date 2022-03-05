@@ -515,6 +515,33 @@ class StudyPhase(Enum):
     Paused = "Paused"
 
 
+_StudyPhaseToProgress = {
+    StudyPhase.ModelPending: "Pending",
+    StudyPhase.Splitting: "Splitting Dataset",
+    StudyPhase.Splitted: "Split Complete",
+    StudyPhase.EngineeringFeature: "Feature Engineering Search",
+    StudyPhase.FeatureEngineered: "Feature Engineering Complete",
+    StudyPhase.Baseline: "Creating Baseline Models",
+    StudyPhase.Baselined: "Baseline Models Complete",
+    StudyPhase.Searching: "Searching Models",
+    StudyPhase.Searched: "Search Complete",
+    StudyPhase.CreatingEnsembles: "Creating Ensembles",
+    StudyPhase.CreatedEnsembles: "Ensembles Created",
+    StudyPhase.Testing: "Testing",
+    StudyPhase.Tested: "Tested",
+    StudyPhase.Reported: "Reported",
+    StudyPhase.Reporting: "Reporting",
+    StudyPhase.Profiling: "Profiling",
+    StudyPhase.Profiled: "Profiled",
+    StudyPhase.Explaining: "Explaining",
+    StudyPhase.Explained: "Explained",
+    StudyPhase.Completed: "Completed",
+    StudyPhase.Failed: "Failed",
+    StudyPhase.Aborted: "Aborted",
+    StudyPhase.Paused: "Paused"
+}
+
+
 class StudyConditionType(Enum):
     StudyInitialized = "Initialized"
     StudySplitted = "StudySplitted"

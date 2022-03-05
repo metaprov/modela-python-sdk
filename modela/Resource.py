@@ -1,8 +1,10 @@
+import time
+
 from google.protobuf.message import Message
 from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import ObjectMeta
 
 from modela import ObjectReference
-from modela.ModelaException import ResourceNotFoundException
+from modela.ModelaException import ResourceNotFoundException, ResourceExistsException, GrpcErrorException
 
 
 class Resource:
@@ -64,11 +66,19 @@ class Resource:
     def reference(self) -> ObjectReference:
         return ObjectReference(Namespace=self.namespace, Name=self.name)
 
-    def submit(self, **kwargs):
+    def submit(self, replace=False, **kwargs):
         """
         Submit will create the resource on the cluster if it does not exist.
         """
         if hasattr(self, "_client"):
+            if replace:
+                self._client.delete(self.namespace, self.name)
+                name, namespace = self.name, self.namespace
+                self._object.metadata.Clear()
+                self._object.metadata.CopyFrom(ObjectMeta())
+                self._object.metadata.name = name
+                self._object.metadata.namespace = namespace
+
             self._client.create(self, **kwargs)
         else:
             raise AttributeError("Object has no client repository")
@@ -82,6 +92,11 @@ class Resource:
     def delete(self):
         if hasattr(self, "_client"):
             self._client.delete(self.namespace, self.name)
+            name, namespace = self.name, self.namespace
+            self._object.metadata.Clear()
+            self._object.metadata.CopyFrom(ObjectMeta())
+            self._object.metadata.name = name
+            self._object.metadata.namespace = namespace
         else:
             raise AttributeError("Object has no client repository")
 

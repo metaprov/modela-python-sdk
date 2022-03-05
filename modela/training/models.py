@@ -133,7 +133,7 @@ class SuccessiveHalving(ImmutableConfiguration):
 
 @dataclass
 class DataSplit(Configuration):
-    Method: DataSplitMethod = DataSplitMethod.Random
+    Method: DataSplitMethod = DataSplitMethod.Auto
     Train: int = 80
     Validation: int = 0
     Test: int = 20
@@ -232,9 +232,9 @@ class GeneratedColumnSpec(ImmutableConfiguration):
 class FeatureSelection(Configuration):
     Enabled: bool = False
     SamplePct: int = 100
-    Embedding: bool = True
-    Filter: bool = True
-    Wrapper: bool = True
+    Embedding: bool = False
+    Filter: bool = False
+    Wrapper: bool = False
     Pipeline: List[FeatureSelectionType] = field(default_factory=lambda: [])
     VarianceThresholdPct: int = 5
     CorrThreshold: int = 95
@@ -487,7 +487,7 @@ SamplerType = Sampler
 
 @dataclass
 class ModelSearch(Configuration):
-    Sampler: SamplerType = SamplerType.BayesianSearch
+    Sampler: SamplerType = SamplerType.TPESearch
     Pruner: PrunerSettings = None
     MaxCost: int = 100  # Not Implemented
     MaxTime: int = 30
@@ -516,7 +516,7 @@ class FeatureEngineeringSearch(Configuration):
     Enabled: bool = True
     ImbalancedHandler: ImbalanceHandling = ImbalanceHandling.ImbalanceAuto
     Estimator: ClassicEstimator = ClassicEstimator.DecisionTreeClassifier  # FIXME: Should auto detect
-    MaxModels: int = 10
+    MaxModels: int = 2
     MaxTime: int = 3600
     MaxTrainers: int = 1
     SamplePct: int = 100

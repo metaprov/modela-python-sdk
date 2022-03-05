@@ -146,43 +146,41 @@ class Dataset(Resource):
         else:
             raise AttributeError("Object has no client repository")
 
-    def submit_and_visualize(self):
-        self.submit()
+    def submit_and_visualize(self, replace=False):
+        self.submit(replace)
         self.visualize()
 
     def visualize(self):
         desc = tqdm(total=0, position=0, bar_format='{desc}Time Elapsed: {elapsed}')
-        progress = tqdm(total=DatasetPhaseProgress["max_progress"], position=1, bar_format='{l_bar}{bar}',
-                        desc=self.name, ncols=80, initial=DatasetPhaseProgress[self.phase])
+        progress = tqdm(total=100, position=1, bar_format='{l_bar}{bar}',
+                        desc=self.name, ncols=80, initial=0)
 
         current_status = self.status
         try:
             while True:
                 self.sync()
                 if current_status == self.status:
-                    time.sleep(0.2)
-                    desc.refresh()
+                    time.sleep(0.1)
                     continue
 
                 current_status = self.status
-                desc.set_description('Current Phase: %s | Task Type: %s | File Size: %s | Rows: %s | Columns: %s' %
-                                     (self.phase.name, self.spec.Task.name, convert_size(self.status.Statistics.FileSize),
+                desc.set_description_str('Phase: %s | File Size: %s | Rows: %s | Columns: %s' %
+                                     (self.phase.name, convert_size(self.status.Statistics.FileSize),
                                       "[Processing]" if self.status.Statistics.Rows == 0 else self.status.Statistics.Rows,
                                       "[Processing]" if len(self.status.Statistics.Columns) == 0 else len(self.status.Statistics.Columns)))
-                progress.n = DatasetPhaseProgress[self.phase]
-                progress.last_print_n = DatasetPhaseProgress[self.phase]
+                progress.n = self.status.Progress
+                progress.last_print_n = self.status.Progress
                 progress.refresh()
-                if progress.n == DatasetPhaseProgress["max_progress"]:
+                if self.phase in (DatasetPhase.Ready, DatasetPhase.Aborted, DatasetPhase.Failed):
                     if self.phase == DatasetPhase.Ready:
                         print("\n\n" + self.profile)
                     else:
                         progress.colour = "red"
                         progress.refresh()
-                        print("\nDataset was failed or aborted.")
+                        print("\nDataset was failed or aborted: %s" % current_status.FailureMessage)
 
                     break
 
-                time.sleep(0.2)
         except KeyboardInterrupt:
             pass
 
