@@ -3,7 +3,7 @@
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
-SPHINXBUILD   = python -msphinx
+SPHINXBUILD   = python3.9 -msphinx
 SPHINXPROJ    = modela_python_sdk
 SOURCEDIR     = .
 BUILDDIR      = _build

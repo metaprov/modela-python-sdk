@@ -55,9 +55,6 @@ class Configuration(object):
         """
         Apply all attributes of a Configuration to a Protobuf Message. If the message does not match the fields of the
         Configuration, an error will be thrown.
-
-        :param message:
-        :rtype: Message
         """
         for attribute, value in self.__dict__.items():
             if attribute == "_parent":

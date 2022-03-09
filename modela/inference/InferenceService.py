@@ -41,15 +41,13 @@ class InferenceService:
         self.close()
 
     def predict(self,
-                namespace: str,
-                name: str,
                 payload: str,
                 validate: bool = True,
                 explain: bool = False,
                 format: str = "json",
                 labeled: bool = False,
                 metrics: List[str] = []) -> List[PredictionResult]:
-        request = PredictRequest(namespace=namespace, name=name, validate=validate, explain=explain, format=format,
+        request = PredictRequest(validate=validate, explain=explain, format=format,
                                  payload=payload, labeled=labeled)
         request.metrics.extend(metrics)
         try:

@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 tests/datasets/100MB.bin
+content/
 .Python
 build/
 develop-eggs/

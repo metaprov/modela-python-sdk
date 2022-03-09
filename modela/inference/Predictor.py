@@ -5,7 +5,7 @@ from github.com.metaprov.modelaapi.services.predictor.v1.predictor_pb2 import Cr
     UpdatePredictorRequest, \
     DeletePredictorRequest, GetPredictorRequest, ListPredictorsRequest
 
-from modela import ObjectReference
+from modela.common import ObjectReference
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
 from typing import List, Union
@@ -93,7 +93,7 @@ class Predictor(Resource):
     def default(self):
         PredictorSpec().apply_config(self._object.spec)
 
-    def connect(self, node_ip="", connect_dns=False, connect_local=False, local_port: int=None) -> InferenceService:
+    def connect(self, node_ip="", connect_dns=False, connect_local=False, local_port: int=None, tls_cert: str = None) -> InferenceService:
         """
         Connect attempts to make a connection to the gRPC inference service client associated with the Predictor.
 

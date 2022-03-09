@@ -126,6 +126,11 @@ from modela.training.Study import *
 
 
 class Modela:
+    """
+    The Modela class provides an interface for connecting to your Modela API Gateway and accessing the Modela custom
+    resources on your cluster. The class provides you with a directory for all resource API clients, and functions to
+    fetch or create each resource.
+    """
     def __init__(
             self,
             host="localhost",
@@ -147,15 +152,17 @@ class Modela:
                 ]
             ] = None,
     ):
-        """Initializer.
-           Creates a gRPC channel for connecting to the server.
-           Adds the channel to the generated client stub.
+        """
+        Connect to the Modela API gateway.
 
-        Arguments:
-            None.
-
-        Returns:
-            None.
+        :param host:
+        :param port:
+        :param username:
+        :param password:
+        :param secure:
+        :param tls_cert:
+        :param tenant:
+        :param api_token:
         """
         self.tenant = tenant
         if secure:
@@ -350,14 +357,14 @@ class Modela:
         self.__study_client = StudyClient(self.__study_stub, self)
 
     @property
-    def Accounts(self):
+    def Accounts(self) -> AccountClient:
         return self.__account_client
 
     def Account(self, namespace="", name="") -> Account:
         return Account(MDAccount(), self.Accounts, namespace=namespace, name=name)
 
     @property
-    def DataProducts(self):
+    def DataProducts(self) -> DataProductClient:
         return self.__dataproduct_client
 
     def DataProduct(self, namespace="", name="", servingsite: str = None,
@@ -378,7 +385,7 @@ class Modela:
                            default_workload, default_bucket, notification_setting)
 
     @property
-    def DataSources(self):
+    def DataSources(self) -> DataSourceClient:
         return self.__datasource_client
 
     def DataSource(self, namespace="", name="", version=Resource.DefaultVersion, bucket: str = "default-minio-bucket",
@@ -410,21 +417,21 @@ class Modela:
                           infer_dataframe, infer_bytes, target_column, file_type, task_type, csv_config, excel_config)
 
     @property
-    def DataPipelineRuns(self):
+    def DataPipelineRuns(self) -> DataPipelineRunClient:
         return self.__datapipelinerun_client
 
     def DataPipelineRun(self, namespace="", name="") -> DataPipelineRun:
         return DataPipelineRun(MDDataPipelineRun(), self.DataPipelineRuns, namespace, name)
 
     @property
-    def DataPipelines(self):
+    def DataPipelines(self) -> DataPipelineClient:
         return self.__datapipeline_client
 
     def DataPipeline(self, namespace="", name="") -> DataPipeline:
         return DataPipeline(MDDataPipeline(), self.DataPipelines, namespace, name)
 
     @property
-    def DataProductVersions(self):
+    def DataProductVersions(self) -> DataProductVersionClient:
         return self.__dataproductversion_client
 
     def DataProductVersion(self, namespace="", name="", baseline: bool = False,
@@ -441,7 +448,7 @@ class Modela:
                                   previous_version)
 
     @property
-    def Datasets(self):
+    def Datasets(self) -> DatasetClient:
         return self.__dataset_client
 
     def Dataset(self, namespace="", name="", gen_datasource: bool = False, version=Resource.DefaultVersion,
@@ -476,333 +483,333 @@ class Modela:
 
 
     @property
-    def FileService(self):
+    def FileService(self) -> FileService:
         return self.__fileservice_client
 
     @property
-    def Entities(self):
+    def Entities(self) -> EntityClient:
         return self.__entity_client
 
     def Entity(self, namespace="", name="") -> Entity:
         return Entity(MDEntity(), self.Entities, namespace, name)
 
     @property
-    def FeatureHistograms(self):
+    def FeatureHistograms(self) -> FeatureHistogramClient:
         return self.__featurehistogram_client
 
     def FeatureHistogram(self, namespace="", name="") -> FeatureHistogram:
         return FeatureHistogram(MDFeatureHistogram(), self.FeatureHistograms, namespace, name)
 
     @property
-    def FeaturePipelineRuns(self):
+    def FeaturePipelineRuns(self) -> FeaturePipelineClient:
         return self.__featurepipelinerun_client
 
     def FeaturePipelineRun(self, namespace="", name="") -> FeaturePipelineRun:
         return FeaturePipelineRun(MDFeaturePipelineRun(), self.FeaturePipelineRuns, namespace, name)
 
     @property
-    def FeaturePipelines(self):
+    def FeaturePipelines(self) -> FeaturePipelineClient:
         return self.__featurepipeline_client
 
     def FeaturePipeline(self, namespace="", name="") -> FeaturePipeline:
         return FeaturePipeline(MDFeaturePipeline(), self.FeaturePipelines, namespace, name)
 
     @property
-    def Features(self):
+    def Features(self) -> FeatureClient:
         return self.__feature_client
 
     def Feature(self, namespace="", name="") -> Feature:
         return Feature(MDFeature(), self.Features, namespace, name)
 
     @property
-    def Featuresets(self):
+    def Featuresets(self) -> FeaturesetClient:
         return self.__featureset_client
 
     def Featureset(self, namespace="", name="") -> Featureset:
         return Featureset(MDFeatureset(), self.Featuresets, namespace, name)
 
     @property
-    def LabelingPipelineRuns(self):
+    def LabelingPipelineRuns(self) -> LabelingPipelineRunClient:
         return self.__labelingpipelinerun_client
 
     def LabelingPipelineRun(self, namespace="", name="") -> LabelingPipelineRun:
         return LabelingPipelineRun(MDLabelingPipelineRun(), self.LabelingPipelineRuns, namespace, name)
 
     @property
-    def LabelingPipelines(self):
+    def LabelingPipelines(self) -> LabelingPipelineClient:
         return self.__labelingpipeline_client
 
     def LabelingPipeline(self, namespace="", name="") -> LabelingPipeline:
         return LabelingPipeline(MDLabelingPipeline(), self.LabelingPipelines, namespace, name)
 
     @property
-    def RecipeRuns(self):
+    def RecipeRuns(self) -> RecipeRunClient:
         return self.__reciperun_client
 
     def RecipeRun(self, namespace="", name="") -> RecipeRun:
         return RecipeRun(MDRecipeRun(), self.RecipeRuns, namespace, name)
 
     @property
-    def Recipes(self):
+    def Recipes(self) -> RecipeClient:
         return self.__recipe_client
 
     def Recipe(self, namespace="", name="") -> Recipe:
         return Recipe(MDRecipe(), self.Recipes, namespace, name)
 
     @property
-    def SqlQuerys(self):
+    def SqlQuerys(self) -> SqlQueryClient:
         return self.__sqlquery_client
 
     def SqlQuery(self, namespace="", name="") -> SqlQuery:
         return SqlQuery(MDSqlQuery(), self.SqlQuerys, namespace, name)
 
     @property
-    def SqlQueryRuns(self):
+    def SqlQueryRuns(self) -> SqlQueryRunClient:
         return self.__sqlqueryrun_client
 
     def SqlQueryRun(self, namespace="", name="") -> SqlQueryRun:
         return SqlQueryRun(MDSqlQueryRun(), self.SqlQueryRuns, namespace, name)
 
     @property
-    def WebRequestRuns(self):
+    def WebRequestRuns(self) -> WebRequestRunClient:
         return self.__webrequestrun_client
 
     def WebRequestRun(self, namespace="", name="") -> WebRequestRun:
         return WebRequestRun(MDWebRequestRun(), self.WebRequestRuns, namespace, name)
 
     @property
-    def WebRequests(self):
+    def WebRequests(self) -> WebRequestClient:
         return self.__webrequest_client
 
     def WebRequest(self, namespace="", name="") -> WebRequest:
         return WebRequest(MDWebRequest(), self.WebRequests, namespace, name)
 
     @property
-    def CronPredictions(self):
+    def CronPredictions(self) -> CronPredictionClient:
         return self.__cronprediction_client
 
     def CronPrediction(self, namespace="", name="") -> CronPrediction:
         return CronPrediction(MDCronPrediction(), self.CronPredictions, namespace, name)
 
     @property
-    def Curtains(self):
+    def Curtains(self) -> CurtainClient:
         return self.__curtain_client
 
     def Curtain(self, namespace="", name="") -> Curtain:
         return Curtain(MDCurtain(), self.Curtains, namespace, name)
 
     @property
-    def DataApps(self):
+    def DataApps(self) -> DataAppClient:
         return self.__dataapp_client
 
     def DataApp(self, namespace="", name="") -> DataApp:
         return DataApp(MDDataApp(), self.DataApps, namespace, name)
 
     @property
-    def Predictions(self):
+    def Predictions(self) -> PredictionClient:
         return self.__prediction_client
 
     def Prediction(self, namespace="", name="") -> Prediction:
         return Prediction(MDPrediction(), self.Predictions, namespace, name)
 
     @property
-    def Predictors(self):
+    def Predictors(self) -> PredictorClient:
         return self.__predictor_client
 
     def Predictor(self, namespace="", name="") -> Predictor:
         return Predictor(MDPredictor(), self.Predictors, namespace, name)
 
     @property
-    def Alerts(self):
+    def Alerts(self) -> AlertClient:
         return self.__alert_client
 
     def Alert(self, namespace="", name="") -> Alert:
         return Alert(MDAlert(), self.Alerts, namespace, name)
 
     @property
-    def ApiTokens(self):
+    def ApiTokens(self) -> ApiTokenClient:
         return self.__apitoken_client
 
     def ApiToken(self, namespace="", name="") -> ApiToken:
         return ApiToken(MDApiToken(), self.ApiTokens, namespace, name)
 
     @property
-    def Attachments(self):
+    def Attachments(self) -> AttachmentClient:
         return self.__attachment_client
 
     def Attachment(self, namespace="", name="") -> Attachment:
         return Attachment(MDAttachment(), self.Attachments, namespace, name)
 
     @property
-    def Commits(self):
+    def Commits(self) -> CommitClient:
         return self.__commit_client
 
     def Commit(self, namespace="", name="") -> Commit:
         return Commit(MDCommit(), self.Commits, namespace, name)
 
     @property
-    def Connections(self):
+    def Connections(self) -> ConnectionClient:
         return self.__connection_client
 
     def Connection(self, namespace="", name="") -> Connection:
         return Connection(MDConnection(), self.Connections, namespace, name)
 
     @property
-    def Labs(self):
+    def Labs(self) -> LabClient:
         return self.__lab_client
 
     def Lab(self, namespace="", name="") -> Lab:
         return Lab(MDLab(), self.Labs, namespace, name)
 
     @property
-    def Licenses(self):
+    def Licenses(self) -> LicenseClient:
         return self.__license_client
 
     def License(self, namespace="", name="") -> License:
         return License(MDLicense(), self.Licenses, namespace, name)
 
     @property
-    def ModelaSystems(self):
+    def ModelaSystems(self) -> ModelaSystemClient:
         return self.__modelasystem_client
 
     def ModelaSystem(self, namespace="", name="") -> ModelaSystem:
         return ModelaSystem(MDModelaSystem(), self.ModelaSystems, namespace, name)
 
     @property
-    def Notifiers(self):
+    def Notifiers(self) -> NotifierClient:
         return self.__notifier_client
 
     def Notifier(self, namespace="", name="") -> Notifier:
         return Notifier(MDNotifier(), self.Notifiers, namespace, name)
 
     @property
-    def ServingSites(self):
+    def ServingSites(self) -> ServingSiteClient:
         return self.__servingsite_client
 
     def ServingSite(self, namespace="", name="") -> ServingSite:
         return ServingSite(MDServingSite(), self.ServingSites, namespace, name)
 
     @property
-    def Tenants(self):
+    def Tenants(self) -> TenantClient:
         return self.__tenant_client
 
     def Tenant(self, namespace="", name="") -> Tenant:
         return Tenant(MDTenant(), self.Tenants, namespace, name)
 
     @property
-    def VirtualBuckets(self):
+    def VirtualBuckets(self) -> VirtualBucketClient:
         return self.__virtualbucket_client
 
     def VirtualBucket(self, namespace="", name="") -> VirtualBucket:
         return VirtualBucket(MDVirtualBucket(), self.VirtualBuckets, namespace, name)
 
     @property
-    def VirtualClusters(self):
+    def VirtualClusters(self) -> VirtualClusterClient:
         return self.__virtualcluster_client
 
     def VirtualCluster(self, namespace="", name="") -> VirtualCluster:
         return VirtualCluster(MDVirtualCluster(), self.VirtualClusters, namespace, name)
 
     @property
-    def VirtualVolumes(self):
+    def VirtualVolumes(self) -> VirtualVolumeClient:
         return self.__virtualvolume_client
 
     def VirtualVolume(self, namespace="", name="") -> VirtualVolume:
         return VirtualVolume(MDVirtualVolume(), self.VirtualVolumes, namespace, name)
 
     @property
-    def Meetings(self):
+    def Meetings(self) -> MeetingClient:
         return self.__meeting_client
 
     def Meeting(self, namespace="", name="") -> Meeting:
         return Meeting(MDMeeting(), self.Meetings, namespace, name)
 
     @property
-    def PostMortems(self):
+    def PostMortems(self) -> PostMortemClient:
         return self.__postmortem_client
 
     def PostMortem(self, namespace="", name="") -> PostMortem:
         return PostMortem(MDPostMortem(), self.PostMortems, namespace, name)
 
     @property
-    def Reviews(self):
+    def Reviews(self) -> ReviewClient:
         return self.__review_client
 
     def Review(self, namespace="", name="") -> Review:
         return Review(MDReview(), self.Reviews, namespace, name)
 
     @property
-    def RunBooks(self):
+    def RunBooks(self) -> RunBookClient:
         return self.__runbook_client
 
     def RunBook(self, namespace="", name="") -> RunBook:
         return RunBook(MDRunBook(), self.RunBooks, namespace, name)
 
     @property
-    def Todos(self):
+    def Todos(self) -> TodoClient:
         return self.__todo_client
 
     def Todo(self, namespace="", name="") -> Todo:
         return Todo(MDTodo(), self.Todos, namespace, name)
 
     @property
-    def CronReports(self):
+    def CronReports(self) -> CronReportClient:
         return self.__cronreport_client
 
     def CronReport(self, namespace="", name="") -> CronReport:
         return CronReport(MDCronReport(), self.CronReports, namespace, name)
 
     @property
-    def ModelAutobuilders(self):
+    def ModelAutobuilders(self) -> ModelAutobuilderClient:
         return self.__modelautobuilder_client
 
     def ModelAutobuilder(self, namespace="", name="") -> ModelAutobuilder:
         return ModelAutobuilder(MDModelAutobuilder(), self.ModelAutobuilders, namespace, name)
 
     @property
-    def ModelCompilerRuns(self):
+    def ModelCompilerRuns(self) -> ModelCompilerRunClient:
         return self.__modelcompilerrun_client
 
     def ModelCompilerRun(self, namespace="", name="") -> ModelCompilerRun:
         return ModelCompilerRun(MDModelCompilerRun(), self.ModelCompilerRuns, namespace, name)
 
     @property
-    def ModelPipelineRuns(self):
+    def ModelPipelineRuns(self) -> ModelPipelineRunClient:
         return self.__modelpipelinerun_client
 
     def ModelPipelineRun(self, namespace="", name="") -> ModelPipelineRun:
         return ModelPipelineRun(MDModelPipelineRun(), self.ModelPipelineRuns, namespace, name)
 
     @property
-    def ModelPipelines(self):
+    def ModelPipelines(self) -> ModelPipelineClient:
         return self.__modelpipeline_client
 
     def ModelPipeline(self, namespace="", name="") -> ModelPipeline:
         return ModelPipeline(MDModelPipeline(), self.ModelPipelines, namespace, name)
 
     @property
-    def Models(self):
+    def Models(self) -> ModelClient:
         return self.__model_client
 
     def Model(self, namespace="", name="") -> Model:
         return Model(MDModel(), self.Models, namespace, name)
 
     @property
-    def NotebookRuns(self):
+    def NotebookRuns(self) -> NotebookRunClient:
         return self.__notebookrun_client
 
     def NotebookRun(self, namespace="", name="") -> NotebookRun:
         return NotebookRun(MDNotebookRun(), self.NotebookRuns, namespace, name)
 
     @property
-    def Notebooks(self):
+    def Notebooks(self) -> NotebookClient:
         return self.__notebook_client
 
     def Notebook(self, namespace="", name="") -> Notebook:
         return Notebook(MDNotebook(), self.Notebooks, namespace, name)
 
     @property
-    def Reports(self):
+    def Reports(self) -> ReportClient:
         return self.__report_client
 
     def Report(self, namespace="", name="") -> Report:
@@ -816,7 +823,7 @@ class Modela:
         return Report(MDReport(), self.Reports, namespace, name)
 
     @property
-    def Studies(self):
+    def Studies(self) -> StudyClient:
         return self.__study_client
 
     def Study(self, namespace="", name="", version=Resource.DefaultVersion, dataset: Union[str, Dataset] = "",

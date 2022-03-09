@@ -12,7 +12,6 @@ from github.com.metaprov.modelaapi.services.dataset.v1.dataset_pb2 import Create
 from tabulate import tabulate
 from tqdm import tqdm, trange
 
-from modela import DatasetPhase, FlatFileType
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
 from typing import List, Union
@@ -28,6 +27,9 @@ from modela.util import convert_size
 
 
 class Dataset(Resource):
+    """
+    Testing dataset resource
+    """
     def __init__(self, item: MDDataset = MDDataset(), client=None, namespace="", name="",
                  version=Resource.DefaultVersion,
                  gen_datasource: bool = False,
@@ -146,11 +148,19 @@ class Dataset(Resource):
         else:
             raise AttributeError("Object has no client repository")
 
-    def submit_and_visualize(self, replace=False):
+    def submit_and_visualize(self, replace: bool = False):
+        """
+        Submit the resource and call visualize().
+
+        :param replace: Replace the resource if it already exists on the cluster.
+        """
         self.submit(replace)
         self.visualize()
 
     def visualize(self):
+        """
+        Display a real-time visualization of the Dataset's progress
+        """
         desc = tqdm(total=0, position=0, bar_format='{desc}Time Elapsed: {elapsed}')
         progress = tqdm(total=100, position=1, bar_format='{l_bar}{bar}',
                         desc=self.name, ncols=80, initial=0)
@@ -189,6 +199,12 @@ class Dataset(Resource):
 
     @property
     def profile(self) -> str:
+        """
+
+        testing test
+
+        testing tessst
+        """
         profile = self.get_profile()
 
         table = []
@@ -217,6 +233,9 @@ class Dataset(Resource):
         return table + "\n"
 
     def get_profile(self) -> DatasetProfile:
+        """
+        Returns the profile
+        """
         if self._profile:
             return self._profile
         if hasattr(self, "_client"):

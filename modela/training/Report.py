@@ -7,12 +7,10 @@ from github.com.metaprov.modelaapi.services.report.v1.report_pb2_grpc import Rep
 from github.com.metaprov.modelaapi.services.report.v1.report_pb2 import CreateReportRequest, \
     UpdateReportRequest, DeleteReportRequest, GetReportRequest, ListReportsRequest, DownloadReportRequest
 
-from modela import ObjectReference
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
 from typing import List, Union
 
-from modela.training.common import ReportType
 from modela.training.models import ReportSpec, ReportStatus
 import tempfile
 import webbrowser

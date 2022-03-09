@@ -13,7 +13,7 @@ from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 impor
 from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1.grpcinferenceservice_pb2 import \
     PredictRequest as MDPredictRequest, ProbabilityValue as MDProbabilityValue, ShapValue as MDShapValue
 
-from modela import Configuration, ConditionStatus, Time, ObjectReference, StatusError, TriggerScheduleEventType
+from modela.common import Configuration, ConditionStatus, Time, ObjectReference, StatusError, TriggerScheduleEventType
 from modela.inference.common import PredictorConditionType, CanaryMetric, AccessType, PredictorType, \
     ModelDeploymentPhase
 from modela.infra.models import Workload

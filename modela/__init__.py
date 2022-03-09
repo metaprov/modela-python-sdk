@@ -4,6 +4,7 @@ __author__ = """The Modela Authors"""
 __email__ = 'support@metaprov.com'
 __version__ = '1.0.0'
 
+from modela.server import *
 from modela.data.models import *
 from modela.data.common import *
 from modela.training.models import *
