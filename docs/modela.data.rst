@@ -28,11 +28,3 @@ Submodules
    modela.data.WebRequestRun
    modela.data.common
    modela.data.models
-
-Module contents
----------------
-
-.. automodule:: modela.data
-    :members:
-    :undoc-members:
-    :show-inheritance:

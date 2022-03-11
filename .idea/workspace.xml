@@ -4,53 +4,20 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Finish study progress visualization">
-      <change afterPath="$PROJECT_DIR$/pydoc-markdown.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/_test_example.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Implement custom markdown documentation generator&#10;&#10;Heavily edited https://github.com/clayrisser/sphinx-markdown-builder to generate nice-looking markdown suitable for the Modela documentation.">
+      <change afterPath="$PROJECT_DIR$/modela/inference/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modela/infra/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modela/team/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/modela/training/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/authors.rst" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/docs/conf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/contributing.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/history.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/index.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/index.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/installation.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/readme.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/.babelrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/.editorconfig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/.eslintrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/.npmrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/.prettierrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/.readthedocs.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/CHANGELOG.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/CONTRIBUTING.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/Makefile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/docs/_static/scripts/main.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/docs/_static/styles/main.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/docs/conf.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/docs/index.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/requirements.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/examples/javascript/src/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modela.data.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/modela.data.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modela.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/modela.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/modela.util.rst" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/sphinx_markdown_builder/doctree2md.py" beforeDir="false" afterPath="$PROJECT_DIR$/docs/sphinx-markdown-builder/sphinx_markdown_builder/doctree2md.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/sphinx_markdown_builder/markdown_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/docs/sphinx-markdown-builder/sphinx_markdown_builder/markdown_builder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/sphinx_markdown_builder/markdown_writer.py" beforeDir="false" afterPath="$PROJECT_DIR$/docs/sphinx-markdown-builder/sphinx_markdown_builder/markdown_writer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/usage.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/Configuration.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/Configuration.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/Resource.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/Resource.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/data/Dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/inference/InferenceService.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/InferenceService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/inference/Predictor.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/Predictor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/inference/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/FileService.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/FileService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/Report.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Report.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +34,7 @@
   </component>
   <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../Program Files/Go" />
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/docs/sphinx-markdown-builder" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
@@ -109,25 +76,25 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.modules.go.list.on.any.changes.was.set" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="E:/Goland/src/astrongo" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/modela/training" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.DirectoryMappings" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\training" />
+      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\team" />
+      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\infra" />
+      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\inference" />
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\docs" />
-      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\tests" />
-      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk" />
-      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela" />
-      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela_python_sdk" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\hack" />
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\docs" />
+      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\hack" />
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\tests\datasets" />
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\tests" />
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\infra" />
@@ -466,7 +433,8 @@
       <workItem from="1644770166852" duration="72626000" />
       <workItem from="1645739119270" duration="63091000" />
       <workItem from="1646172326741" duration="88294000" />
-      <workItem from="1646668982436" duration="47607000" />
+      <workItem from="1646668982436" duration="53202000" />
+      <workItem from="1647016019085" duration="2852000" />
     </task>
     <task id="LOCAL-00001" summary="fixed the client. upgrade version">
       <created>1630772236555</created>
@@ -629,7 +597,21 @@
       <option name="project" value="LOCAL" />
       <updated>1646509045011</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Implement custom markdown documentation generator&#10;&#10;Heavily edited https://github.com/clayrisser/sphinx-markdown-builder to generate nice-looking markdown suitable for the Modela documentation.">
+      <created>1646858887596</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1646858887596</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Implement custom markdown documentation generator&#10;&#10;Heavily edited https://github.com/clayrisser/sphinx-markdown-builder to generate nice-looking markdown suitable for the Modela documentation.">
+      <created>1646859136054</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1646859136054</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -647,6 +629,9 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/docs/sphinx-markdown-builder" />
+    </ignored-roots>
     <MESSAGE value="fixed the client. upgrade version" />
     <MESSAGE value="Organize project" />
     <MESSAGE value="Append all client stubs to Modela SDK" />
@@ -670,7 +655,8 @@
     <MESSAGE value="Add model detail viz" />
     <MESSAGE value="Implement study progress visualization" />
     <MESSAGE value="Finish study progress visualization" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finish study progress visualization" />
+    <MESSAGE value="Implement custom markdown documentation generator&#10;&#10;Heavily edited https://github.com/clayrisser/sphinx-markdown-builder to generate nice-looking markdown suitable for the Modela documentation." />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement custom markdown documentation generator&#10;&#10;Heavily edited https://github.com/clayrisser/sphinx-markdown-builder to generate nice-looking markdown suitable for the Modela documentation." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

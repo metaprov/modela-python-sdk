@@ -22,6 +22,9 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('../modela'))
 sys.path.insert(0, os.path.abspath('../modela/data'))
+sys.path.insert(0, os.path.abspath('../modela/inference'))
+sys.path.insert(0, os.path.abspath('../modela/infra'))
+sys.path.insert(0, os.path.abspath('../modela/training'))
 sys.path.insert(0, os.path.abspath('sphinx_markdown_builder'))
 sys.path.insert(0, os.path.abspath('sphinx-markdown-builder'))
 

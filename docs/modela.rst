@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
 
     modela.data
+    modela.infra
 
 Submodules
 ----------

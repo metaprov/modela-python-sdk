@@ -533,11 +533,9 @@ class Translator(nodes.NodeVisitor):
                     if type(desc) == sphinx.addnodes.desc:
                         if "__init__" in desc.astext():
                             init = desc
-                            print("Init", init)
 
                 if init != None: # Insert after the first index
                     for idx in range(len(node[-1].children)):
-                        print(type(node[-1][idx]))
                         if type(node[-1][idx]) == sphinx.addnodes.index:
                             node[-1].insert(idx, node[-1].pop(node[-1].index(init)))
                             return
@@ -624,8 +622,8 @@ class Translator(nodes.NodeVisitor):
                 if "../" in split[0]:
                     split[0] = split[0][3:]
 
-                if not "/docs/PythonSDK/" in split[0]:
-                    split[0] = "/docs/PythonSDK/" + split[0]
+                if not "/docs/PythonSDK/reference/" in split[0]:
+                    split[0] = "/docs/PythonSDK/reference/" + split[0]
 
                 split[1] = self.builder.get_refid(split[1])
                 url = split[0] + split[1]

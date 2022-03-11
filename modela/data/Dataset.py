@@ -129,6 +129,7 @@ class Dataset(Resource):
 
     @property
     def report(self) -> Report:
+        """ Fetch the report associated with the Dataset """
         if hasattr(self, "_client"):
             if self._object.status.reportName != "":
                 return self._client.modela.Report(namespace=self.namespace, name=self._object.status.reportName)
@@ -139,10 +140,12 @@ class Dataset(Resource):
 
     @property
     def phase(self) -> DatasetPhase:
+        """ The phase specified by the status of the Dataset """
         return self.status.Phase
 
     @property
     def datasource(self) -> DataSource:
+        """ Fetch the DataSource object associated with the Dataset """
         if hasattr(self, "_client"):
             return self._client.modela.DataSource(self.namespace, self.spec.DatasourceName)
         else:
@@ -200,10 +203,7 @@ class Dataset(Resource):
     @property
     def profile(self) -> str:
         """
-
-        testing test
-
-        testing tessst
+        Returns an ASCII-rendered table of the Dataset's profile
         """
         profile = self.get_profile()
 
@@ -221,7 +221,9 @@ class Dataset(Resource):
 
     @property
     def details(self) -> str:
-
+        """
+        Returns an ASCII-rendered table of the Dataset's statistics
+        """
         table = []
         for col in self.status.Statistics.Columns:
             table.append([col.Name, col.Datatype.name, col.Distinct, col.Missing,
@@ -233,9 +235,6 @@ class Dataset(Resource):
         return table + "\n"
 
     def get_profile(self) -> DatasetProfile:
-        """
-        Returns the profile
-        """
         if self._profile:
             return self._profile
         if hasattr(self, "_client"):
