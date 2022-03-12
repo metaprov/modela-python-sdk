@@ -4,20 +4,11 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Implement custom markdown documentation generator&#10;&#10;Heavily edited https://github.com/clayrisser/sphinx-markdown-builder to generate nice-looking markdown suitable for the Modela documentation.">
-      <change afterPath="$PROJECT_DIR$/modela/inference/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modela/infra/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modela/team/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/modela/training/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Finish implementing custom markdown generator">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/docs/conf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/modela.data.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/modela.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.util.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/sphinx_markdown_builder/doctree2md.py" beforeDir="false" afterPath="$PROJECT_DIR$/docs/sphinx-markdown-builder/sphinx_markdown_builder/doctree2md.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/sphinx_markdown_builder/markdown_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/docs/sphinx-markdown-builder/sphinx_markdown_builder/markdown_builder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/Dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -434,7 +425,7 @@
       <workItem from="1645739119270" duration="63091000" />
       <workItem from="1646172326741" duration="88294000" />
       <workItem from="1646668982436" duration="53202000" />
-      <workItem from="1647016019085" duration="2852000" />
+      <workItem from="1647016019085" duration="8293000" />
     </task>
     <task id="LOCAL-00001" summary="fixed the client. upgrade version">
       <created>1630772236555</created>
@@ -611,7 +602,21 @@
       <option name="project" value="LOCAL" />
       <updated>1646859136054</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Finish implementing custom markdown generator">
+      <created>1647018885187</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1647018885187</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Finish implementing custom markdown generator">
+      <created>1647018961095</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1647018961095</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -656,7 +661,8 @@
     <MESSAGE value="Implement study progress visualization" />
     <MESSAGE value="Finish study progress visualization" />
     <MESSAGE value="Implement custom markdown documentation generator&#10;&#10;Heavily edited https://github.com/clayrisser/sphinx-markdown-builder to generate nice-looking markdown suitable for the Modela documentation." />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement custom markdown documentation generator&#10;&#10;Heavily edited https://github.com/clayrisser/sphinx-markdown-builder to generate nice-looking markdown suitable for the Modela documentation." />
+    <MESSAGE value="Finish implementing custom markdown generator" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finish implementing custom markdown generator" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

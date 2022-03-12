@@ -1,16 +1,19 @@
-## What is Modela.io API?
+## What is Modela?
 
-Modela.io is an automatic machine learning platform for Kubernetes. The modela.io api is a set
-of custom kuberentes resources in the area of data science and automatic machine learning. 
-The API is implemented by the modela.io platform which is closed source as the moment. 
+Modela is a Kubernetes-based automatic machine learning platform that enables you with an expansive API for machine
+learning. The system implements Kubernetes custom resources for declaratively managing data, training, inference, and 
+infrastructure objects. The Modela control plane manages these resources to provide fully distributed and automated machine learning. 
 
-For complete documentation on the modela.io API, please visit our documentation at [www.modela.io](https://www.modela.io/).
 
-## Installing Modela.io
+For a complete documentation of the API, check out the [documentation](https://www.modela.ai/docs/docs).
 
-The modela.io platform can be installed via an helm chart. For a complete installation procedure
-please refer to the modela.io documentation at [www.modela.io](https://www.modela.io/docs).
+## Install Modela
 
-## Using Modela.io
+Modela can be installed through the Modela CLI, or through Helm Charts. For a complete installation procedure, please 
+refer to the installation procedure on the [documentation](https://www.modela.ai/docs/docs/install).
 
-The Modela API specify a set of crds and services which are implemented by the modela.io platform. 
+## Using the API
+
+The Modela API is implemented by [Modela](https://modela.ai), which can be installed on 
+any Kubernetes cluster for free. You can access the API by connecting to the API gateway service hosted by your installation.
+

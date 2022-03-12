@@ -47,7 +47,7 @@ setup(
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/metaprov/mdpyclient',
-    version='0.4.87',
+    url='https://github.com/metaprov/modela-python-sdk',
+    version='0.5',
     zip_safe=False,
 )
