@@ -171,6 +171,7 @@ class Modela:
             self.pf_process = subprocess.Popen("kubectl port-forward svc/modela-api-gateway %d:8080 -n modela-system" % port,
                                                shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
+            print("PFING")
             secure, host = False, "localhost"
 
         if secure:

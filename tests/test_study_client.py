@@ -11,11 +11,13 @@ from modela import *
 class Test_Modela_study(unittest.TestCase):
     """Tests for `modela.training.Study`"""
 
-    def setUp(self):
-        self.modela = Modela("localhost", 3000)
+    @classmethod
+    def setUpClass(cls):
+        cls.modela = Modela(port_forward=True)
 
-    def tearDown(self):
-        self.modela.close()
+    @classmethod
+    def tearDownClass(cls):
+        cls.modela.close()
 
     def test_0_create(self):
         study = self.modela.Study(namespace="iris-product", name="test")
@@ -30,7 +32,7 @@ class Test_Modela_study(unittest.TestCase):
                objective=Metric.Accuracy,
                bucket="default-minio-bucket",
                search=ModelSearch(MaxTime=200, MaxModels=2, Trainers=2,
-                                  SearchSpace=AlgorithmSearchSpace(Allowlist=[ClassicEstimator.LogisticRegression]))).submit()
+                                  SearchSpace=AlgorithmSearchSpace(Allowlist=[ClassicEstimator.LogisticRegression]))).submit(replace=True)
 
     def test_1_list(self):
         assert len(self.modela.Studies.list("iris-product")) >= 1

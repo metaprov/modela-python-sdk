@@ -8,11 +8,13 @@ from modela import *
 class Test_Modela_report(unittest.TestCase):
     """Tests for `modela.training.Report`"""
 
-    def setUp(self):
-        self.modela = Modela("localhost", 3000)
+    @classmethod
+    def setUpClass(cls):
+        cls.modela = Modela(port_forward=True)
 
-    def tearDown(self):
-        self.modela.close()
+    @classmethod
+    def tearDownClass(cls):
+        cls.modela.close()
 
     def test_1_list(self):
         assert len(self.modela.Reports.list("iris-product")) >= 1

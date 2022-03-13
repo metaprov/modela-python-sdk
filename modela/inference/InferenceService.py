@@ -12,8 +12,22 @@ from modela.inference.models import PredictionResult
 
 
 class InferenceService:
-    def __init__(self, host, port=None, secure=False, tls_cert=None, version="v0.0.1"):
-        if secure:
+    """
+    The InferenceService class represents a connection to a gRPC service that exposes the GRPCInferenceService API.
+    This API exposes methods to make prediction requests and view information about the current status of the
+    prediction proxy.
+    """
+
+    def __init__(self, host, port=None, tls_cert=None):
+        """
+        Connect to the gRPC service.
+
+        :param host: The DNS name or IP that hosts the service.
+        :param port: The port which exposes the service.
+        :param tls_cert: The TLS certificate of the connection, if connecting through ingress. The Secret containing the
+            public key of the ingress can be found in the namespace of the Serving Site that hosts the service.
+        """
+        if tls_cert:
             with open(tls_cert, 'rb') as f:
                 credentials = grpc.ssl_channel_credentials(f.read())
 

@@ -11,32 +11,23 @@ from modela.util import convert_size
 class Test_Modela_dataset(unittest.TestCase):
     """Tests for `modela.data.DataSet`"""
 
-    def setUp(self):
-        self.modela = Modela("localhost", 3000)
+    @classmethod
+    def setUpClass(cls):
+        cls.modela = Modela(port_forward=True)
 
-    def tearDown(self):
-        self.modela.close()
+    @classmethod
+    def tearDownClass(cls):
+        cls.modela.close()
 
     def test_0_create_datasource(self):
         datasource = self.modela.DataSource(namespace="iris-product", name="test-create-ds",
                                             infer_file='datasets/iris.csv',
                                             target_column="variety")
-        try:
-            datasource.delete()
-            time.sleep(0.3)
-        finally:
-            pass
-        datasource.submit()
+        datasource.submit(replace=True)
         dataset = self.modela.Dataset(namespace="iris-product", name="test-ds", data_file='datasets/iris.csv',
                                       datasource=datasource, task_type=TaskType.MultiClassification)
-        try:
-            dataset.delete()
-            time.sleep(0.2)
-        finally:
-            pass
 
-        print(dataset._object)
-        dataset.submit()
+        dataset.submit(replace=True)
 
 
     def test_1_list(self):

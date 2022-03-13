@@ -11,11 +11,13 @@ from modela import *
 class Test_Modela_model(unittest.TestCase):
     """Tests for `modela.training.Model`"""
 
-    def setUp(self):
-        self.modela = Modela("modela-api-gateway.vcap.me", secure=True, tls_cert='tests/api_server.crt', username="admin", password="admin")
+    @classmethod
+    def setUpClass(cls):
+        cls.modela = Modela(port_forward=True)
 
-    def tearDown(self):
-        self.modela.close()
+    @classmethod
+    def tearDownClass(cls):
+        cls.modela.close()
 
     def test_connect_predictor(self):
         predictor = self.modela.Predictor("iris-product", "test-ingress")

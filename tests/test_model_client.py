@@ -9,11 +9,13 @@ import pprint
 class Test_Modela_model(unittest.TestCase):
     """Tests for `modela.training.Model`"""
 
-    def setUp(self):
-        self.modela = Modela(port_forward=True, username="admin", password="admin")
+    @classmethod
+    def setUpClass(cls):
+        cls.modela = Modela(port_forward=True)
 
-    def tearDown(self):
-        self.modela.close()
+    @classmethod
+    def tearDownClass(cls):
+        cls.modela.close()
 
     def test_0_list(self):
         assert len(self.modela.Models.list("iris-product")) >= 1

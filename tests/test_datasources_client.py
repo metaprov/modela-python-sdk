@@ -14,11 +14,13 @@ from modela.training.common import Imputation
 class Test_Modela_datasource(unittest.TestCase):
     """Tests for `modela.data.DataSource`"""
 
-    def setUp(self):
-        self.modela = Modela("localhost", 3000)
+    @classmethod
+    def setUpClass(cls):
+        cls.modela = Modela(port_forward=True)
 
-    def tearDown(self):
-        self.modela.close()
+    @classmethod
+    def tearDownClass(cls):
+        cls.modela.close()
 
     def test_0_infer_api(self):
         with open('datasets/iris.csv') as f:
@@ -31,13 +33,8 @@ class Test_Modela_datasource(unittest.TestCase):
 
     def test_0_create(self):
         datasource = self.modela.DataSource(namespace="iris-product", name="test")
-        try:
-            datasource.delete()
-        finally:
-            pass
-        time.sleep(0.1)
         assert type(datasource) == DataSource
-        datasource.submit()
+        datasource.submit(replace=True)
 
     def test_0_create_infer_file(self):
         datasource = self.modela.DataSource(namespace="iris-product", name="test", infer_file='datasets/iris.csv',

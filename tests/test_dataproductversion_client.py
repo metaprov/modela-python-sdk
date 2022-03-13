@@ -11,20 +11,18 @@ from modela.training.common import Imputation
 class Test_Modela_dataproductversion(unittest.TestCase):
     """Tests for `modela.data.DataProductVersion`"""
 
-    def setUp(self):
-        self.modela = Modela("localhost", 3000)
+    @classmethod
+    def setUpClass(cls):
+        cls.modela = Modela(port_forward=True)
 
-    def tearDown(self):
-        self.modela.close()
+    @classmethod
+    def tearDownClass(cls):
+        cls.modela.close()
 
     def test_0_create(self):
         dataproductversion = self.modela.DataProductVersion(namespace="iris-product", name="test")
-        try:
-            dataproductversion.delete()
-        finally:
-            pass
         assert type(dataproductversion) == DataProductVersion
-        dataproductversion.submit()
+        dataproductversion.submit(replace=True)
 
     def test_1_list(self):
         assert len(self.modela.DataProductVersions.list("iris-product")) > 1

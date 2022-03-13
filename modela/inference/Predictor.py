@@ -3,7 +3,7 @@ from github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 imp
 from github.com.metaprov.modelaapi.services.predictor.v1.predictor_pb2_grpc import PredictorServiceStub
 from github.com.metaprov.modelaapi.services.predictor.v1.predictor_pb2 import CreatePredictorRequest, \
     UpdatePredictorRequest, \
-    DeletePredictorRequest, GetPredictorRequest, ListPredictorsRequest
+    DeletePredictorRequest, GetPredictorRequest, ListPredictorsRequest, PredictOneRequest
 
 from modela.common import ObjectReference
 from modela.Resource import Resource
@@ -119,7 +119,7 @@ class Predictor(Resource):
         if self.spec.AccessType == AccessType.NodePort or self.spec.AccessType == AccessType.LoadBalancer:
             return InferenceService((node_ip if node_ip != "" else self.spec.Path), self.spec.NodePort)
         elif self.spec.AccessType == AccessType.Ingress or self.spec.AccessType == AccessType.ClusterIP:
-            return InferenceService(self.spec.Path, "")
+            return InferenceService(self.spec.Path, "", tls_cert=tls_cert)
 
 class PredictorClient:
     def __init__(self, stub, modela):
@@ -190,3 +190,20 @@ class PredictorClient:
 
         ModelaException.process_error(error)
         return False
+
+    def predict(self, namespace: str, name: str, fields: str, values: str):
+        request = PredictOneRequest()
+        request.namespace = namespace
+        request.name = name
+        request.fields = fields
+        request.values = values
+
+        try:
+            response = self.__stub.PredictOne(request)
+            print(response)
+        except grpc.RpcError as err:
+            error = err
+
+        ModelaException.process_error(error)
+        return False
+

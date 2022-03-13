@@ -4,17 +4,18 @@ from modela.server import Modela
 class TestModela_account(unittest.TestCase):
     """Tests for `modela` package."""
 
-    def setUp(self):
-        self.modela = Modela("localhost", 3000)
+    @classmethod
+    def setUpClass(cls):
+        cls.modela = Modela(port_forward=True)
 
-    def tearDown(self):
-        """Tear down test fixtures, if any."""
-        self.modela.close()
+    @classmethod
+    def tearDownClass(cls):
+        cls.modela.close()
 
     def test_account_create(self):
         account = self.modela.Account(namespace="default-tenant", name="test")
         assert account != None
-        account.submit(password="test")
+        account.submit(replace=True, password="test")
 
     def test_account_update(self):
         pass

@@ -13,21 +13,18 @@ from modela.training.common import Imputation
 class Test_Modela_dataproduct(unittest.TestCase):
     """Tests for `modela.data.DataProduct`"""
 
-    def setUp(self):
-        self.modela = Modela("localhost", 3000)
+    @classmethod
+    def setUpClass(cls):
+        cls.modela = Modela(port_forward=True)
 
-    def tearDown(self):
-        self.modela.close()
+    @classmethod
+    def tearDownClass(cls):
+        cls.modela.close()
 
     def test_0_create(self):
         dataproduct = self.modela.DataProduct(namespace="default-tenant", name="test")
-        try:
-            dataproduct.delete()
-        finally:
-            pass
-        time.sleep(0.1)
         assert type(dataproduct) == DataProduct
-        dataproduct.submit()
+        dataproduct.submit(replace=True)
 
     def test_1_list(self):
         assert len(self.modela.DataProducts.list("default-tenant")) > 1

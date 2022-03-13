@@ -10,11 +10,13 @@ from modela import *
 class Test_Modela_predictor(unittest.TestCase):
     """Tests for `modela.inference.Predictor`"""
 
-    def setUp(self):
-        self.modela = Modela("localhost", 3000)
+    @classmethod
+    def setUpClass(cls):
+        cls.modela = Modela(port_forward=True)
 
-    def tearDown(self):
-        self.modela.close()
+    @classmethod
+    def tearDownClass(cls):
+        cls.modela.close()
 
     def test_0_create(self):
         predictor = self.modela.Predictor(namespace="iris-product", name="test")
