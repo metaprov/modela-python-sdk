@@ -10,15 +10,15 @@ with open('README.md') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=7.0', ]
+requirements = ['Click>=7.0', 'modelaapi', 'tabulate', 'tqdm', 'protobuf', 'grpcio']
 
 setup_requirements = [ ]
 
 test_requirements = [ ]
 
 setup(
-    author="modela",
-    author_email='info@modela.io',
+    author="Metaprov",
+    author_email='support@metaprov.com',
     python_requires='>=3.5',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
@@ -31,7 +31,7 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
-    description="Python client lib for modela prediction server",
+    description="Modela Automatic Machine Learning SDK",
     entry_points={
         'console_scripts': [
             'modela=modela.cli:main',
@@ -39,7 +39,8 @@ setup(
     },
     install_requires=requirements,
     license="Apache Software License 2.0",
-    long_description=readme + '\n\n' + history,
+    long_description=readme + '\n\n',
+    long_description_content_type='text/markdown',
     include_package_data=True,
     keywords='modela',
     name='modela',
@@ -48,6 +49,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/metaprov/modela-python-sdk',
-    version='0.5',
+    version='0.511',
     zip_safe=False,
 )

@@ -45,7 +45,7 @@ articles, and such.
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/metaprov/mdpyclient/issues.
+The best way to send feedback is to file an issue at https://github.com/metaprov/modela-python-sdk/issues.
 
 If you are proposing a feature:
 

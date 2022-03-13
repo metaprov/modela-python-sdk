@@ -12,7 +12,7 @@ For a complete documentation of the API, check out the [documentation](https://w
 Modela can be installed through the Modela CLI, or through Helm Charts. For a complete installation procedure, please 
 refer to the installation procedure on the [documentation](https://www.modela.ai/docs/docs/install).
 
-## Using the API
+## Using the SDK
 
 The Modela API is implemented by [Modela](https://modela.ai), which can be installed on 
 any Kubernetes cluster for free. You can access the API by connecting to the API gateway service hosted by your installation.

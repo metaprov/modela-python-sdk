@@ -1,3 +1,7 @@
+import subprocess
+import socket
+from contextlib import closing
+
 from typing import Optional
 
 import jwt
@@ -140,31 +144,35 @@ class Modela:
             secure=False,
             tls_cert=None,
             tenant="default-tenant",
+            port_forward=False,
             api_token: str = None,
-            interceptors: Optional[
-                List[
-                    Union[
-                        UnaryUnaryClientInterceptor,
-                        UnaryStreamClientInterceptor,
-                        StreamUnaryClientInterceptor,
-                        StreamStreamClientInterceptor,
-                    ]
-                ]
-            ] = None,
     ):
         """
         Connect to the Modela API gateway.
 
-        :param host:
-        :param port:
-        :param username:
-        :param password:
-        :param secure:
-        :param tls_cert:
-        :param tenant:
-        :param api_token:
+        :param host: The DNS name or IP that hosts the API gateway.
+        :param port: The port which exposes the API gateway.
+        :param username: Username for your Modela account that has permissions to use the specified tenant.
+        :param password: Password for your Modela account.
+        :param secure: If connecting through gRPC ingress, secure must be enabled and a TLS public key must be supplied.
+        :param tls_cert: The TLS public key of the ingress that exposes the API gateway gRPC service.
+        :param tenant: The tenant that Modela SDK objects will utilize by default (default: `default-tenant`)
+        :param port_forward: If enabled, the SDK will attempt to port forward the API gateway using kubectl. Kubectl
+            must be installed and must be connected to a cluster with Modela installed.
         """
+
         self.tenant = tenant
+        if port_forward:
+            with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
+                s.bind(('', 0))
+                s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                port = s.getsockname()[1]
+
+            self.pf_process = subprocess.Popen("kubectl port-forward svc/modela-api-gateway %d:8080 -n modela-system" % port,
+                                               shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+            secure, host = False, "localhost"
+
         if secure:
             with open(tls_cert, 'rb') as f:
                 credentials = grpc.ssl_channel_credentials(f.read())
@@ -176,10 +184,10 @@ class Modela:
             else:
                 self._channel = grpc.insecure_channel(f'{host}')
 
-        if interceptors:
-            self._channel = grpc.intercept_channel(  # type: ignore
-                self._channel, *interceptors
-            )
+        # if interceptors:
+        #     self._channel = grpc.intercept_channel(  # type: ignore
+        #         self._channel, *interceptors
+        #     )
 
         self.__account_stub = account_pb2_grpc.AccountServiceStub(self._channel)
         self.__account_client = AccountClient(self.__account_stub, self)
@@ -867,6 +875,9 @@ class Modela:
                      notification, garbage_collect, keep_best_models, timeout, template)
 
     def close(self):
+        if hasattr(self, 'pf_process'):
+            self.pf_process.kill()
+
         if self._channel:
             self._channel.close()
 

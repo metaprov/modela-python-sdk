@@ -18,16 +18,9 @@ class Test_Modela_predictor(unittest.TestCase):
 
     def test_0_create(self):
         predictor = self.modela.Predictor(namespace="iris-product", name="test")
-        try:
-            predictor.delete()
-        finally:
-            pass
-        assert type(predictor) == Predictor
-        predictor.submit()
+        predictor.submit(replace=True)
 
     def test_1_list(self):
-        for predictor in self.modela.Predictors.list("iris-product"):
-            print(predictor.name)
         assert len(self.modela.Predictors.list("iris-product")) >= 1
 
     def test_2_update(self):

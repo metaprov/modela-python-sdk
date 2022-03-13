@@ -5,10 +5,10 @@ Credits
 Development Lead
 ----------------
 
-* modela <info@modela.io>
+* Liam <liam@metaprov.com>
 
 Contributors
 ------------
 
 Tomer Sagi
-Liam Meshorer
+Liam Sagi

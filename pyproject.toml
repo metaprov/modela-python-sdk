@@ -2,7 +2,7 @@
 name = "modela"
 version = "0.4.414"
 description = "python client sdk for the modela auto ml system."
-authors = ["tsagi <tsagi@metaprov.com>"]
+authors = ["liam <liam@metaprov.com>"]
 keywords = ["modela", "automl"]
 readme = "README.md"
 license = "MIT"
