@@ -1,4 +1,5 @@
 import io
+import json
 import os.path
 import random
 import time
@@ -30,6 +31,7 @@ class Dataset(Resource):
     """
     Testing dataset resource
     """
+
     def __init__(self, item: MDDataset = MDDataset(), client=None, namespace="", name="",
                  version=Resource.DefaultVersion,
                  gen_datasource: bool = False,
@@ -72,28 +74,32 @@ class Dataset(Resource):
             if type(datasource) != DataSource:  # Fetch the data source in case we need to read the file type
                 datasource = client.modela.DataSource(namespace=namespace, name=datasource)
 
+            file_type = datasource.spec.FileType
+        else:
+            file_type = FlatFileType.Csv
+
         if data_file is not None:
             with open(data_file, 'r') as f:
                 data_bytes = f.read()
             data_file = os.path.basename(data_file)
         elif dataframe is not None:
             writer = io.BytesIO()
-            if datasource.spec.FileType == FlatFileType.Csv:
+            if file_type == FlatFileType.Csv:
                 df_encoded = dataframe.to_csv(index=False)
-            if datasource.spec.FileType == FlatFileType.Parquet:
+            elif file_type == FlatFileType.Parquet:
                 df_encoded = dataframe.to_parquet(index=False)
-            elif datasource.spec.FileType == FlatFileType.Excel:
+            elif file_type == FlatFileType.Excel:
                 dataframe.to_excel(writer)
                 df_encoded = writer.getvalue()
-            elif datasource.spec.FileType == FlatFileType.Json:
+            elif file_type == FlatFileType.Json:
                 df_encoded = dataframe.to_json()
-            elif datasource.spec.FileType == FlatFileType.Feather:
+            elif file_type == FlatFileType.Feather:
                 dataframe.to_feather(writer)
                 df_encoded = writer.getvalue()
             else:
                 raise TypeError(
-                    "Pandas cannot deserialize a dataframe to the file type {0}. Consider changing your data source file format."
-                        .format(datasource.spec.FileType))
+                    "Pandas cannot deserialize a dataframe to the file type {0}. "
+                    "Consider changing your data source file format.".format(file_type))
             data_bytes = bytes(df_encoded, encoding='utf-8')
 
         if data_bytes is not None:
@@ -102,9 +108,9 @@ class Dataset(Resource):
                                                                      namespace, version, bucket, "datasets", name)
 
         if gen_datasource:
-            datasource = client.modela.DataSource(namespace=namespace, name=name + "_source", version=version,
+            datasource = client.modela.DataSource(namespace=namespace, name=name + "-source", version=version,
                                                   infer_bytes=data_bytes, target_column=target_column)
-            datasource.submit()
+            datasource.submit(replace=True)
 
         self.spec.DatasourceName = datasource.name
         self.spec.Resources = workload
@@ -130,13 +136,11 @@ class Dataset(Resource):
     @property
     def report(self) -> Report:
         """ Fetch the report associated with the Dataset """
-        if hasattr(self, "_client"):
-            if self._object.status.reportName != "":
-                return self._client.modela.Report(namespace=self.namespace, name=self._object.status.reportName)
-            else:
-                print("Dataset {0} has no report.".format(self.name))
+        self.ensure_client_repository()
+        if self._object.status.reportName != "":
+            return self._client.modela.Report(namespace=self.namespace, name=self._object.status.reportName)
         else:
-            raise AttributeError("Object has no client repository")
+            print("Dataset {0} has no report.".format(self.name))
 
     @property
     def phase(self) -> DatasetPhase:
@@ -146,10 +150,16 @@ class Dataset(Resource):
     @property
     def datasource(self) -> DataSource:
         """ Fetch the DataSource object associated with the Dataset """
-        if hasattr(self, "_client"):
-            return self._client.modela.DataSource(self.namespace, self.spec.DatasourceName)
-        else:
-            raise AttributeError("Object has no client repository")
+        self.ensure_client_repository()
+        return self._client.modela.DataSource(self.namespace, self.spec.DatasourceName)
+
+    @property
+    def test_prediction(self) -> str:
+        """ Generate a default prediction payload for a model that would be created with the dataset. """
+        target = self.datasource.target_column.Name
+        return json.dumps(
+            [{col.Name: col.Mean if col.Datatype == DataType.Number else self.datasource.column(col.Name).Enum[0]
+              for col in self.status.Statistics.Columns if col.Name != target}])
 
     def submit_and_visualize(self, replace: bool = False):
         """
@@ -160,13 +170,16 @@ class Dataset(Resource):
         self.submit(replace)
         self.visualize()
 
-    def visualize(self):
+    def visualize(self, show_progress_bar=True):
         """
         Display a real-time visualization of the Dataset's progress
+
+        :param show_progress_bar: If enabled, the visualization will render a progress bar indicating the dataset's progress.
         """
-        desc = tqdm(total=0, position=0, bar_format='{desc}Time Elapsed: {elapsed}')
-        progress = tqdm(total=100, position=1, bar_format='{l_bar}{bar}',
-                        desc=self.name, ncols=80, initial=0)
+        desc, progress = tqdm(total=0, position=0, bar_format='{desc}  Time Elapsed: {elapsed}'), None
+        if show_progress_bar:
+            progress = tqdm(total=100, position=1, bar_format='{l_bar}{bar}',
+                            desc=self.name, ncols=80, initial=0)
 
         current_status = self.status
         try:
@@ -178,27 +191,33 @@ class Dataset(Resource):
 
                 current_status = self.status
                 desc.set_description_str('Phase: %s | File Size: %s | Rows: %s | Columns: %s' %
-                                     (self.phase.name, convert_size(self.status.Statistics.FileSize),
-                                      "[Processing]" if self.status.Statistics.Rows == 0 else self.status.Statistics.Rows,
-                                      "[Processing]" if len(self.status.Statistics.Columns) == 0 else len(self.status.Statistics.Columns)))
-                progress.n = self.status.Progress
-                progress.last_print_n = self.status.Progress
-                progress.refresh()
+                                         (self.phase.name, convert_size(self.status.Statistics.FileSize),
+                                          "[Processing]" if self.status.Statistics.Rows == 0 else self.status.Statistics.Rows,
+                                          "[Processing]" if len(self.status.Statistics.Columns) == 0 else len(
+                                              self.status.Statistics.Columns)))
+
                 if self.phase in (DatasetPhase.Ready, DatasetPhase.Aborted, DatasetPhase.Failed):
                     if self.phase == DatasetPhase.Ready:
                         print("\n\n" + self.profile)
                     else:
-                        progress.colour = "red"
-                        progress.refresh()
+                        if progress:
+                            progress.colour = "red"
+                            progress.refresh()
                         print("\nDataset was failed or aborted: %s" % current_status.FailureMessage)
 
                     break
+
+                if progress:
+                    progress.n = self.status.Progress
+                    progress.last_print_n = self.status.Progress
+                    progress.refresh()
 
         except KeyboardInterrupt:
             pass
 
         desc.close()
-        progress.close()
+        if progress:
+            progress.close()
 
     @property
     def profile(self) -> str:
@@ -210,12 +229,13 @@ class Dataset(Resource):
         table = []
         for col in profile.Columns:
             table.append([col.Name, col.Type, col.Distinct, col.Missing,
-                           '{0:.3g}'.format(col.Mean), '{0:.3g}'.format(col.Stddev), col.P50, col.Min, col.Max,
-                           '{0:.3g}'.format(col.CorrToTarget), '{0:.3g}'.format(col.Variance),
-                           '{0:.3g}'.format(col.Skewness), '{0:.3g}'.format(col.Kurtosis)])
+                          '{0:.3g}'.format(col.Mean), '{0:.3g}'.format(col.Stddev), col.P50, col.Min, col.Max,
+                          '{0:.3g}'.format(col.CorrToTarget), '{0:.3g}'.format(col.Variance),
+                          '{0:.3g}'.format(col.Skewness), '{0:.3g}'.format(col.Kurtosis)])
 
         table = tabulate(table, tablefmt='pretty', headers=['Column', 'Data Type', 'Distinct', 'Missing', 'Mean',
-                          'Stddev', 'Median', 'Min', 'Max', 'Corr. To Target', 'Variance', 'Skewness', 'Kurtosis'])
+                                                            'Stddev', 'Median', 'Min', 'Max', 'Corr. To Target',
+                                                            'Variance', 'Skewness', 'Kurtosis'])
         return table + "\n"
         # TODO: jupyter support, print all viz plots in jupyter
 
@@ -227,8 +247,8 @@ class Dataset(Resource):
         table = []
         for col in self.status.Statistics.Columns:
             table.append([col.Name, col.Datatype.name, col.Distinct, col.Missing,
-                           '{0:.3g}'.format(col.Mean), '{0:.3g}'.format(col.Stddev), col.P50, col.Min, col.Max,
-                           '{0:.3g}'.format(col.Skewness), '{0:.3g}'.format(col.Kurtosis)])
+                          '{0:.3g}'.format(col.Mean), '{0:.3g}'.format(col.Stddev), col.P50, col.Min, col.Max,
+                          '{0:.3g}'.format(col.Skewness), '{0:.3g}'.format(col.Kurtosis)])
 
         table = tabulate(table, tablefmt='pretty', headers=['Column', 'Data Type', 'Distinct', 'Missing', 'Mean',
                                                             'Stddev', 'Median', 'Min', 'Max', 'Skewness', 'Kurtosis'])
@@ -243,15 +263,12 @@ class Dataset(Resource):
         else:
             raise AttributeError("Object has no client repository")
 
-
     def __repr__(self):
         out = super().__repr__()
         if len(self.status.Statistics.Columns) > 0:
             out += "\n" + self.details
 
         return out
-
-
 
 
 class DatasetClient:

@@ -34,11 +34,14 @@ class Test_Modela_dataset(unittest.TestCase):
         assert len(self.modela.Datasets.list("iris-product")) >= 1
 
     def test_1_print(self):
-        print(self.modela.Datasets.list("iris-product")[-1])
+        print(self.modela.Datasets.list("iris-product")[0])
+
+    def test_1_payload(self):
+        print(self.modela.Datasets.list("iris-product")[0].test_prediction)
 
     def test_1_profile(self):
         ds = self.modela.Datasets.list("iris-product")[1]
-        print(ds._print_profile())
+        print(ds.profile)
 
     def test_2_update(self):
         dataset = self.modela.Dataset(namespace="iris-product", name="test-ds")

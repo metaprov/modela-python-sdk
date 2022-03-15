@@ -4,11 +4,22 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Implement automatic port-forwarding">
+    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Clean up unit tests">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/inference/InferenceService.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/InferenceService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/Configuration.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/Configuration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/Resource.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/Resource.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/DataSource.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/DataSource.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/Dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Dataset.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/inference/Predictor.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/Predictor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/training/Model.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/training/Report.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Report.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/training/Study.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Study.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out.py.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_dataset_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_dataset_client.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_predictor_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_predictor_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_study_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_study_client.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +102,7 @@
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\infra" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests in test_predictor_client.py">
+  <component name="RunManager" selected="Python tests.Python tests for test_predictor_client.Test_Modela_predictor.test_5_predict">
     <configuration name="go build modela-python-sdk gen_crd_docs.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <working_directory value="$PROJECT_DIR$" />
@@ -122,6 +133,21 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Python tests for test_dataset_client.Test_Modela_dataset.test_1_payload" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="modela-python-sdk" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_dataset_client.Test_Modela_dataset.test_1_payload&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
     <configuration name="Python tests for test_dataset_client.Test_Modela_dataset.test_1_print" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -137,7 +163,7 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_dataset_client.Test_Modela_dataset.test_1_profile" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for test_predictor_client.Test_Modela_predictor.test_5_connect" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -148,11 +174,11 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_dataset_client.Test_Modela_dataset.test_1_profile&quot;" />
+      <option name="_new_target" value="&quot;test_predictor_client.Test_Modela_predictor.test_5_connect&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_datasources_client.Test_Modela_datasource.test_0_create_infer_df" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for test_predictor_client.Test_Modela_predictor.test_5_predict" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -163,22 +189,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_datasources_client.Test_Modela_datasource.test_0_create_infer_df&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Python tests for test_datasources_client.Test_Modela_datasource.test_0_infer_api" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="modela-python-sdk" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_datasources_client.Test_Modela_datasource.test_0_infer_api&quot;" />
+      <option name="_new_target" value="&quot;test_predictor_client.Test_Modela_predictor.test_5_predict&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -392,19 +403,19 @@
       <item itemvalue="Python tests.Python tests in test_report_client.py" />
       <item itemvalue="Python tests.Python tests in test_study_client.py" />
       <item itemvalue="Python tests.Unittests in test_configuration.py" />
-      <item itemvalue="Python tests.Python tests for test_datasources_client.Test_Modela_datasource.test_0_create_infer_df" />
-      <item itemvalue="Python tests.Python tests for test_datasources_client.Test_Modela_datasource.test_0_infer_api" />
       <item itemvalue="Python tests.Python tests for test_dataset_client.Test_Modela_dataset.test_1_print" />
-      <item itemvalue="Python tests.Python tests for test_dataset_client.Test_Modela_dataset.test_1_profile" />
       <item itemvalue="Python tests.Python tests for test_study_client.Test_Modela_study.test_viz" />
+      <item itemvalue="Python tests.Python tests for test_predictor_client.Test_Modela_predictor.test_5_connect" />
+      <item itemvalue="Python tests.Python tests for test_dataset_client.Test_Modela_dataset.test_1_payload" />
+      <item itemvalue="Python tests.Python tests for test_predictor_client.Test_Modela_predictor.test_5_predict" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests for test_predictor_client.Test_Modela_predictor.test_5_predict" />
+        <item itemvalue="Python tests.Python tests for test_predictor_client.Test_Modela_predictor.test_5_connect" />
+        <item itemvalue="Python tests.Python tests for test_dataset_client.Test_Modela_dataset.test_1_payload" />
         <item itemvalue="Python tests.Python tests for test_study_client.Test_Modela_study.test_viz" />
         <item itemvalue="Python tests.Python tests for test_dataset_client.Test_Modela_dataset.test_1_print" />
-        <item itemvalue="Python tests.Python tests for test_dataset_client.Test_Modela_dataset.test_1_profile" />
-        <item itemvalue="Python tests.Python tests for test_datasources_client.Test_Modela_datasource.test_0_infer_api" />
-        <item itemvalue="Python tests.Python tests for test_datasources_client.Test_Modela_datasource.test_0_create_infer_df" />
       </list>
     </recent_temporary>
   </component>
@@ -425,7 +436,7 @@
       <workItem from="1645739119270" duration="63091000" />
       <workItem from="1646172326741" duration="88294000" />
       <workItem from="1646668982436" duration="53202000" />
-      <workItem from="1647016019085" duration="16309000" />
+      <workItem from="1647016019085" duration="44185000" />
     </task>
     <task id="LOCAL-00001" summary="fixed the client. upgrade version">
       <created>1630772236555</created>
@@ -630,7 +641,14 @@
       <option name="project" value="LOCAL" />
       <updated>1647189221357</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Clean up unit tests">
+      <created>1647200102998</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1647200102998</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -651,7 +669,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/docs/sphinx-markdown-builder" />
     </ignored-roots>
-    <MESSAGE value="Append all client stubs to Modela SDK" />
     <MESSAGE value="Implement Resource &amp; Configuration Models" />
     <MESSAGE value="Add DataSource tests &amp; fix misc. configuration bugs" />
     <MESSAGE value="Structural changes, finished DataSource models and tests" />
@@ -676,16 +693,12 @@
     <MESSAGE value="Finish implementing custom markdown generator" />
     <MESSAGE value="Update README.md" />
     <MESSAGE value="Implement automatic port-forwarding" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement automatic port-forwarding" />
+    <MESSAGE value="Clean up unit tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Clean up unit tests" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/modela/training/Study.py</url>
-          <line>185</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/docs/sphinx-markdown-builder/sphinx_markdown_builder/markdown_writer.py</url>
           <line>207</line>
@@ -696,7 +709,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/modela_python_sdk$build.coverage" NAME="build Coverage Results" MODIFIED="1646678944062" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/docs" />
-    <SUITE FILE_PATH="coverage/modela_python_sdk$Unittests_in_test_configuration_py.coverage" NAME="Unittests in test_configuration.py Coverage Results" MODIFIED="1645053367344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1647189173979" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/modela_python_sdk$Unittests_in_test_configuration_py.coverage" NAME="Unittests in test_configuration.py Coverage Results" MODIFIED="1647214929623" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1647298982870" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
 </project>

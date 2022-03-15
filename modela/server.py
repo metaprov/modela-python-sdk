@@ -169,9 +169,9 @@ class Modela:
                 port = s.getsockname()[1]
 
             self.pf_process = subprocess.Popen("kubectl port-forward svc/modela-api-gateway %d:8080 -n modela-system" % port,
-                                               shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                                               shell=True, stderr=subprocess.STDOUT)
 
-            print("PFING")
+            time.sleep(1/4)
             secure, host = False, "localhost"
 
         if secure:
@@ -625,8 +625,34 @@ class Modela:
     def Predictors(self) -> PredictorClient:
         return self.__predictor_client
 
-    def Predictor(self, namespace="", name="") -> Predictor:
-        return Predictor(MDPredictor(), self.Predictors, namespace, name)
+    def Predictor(self, namespace="", name="", version=Resource.DefaultVersion,
+                 serving_site: Union[ObjectReference, ServingSite, str] = "default-serving-site",
+                 model: Union[Model, str] = None, models: List[ModelDeploymentSpec] = [], port: int = 3000,
+                 path: str = None, access_type: AccessType = None, replicas: int = 0, autoscale: bool = False,
+                 workload: Workload = None) -> Predictor:
+        """
+        :param namespace: The target namespace of the resource.
+        :param name: The name of the resource.
+        :param version: The version of the resource.
+        :param serving_site: The object reference, Serving Site object, or name under default-tenant for which the
+            predictor will be deployed under.
+        :param model: The Model object or name that the predictor will serve predictions for. This parameter
+            will instantiate the predictor with a singe default deployment specification for the model.
+        :param models: The list of model deployment specifications that will be applied to the predictor.
+        :param port: The port of the predictor, which if applicable will expose the service internally or externally.
+        :param path: The path that the predictor will expose a service on. If this parameter is not specified, then
+            a path will be generated based on the access type and predictor name.
+        :param access_type: The access type of the predictor. Documentation on how each access type exposes the prediction
+            service can be found at the modela.ai Predictor resource documentation.
+        :param replicas: The amount of replicas for the predictor, which if greater than zero will serve the prediction
+            service on multiple pods.
+        :param autoscale: If set to true, the predictor's deployment will scale based on the amount of incoming traffic
+            to the service.
+        :param workload: The workload specification which determines the resources which will be allocated to the
+            prediction service.
+        """
+        return Predictor(MDPredictor(), self.Predictors, namespace, name, version, serving_site, model, models,
+                         port, path, access_type, replicas, autoscale, workload)
 
     @property
     def Alerts(self) -> AlertClient:

@@ -68,43 +68,52 @@ class Resource:
 
     def submit(self, replace=False, **kwargs):
         """
-        Submit will create the resource on the cluster if it does not exist.
+        Submit resource to the cluster
+
+        :param replace: Replace the resource if it already exists on the cluster.
         """
-        if hasattr(self, "_client"):
-            if replace:
-                self._client.delete(self.namespace, self.name)
-                name, namespace = self.name, self.namespace
-                self._object.metadata.Clear()
-                self._object.metadata.CopyFrom(ObjectMeta())
-                self._object.metadata.name = name
-                self._object.metadata.namespace = namespace
-
-            self._client.create(self, **kwargs)
-        else:
-            raise AttributeError("Object has no client repository")
-
-    def update(self):
-        if hasattr(self, "_client"):
-            self._client.update(self)
-        else:
-            raise AttributeError("Object has no client repository")
-
-    def delete(self):
-        if hasattr(self, "_client"):
+        self.ensure_client_repository()
+        if replace:
             self._client.delete(self.namespace, self.name)
             name, namespace = self.name, self.namespace
             self._object.metadata.Clear()
             self._object.metadata.CopyFrom(ObjectMeta())
             self._object.metadata.name = name
             self._object.metadata.namespace = namespace
-        else:
-            raise AttributeError("Object has no client repository")
+
+        try:
+            self._client.create(self, **kwargs)
+        except GrpcErrorException as ex:
+            if not replace:
+                raise ex
+
+            time.sleep(0.5)
+            self._client.create(self, **kwargs)
+
+
+    def update(self):
+        """ Update the resource on the cluster with the latest data from the SDK """
+        self.ensure_client_repository()
+        self._client.update(self)
+
+    def delete(self):
+        """ Delete the resource on the cluster """
+        self.ensure_client_repository()
+        self._client.delete(self.namespace, self.name)
+        name, namespace = self.name, self.namespace
+        self._object.metadata.Clear()
+        self._object.metadata.CopyFrom(ObjectMeta())
+        self._object.metadata.name = name
+        self._object.metadata.namespace = namespace
 
     def sync(self):
-        if hasattr(self, "_client"):
-            self._object = self._client.get(self.namespace, self.name).raw_message
-        else:
-            raise AttributeError("Object has no client repository")
+        """ Update the resource with the latest information from the cluster """
+        self.ensure_client_repository()
+        self._object = self._client.get(self.namespace, self.name).raw_message
+
+    def ensure_client_repository(self):
+        """ Assert that the client repository exists """
+        assert hasattr(self, "_client")
 
     def default(self):
         print("Resource {0} is missing a default constructor; you may encounter errors upon creation.".format(

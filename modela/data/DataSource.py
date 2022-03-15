@@ -93,6 +93,19 @@ class DataSource(Resource):
     def schema(self):
         return self.spec.Schema
 
+    @property
+    def target_column(self) -> Column:
+        """ Get the target column specified by the schema """
+        return [col for col in self.schema.Columns if col.Target][0]
+
+    def column(self, name: str):
+        """ Get the column with the specified name from the schema """
+        search = [col for col in self.schema.Columns if col.Name == name]
+        if len(search) == 0:
+            raise ValueError("Data source {0} does not have a column named {1}".format(self.name, name))
+
+        return search[0]
+
     def default(self):
         DataSourceSpec().apply_config(self._object.spec)
 

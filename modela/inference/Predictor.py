@@ -1,5 +1,14 @@
+from __future__ import annotations
+
+import json
+import time
+
 import grpc
+from google.protobuf import json_format
+
 from github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 import Predictor as MDPredictor
+from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1.grpcinferenceservice_pb2 import \
+    PredictResultLineItem
 from github.com.metaprov.modelaapi.services.predictor.v1.predictor_pb2_grpc import PredictorServiceStub
 from github.com.metaprov.modelaapi.services.predictor.v1.predictor_pb2 import CreatePredictorRequest, \
     UpdatePredictorRequest, \
@@ -7,19 +16,20 @@ from github.com.metaprov.modelaapi.services.predictor.v1.predictor_pb2 import Cr
 
 from modela.common import ObjectReference
 from modela.Resource import Resource
-from modela.ModelaException import ModelaException
+from modela.ModelaException import ModelaException, ResourceNotFoundException
 from typing import List, Union
 
 from modela.inference.InferenceService import InferenceService
 from modela.inference.common import AccessType
-from modela.inference.models import ModelDeploymentSpec, PredictorSpec, PredictorStatus
+from modela.inference.models import ModelDeploymentSpec, PredictorSpec, PredictorStatus, PredictionResult
 from modela.infra.ServingSite import ServingSite
 from modela.infra.models import Workload
 from modela.training.Model import Model
 
 
 class Predictor(Resource):
-    def __init__(self, item: MDPredictor = MDPredictor(), client=None, namespace="", name="", version=Resource.DefaultVersion,
+    def __init__(self, item: MDPredictor = MDPredictor(), client=None, namespace="", name="",
+                 version=Resource.DefaultVersion,
                  serving_site: Union[ObjectReference, ServingSite, str] = "default-serving-site",
                  model: Union[Model, str] = None,
                  models: List[ModelDeploymentSpec] = [],
@@ -93,7 +103,40 @@ class Predictor(Resource):
     def default(self):
         PredictorSpec().apply_config(self._object.spec)
 
-    def connect(self, node_ip="", connect_dns=False, connect_local=False, local_port: int=None, tls_cert: str = None) -> InferenceService:
+    @property
+    def model(self) -> Model:
+        """ Get the model associated with the Predictor """
+        self.ensure_client_repository()
+        return self._client.modela.Model(self.namespace, self.spec.Models[0].ModelName)
+
+    def wait_until_ready(self):
+        """ Block until the predictor service is ready to accept prediction requests. """
+        payload = self.model.test_prediction
+        while True:
+            try:
+                self.predict(payload)
+            except ResourceNotFoundException:
+                time.sleep(0.2)
+                continue
+
+            break
+
+    def predict(self, predictions: str | dict | list[dict]) -> List[PredictionResult]:
+        """
+        Send a batch prediction request
+
+        :param predictions: The JSON payload or dictionary(s) that contain each features name and their input value
+        """
+        self.ensure_client_repository()
+        if type(predictions) == dict:
+            predictions = json.dumps([predictions])
+        elif type(predictions) == list:
+            predictions = json.dumps(predictions)
+
+        return self._client.predict(self.namespace, self.name, "", predictions)
+
+    def connect(self, node_ip="", connect_dns=False, connect_local=False, local_port: int = None,
+                tls_cert: str = None) -> InferenceService:
         """
         Connect attempts to make a connection to the gRPC inference service client associated with the Predictor.
 
@@ -120,6 +163,7 @@ class Predictor(Resource):
             return InferenceService((node_ip if node_ip != "" else self.spec.Path), self.spec.NodePort)
         elif self.spec.AccessType == AccessType.Ingress or self.spec.AccessType == AccessType.ClusterIP:
             return InferenceService(self.spec.Path, "", tls_cert=tls_cert)
+
 
 class PredictorClient:
     def __init__(self, stub, modela):
@@ -191,7 +235,7 @@ class PredictorClient:
         ModelaException.process_error(error)
         return False
 
-    def predict(self, namespace: str, name: str, fields: str, values: str):
+    def predict(self, namespace: str, name: str, fields: str, values: str) -> List[PredictionResult]:
         request = PredictOneRequest()
         request.namespace = namespace
         request.name = name
@@ -200,10 +244,11 @@ class PredictorClient:
 
         try:
             response = self.__stub.PredictOne(request)
-            print(response)
+            output = json.loads(response.label)
+            print(output)
+            return [PredictionResult().from_dict(item) for item in output["items"]]
         except grpc.RpcError as err:
             error = err
 
         ModelaException.process_error(error)
         return False
-

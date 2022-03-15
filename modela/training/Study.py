@@ -138,28 +138,32 @@ class Study(Resource):
         StudySpec().apply_config(self._object.spec)
 
     def abort(self):
-        if hasattr(self, "_client"):
-            self._client.abort(self.namespace, self.name)
-        else:
-            raise AttributeError("Object has no client repository")
+        self.ensure_client_repository()
+        self._client.abort(self.namespace, self.name)
 
     def pause(self):
-        if hasattr(self, "_client"):
-            self._client.pause(self.namespace, self.name)
-        else:
-            raise AttributeError("Object has no client repository")
+        self.ensure_client_repository()
+        self._client.pause(self.namespace, self.name)
 
     def resume(self):
-        if hasattr(self._client, "abort"):
-            self._client.resume(self.namespace, self.name)
-        else:
-            raise AttributeError("Object has no client repository")
+        self.ensure_client_repository()
+        self._client.resume(self.namespace, self.name)
 
-    def submit_and_visualize(self, replace=False):
+    def submit_and_visualize(self, replace: bool = False):
+        """
+        Submit the resource and call visualize().
+
+        :param replace: Replace the resource if it already exists on the cluster.
+        """
         self.submit(replace)
         self.visualize()
 
-    def visualize(self):
+    def visualize(self, show_progress_bar=True):
+        """
+        Display a real-time visualization of the Study's progress
+
+        :param show_progress_bar: If enabled, the visualization will render a progress bar indicating the study progress.
+        """
         desc = tqdm(total=0, position=0, bar_format='{desc}Time Elapsed: {elapsed}')
         bars = {}
 
@@ -174,7 +178,48 @@ class Study(Resource):
                                           alg_top if alg_top != "" else "[Waiting]",
                                           str(cv_top) if cv_top != 0 else "[Waiting]"))
 
-                desc.refresh()
+                    desc.refresh()
+
+                if current_status.Phase == StudyPhase.Failed:
+                    desc.set_description("Phase: Failed | Error Message: {0}".format(current_status.FailureMessage))
+                    desc.colour = "red"
+                    desc.refresh()
+                    time.sleep(5)
+                    self.sync()
+                    if self.phase != StudyPhase.Failed:
+                        continue
+                    else:
+                        break
+                elif current_status.Phase == StudyPhase.Completed:
+                    model = self._client.modela.Model(self.namespace, current_status.BestModel)
+                    if model.phase != ModelPhase.Completed:
+                        continue
+
+                    desc.close()
+                    for bar in bars.values():
+                        bar.close()
+
+                    if not show_progress_bar:
+                        desc.set_description_str("Study completed!")
+                        desc.refresh()
+
+                    print("\n\n" + model.details)
+                    if self.spec.Search.Trainers <= 2:
+                        print("Want quicker training speeds? Get more parallel trainers at https://modela.ai")
+
+                    time.sleep(0.1)
+                    return
+
+                time.sleep(0.1)
+                if not show_progress_bar:
+                    time.sleep(0.9)
+                    for model in self.models:
+                        if len(model.status.Cv) > 0:
+                            if model.get_cv_metric(objective) > cv_top:
+                                cv_top, alg_top = model.get_cv_metric(objective), model.spec.Estimator.AlgorithmName
+
+                    continue
+
                 models = self.models
                 for model in dict(bars).keys():
                     bar = bars[model]
@@ -239,50 +284,18 @@ class Study(Resource):
                             bars[model.name].postfix = unappendable_str(postfix)
                             bars[model.name].refresh()
 
-                if current_status.Phase == StudyPhase.Failed:
-                    desc.set_description("Phase: Failed | Error Message: {0}".format(current_status.FailureMessage))
-                    desc.colour = "red"
-                    desc.refresh()
-                    time.sleep(5)
-                    self.sync()
-                    if self.phase != StudyPhase.Failed:
-                        continue
-                    else:
-                        break
-                elif current_status.Phase == StudyPhase.Completed:
-                    model = self._client.modela.Model(self.namespace, current_status.BestModel)
-                    if model.phase != ModelPhase.Completed:
-                        continue
-
-                    desc.close()
-                    for bar in bars.values():
-                        bar.close()
-
-                    print("\n\n" + model.details)
-                    if self.spec.Search.Trainers <= 2:
-                        print("Want quicker training speeds? Get more parallel trainers at https://modela.ai")
-
-                    time.sleep(0.1)
-                    break
-
-                time.sleep(0.1)
-
         except KeyboardInterrupt:
             pass
 
     @property
     def models(self) -> List[Model]:
-        if hasattr(self, "_client"):
-            return self._client.modela.Models.list(self.namespace, {'study': self.name})
-        else:
-            raise AttributeError("Object has no client repository")
+        self.ensure_client_repository()
+        return self._client.modela.Models.list(self.namespace, {'study': self.name})
 
     @property
     def best_model(self) -> Model:
-        if hasattr(self, "_client"):
-            return self._client.modela.Models.get(self.namespace, self._object.status.bestModel)
-        else:
-            raise AttributeError("Object has no client repository")
+        self.ensure_client_repository()
+        return self._client.modela.Models.get(self.namespace, self._object.status.bestModel)
 
     @property
     def phase(self) -> StudyPhase:

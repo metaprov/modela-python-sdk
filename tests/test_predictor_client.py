@@ -42,13 +42,11 @@ class Test_Modela_predictor(unittest.TestCase):
         predictor.delete()
         self.assertRaises(ResourceNotFoundException, self.modela.Studies.get, "iris-product", "test")
 
-    def test_5_connect(self):
-        predictor = self.modela.Predictor(namespace="iris-product", name="test")
+    def test_5_predict(self):
+        predictor = self.modela.Predictor(namespace="iris-product", name="testpred", model="model-20220303-194814")
+        predictor.submit(replace=True)
+        print(predictor.model.dataset.datasource.schema.Columns[-1].Enum)
+        predictor.wait_until_ready()
+        predictor.predict(predictor.model.test_prediction)
         predictor.delete()
-        self.assertRaises(ResourceNotFoundException, self.modela.Studies.get, "iris-product", "test")
 
-
-    def test_6_get_models(self):
-        predictor = self.modela.Studies.list("iris-product")[0]
-        assert len(predictor.models) > 0
-        print(predictor.best_model.name)

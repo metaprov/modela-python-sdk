@@ -10,7 +10,8 @@ with open('README.md') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=7.0', 'modelaapi', 'tabulate', 'tqdm', 'protobuf', 'grpcio']
+requirements = ['Click>=7.0', 'modelaapi', 'tabulate', 'tqdm', 'protobuf', 'grpcio', 'jwt', 'typing_utils', 'pandas',
+                'protoc-gen-swagger']
 
 setup_requirements = [ ]
 
@@ -49,6 +50,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/metaprov/modela-python-sdk',
-    version='0.511',
+    version='0.521',
     zip_safe=False,
 )

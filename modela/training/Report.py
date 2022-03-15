@@ -43,10 +43,8 @@ class Report(Resource):
         raise TypeError("Report resources cannot be updated.")
 
     def download(self) -> bytes:
-        if hasattr(self, "_client"):
-            return self._client.download(self.namespace, self.name)
-        else:
-            raise AttributeError("Object has no client repository")
+        self.ensure_client_repository()
+        return self._client.download(self.namespace, self.name)
 
     def open_in_browser(self):
         with tempfile.TemporaryDirectory() as temp_dir:

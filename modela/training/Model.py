@@ -7,6 +7,7 @@ from github.com.metaprov.modelaapi.services.model.v1.model_pb2 import \
     PauseModelRequest, GetModelProfileRequest, PublishModelRequest, ResumeModelRequest, TestModelRequest
 from tabulate import tabulate
 
+from modela.data.Dataset import Dataset
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
 from typing import List, Union
@@ -102,7 +103,13 @@ class Model(Resource):
             raise AttributeError("Object has no client repository")
 
     @property
+    def test_prediction(self) -> str:
+        """ Generate a default prediction payload for the model. """
+        return self.dataset.test_prediction
+
+    @property
     def report(self) -> Report:
+        """ Return the report associated with the model, if it exists. """
         if hasattr(self, "_client"):
             if self._object.status.reportName != "":
                 return self._client.modela.Report(namespace=self.namespace, name=self._object.status.reportName)
@@ -110,6 +117,16 @@ class Model(Resource):
                 print("Model {0} has no report. Call Model.test() to create one.")
         else:
             raise AttributeError("Object has no client repository")
+
+
+    @property
+    def dataset(self) -> Dataset:
+        """ Return the dataset associated with the model """
+        if hasattr(self, "_client"):
+            return self._client.modela.Dataset(namespace=self.namespace, name=self.spec.DatasetName)
+        else:
+            raise AttributeError("Object has no client repository")
+
 
     @property
     def phase(self) -> ModelPhase:

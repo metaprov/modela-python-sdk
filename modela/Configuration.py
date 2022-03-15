@@ -99,6 +99,34 @@ class Configuration(object):
         self._parent = message
         return self
 
+    def from_dict(self, data: dict):
+        for attribute, value in self.__dict__.items():
+            if attribute == "_parent" or not convert_case(attribute) in data:
+                continue
+
+            annotation_type = get_type_hints(self)[attribute]
+            dict_attr = data[convert_case(attribute)]
+            if typing_utils.issubtype(annotation_type, List):
+                annotation_type = get_args(annotation_type)[0]
+                if issubclass(annotation_type, Enum) or isPrimitive(annotation_type()):
+                    setattr(self, attribute, TrackedList([annotation_type(message) for message in dict_attr],
+                                                         self, attribute))
+                else:
+                    setattr(self, attribute, TrackedList(
+                        [annotation_type().from_dict(message) for message in dict_attr],
+                        self, attribute))
+            elif isinstance(dict_attr, dict):
+                setattr(self, attribute, annotation_type().from_dict(data))
+            else:
+                try:
+                    setattr(self, attribute,
+                            (type(annotation_type) if not callable(annotation_type) else annotation_type)(
+                                dict_attr))
+                except ValueError:
+                    pass
+
+        return self
+
     def set_parent(self, message: Message):
         """
         Set the Configuration's related Protobuf Message. Each attribute of the configuration will be applied to the message.
