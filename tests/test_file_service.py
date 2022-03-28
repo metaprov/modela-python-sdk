@@ -21,7 +21,7 @@ class Test_Modela_model(unittest.TestCase):
         cls.modela.close()
 
     def test_upload(self):
-        with open('datasets/100MB.bin', 'r') as f:
+        with open('datasets/iris.csv', 'r') as f:
             data = f.read()
 
         self.modela.FileService.upload_file("test", data, "default-tenant", "iris-product", "v0.0.1",

@@ -2,7 +2,7 @@ import subprocess
 import socket
 from contextlib import closing
 
-from typing import Optional
+from typing import Optional, Callable
 
 import jwt
 from github.com.metaprov.modelaapi.services.account.v1.account_pb2 import AccountLoginRequest
@@ -127,6 +127,29 @@ from modela.training.NotebookRun import *
 from modela.training.Notebook import *
 from modela.training.Report import *
 from modela.training.Study import *
+from grpc_interceptor import ClientCallDetails, ClientInterceptor
+
+
+class AuthClientInterceptor(ClientInterceptor):
+    def __init__(self, token: str):
+        self.token = token
+
+    def intercept(
+        self,
+        method: Callable,
+        request_or_iterator,
+        call_details: grpc.ClientCallDetails,
+    ):
+        new_details = ClientCallDetails(
+            call_details.method,
+            call_details.timeout,
+            [("authorization", self.token)],
+            call_details.credentials,
+            call_details.wait_for_ready,
+            call_details.compression,
+        )
+
+        return method(request_or_iterator, new_details)
 
 
 class Modela:
@@ -139,13 +162,12 @@ class Modela:
             self,
             host="localhost",
             port=3000,
-            username: str = None,
-            password: str = None,
+            username: str = "admin",
+            password: str = "admin",
             secure=False,
             tls_cert=None,
             tenant="default-tenant",
             port_forward=False,
-            api_token: str = None,
     ):
         """
         Connect to the Modela API gateway.
@@ -196,8 +218,7 @@ class Modela:
         if username is not None:
             login_request = AccountLoginRequest(namespace=tenant, name=username, password=password)
             token = self.__account_stub.Login(login_request).token
-            # jwt.decode(token, algorithms=["HS256"], options={"verify_signature": False}))
-
+            self._channel = grpc.intercept_channel(self._channel, AuthClientInterceptor(token))
 
 
         self.__fileservice_stub = fileservices_pb2_grpc.FileServicesServiceStub(self._channel)

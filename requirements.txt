@@ -14,3 +14,4 @@ grpcio-health-checking==1.43.0
 tqdm==4.62.3
 tabulate
 modelaapi
+grpc-interceptor
