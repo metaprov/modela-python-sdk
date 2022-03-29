@@ -484,7 +484,8 @@ class Modela:
     def Dataset(self, namespace="", name="", gen_datasource: bool = False, version=Resource.DefaultVersion,
                 target_column: str = None, datasource: Union[DataSource, str] = "", bucket: str = "default-minio-bucket",
                 dataframe: pandas.DataFrame = None, data_file: str = None, data_bytes: bytes = None,
-                workload: Workload = Workload("general-large"), sample: SampleSettings = None, task_type: TaskType = None,
+                workload: Workload = Workload("general-large"), fast: bool = False,
+                sample: SampleSettings = None, task_type: TaskType = None,
                 notification: NotificationSetting = None) -> Dataset:
         """
         Fetch or create a new Dataset resource
@@ -503,12 +504,13 @@ class Modela:
             contents of the file for ingestion with the Dataset resource.
         :param data_bytes: If specified, the SDK will upload the given raw data for ingestion with the Dataset resource.
         :param workload: The resource requirements which will be allocated for Dataset ingestion.
+        :param fast: If enabled, the Dataset will skip validation, profiling, and reporting.
         :param sample: The sample settings of the dataset, which if enabled will ingest a Dataset with a portion of the uploaded data.
         :param task_type: The target task type in relation to the data being used.
         :param notification: The notification settings, which if enabled will forward events about this resource to a notifier.
         """
         return Dataset(MDDataset(), self.Datasets, namespace, name, version, gen_datasource, target_column,
-                       datasource, bucket, dataframe, data_file, data_bytes, workload,
+                       datasource, bucket, dataframe, data_file, data_bytes, workload, fast,
                        sample, task_type, notification)
 
 

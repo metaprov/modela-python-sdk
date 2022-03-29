@@ -4,12 +4,23 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Prediction methods/benchmark compat. fixes">
+    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Implement authentication interceptor">
+      <change afterPath="$PROJECT_DIR$/hack/validate_datamodels.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hack/run_apigateway.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/hack/run_predictor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/Configuration.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/Configuration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/Dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/inference/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/infra/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/infra/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_file_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_file_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/training/Study.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Study.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/training/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_configuration.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_configuration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_dataset_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_dataset_client.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +79,7 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.modules.go.list.on.any.changes.was.set" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/modela/training" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/hack/validate_datamodels.py" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -92,13 +103,35 @@
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\infra" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests in test_file_service.py">
+  <component name="RunManager" selected="Python.Validate Datamodels">
     <configuration name="go build modela-python-sdk gen_crd_docs.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="FILE" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$/gen_crd_docs.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Validate Datamodels" type="PythonConfigurationType" factoryName="Python">
+      <module name="modela-python-sdk" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\liamm\PycharmProjects\modela-python-sdk\venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/hack" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/hack/validate_datamodels.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
     <configuration name="build-docs" type="PythonConfigurationType" factoryName="Python">
@@ -380,6 +413,7 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.Validate Datamodels" />
       <item itemvalue="Python.build-docs" />
       <item itemvalue="Python tests.Python tests in test_account_client.py" />
       <item itemvalue="Python tests.Python tests in test_dataproducts_client.py" />
@@ -427,7 +461,7 @@
       <workItem from="1646172326741" duration="88294000" />
       <workItem from="1646668982436" duration="53202000" />
       <workItem from="1647016019085" duration="45503000" />
-      <workItem from="1647472365233" duration="7752000" />
+      <workItem from="1647472365233" duration="24516000" />
     </task>
     <task id="LOCAL-00001" summary="fixed the client. upgrade version">
       <created>1630772236555</created>
@@ -646,7 +680,14 @@
       <option name="project" value="LOCAL" />
       <updated>1647358532361</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Implement authentication interceptor">
+      <created>1648491517428</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1648491517428</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -667,7 +708,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/docs/sphinx-markdown-builder" />
     </ignored-roots>
-    <MESSAGE value="Add DataSource tests &amp; fix misc. configuration bugs" />
     <MESSAGE value="Structural changes, finished DataSource models and tests" />
     <MESSAGE value="DataProduct &amp; DataProductVersion Tests, Fix CRUD operations" />
     <MESSAGE value="Implement Model &amp; Study API models, other API changes" />
@@ -692,7 +732,8 @@
     <MESSAGE value="Implement automatic port-forwarding" />
     <MESSAGE value="Clean up unit tests" />
     <MESSAGE value="Prediction methods/benchmark compat. fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Prediction methods/benchmark compat. fixes" />
+    <MESSAGE value="Implement authentication interceptor" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement authentication interceptor" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -707,7 +748,8 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/modela_python_sdk$build.coverage" NAME="build Coverage Results" MODIFIED="1646678944062" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/docs" />
-    <SUITE FILE_PATH="coverage/modela_python_sdk$Unittests_in_test_configuration_py.coverage" NAME="Unittests in test_configuration.py Coverage Results" MODIFIED="1647214929623" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1648491422394" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/modela_python_sdk$Validate_Datamodels.coverage" NAME="Validate Datamodels Coverage Results" MODIFIED="1648583296275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/hack" />
+    <SUITE FILE_PATH="coverage/modela_python_sdk$Unittests_in_test_configuration_py.coverage" NAME="Unittests in test_configuration.py Coverage Results" MODIFIED="1648494060547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1648572003265" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>

@@ -93,3 +93,8 @@ class ConnectionCategory(Enum):
 class ConnectionConditionType(Enum):
     ConnectionReady = "Ready"
     ConnectionSaved = "Saved"
+
+class Resource(Enum):
+    CPU = "cpu"
+    Memory = "memory"
+    Storage = "storage"

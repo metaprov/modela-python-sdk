@@ -1,43 +1,40 @@
-from dataclasses import dataclass, field
+from dataclasses import field
+
+from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import *
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import GitLocation, ImageLocation
 from modela.Configuration import *
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import ResourceSpec as MDResourceSpec
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import NotificationSpec as MDNotificationSpec
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import Logs as MDLogs
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import ContainerLog as MDContainerLog
+from modela.common import ObjectReference
 
 
-@dataclass
+@datamodel(proto=NotificationSpec)
 class NotificationSetting(Configuration):
     ErrorTTL: int = 3600
     SuccessTTL: int = 3600
     NotifierName: str = ""
     # FIXME: Implement dict types: Selector: dict = field(default_factory=lambda: {})
 
-@dataclass
+
+@datamodel(proto=ResourceSpec)
 class Workload(Configuration):
-    WorkloadClassName: str = ""
-    Enable: bool = False
+    WorkloadName: str = ""
+    CpuImage: ObjectReference = ObjectReference("modela-catalog", "modela-cpu-trainer-latest")
+    GpuImage: ObjectReference = ObjectReference("modela-catalog", "modela-gpu-trainer-latest")
 
 
-@dataclass
+@datamodel(proto=ContainerLog)
 class ContainerLog(Configuration):
     Job: str = ""
     Container: str = ""
     Key: str = ""
 
-    def to_message(self) -> MDContainerLog:
-        return self.set_parent(MDContainerLog()).parent
 
-@dataclass
+@datamodel(proto=Logs)
 class OutputLogs(Configuration):
     BucketName: str = ""
     Containers: List[ContainerLog] = field(default_factory=lambda: [])
 
-    def to_message(self) -> MDLogs:
-        return self.set_parent(MDLogs()).parent
 
-
-@dataclass
+@datamodel(proto=GitLocation)
 class GitSettings(Configuration):
     GitConnectionName: str = ""
     Url: str = ""
@@ -45,7 +42,7 @@ class GitSettings(Configuration):
     Private: bool = False
 
 
-@dataclass
+@datamodel(proto=ImageLocation)
 class ImageLocation(Configuration):
     Name: str = ""
     RegistryConnectionName: str = ""

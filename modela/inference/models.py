@@ -1,18 +1,11 @@
-from dataclasses import dataclass, field
+from dataclasses import field
 from typing import List
 
-from github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 import \
-    PredictorCondition as MDPredictorCondition
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import \
-    ModelDeploymentSpec as MDModelDeploymentSpec
-from github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 import ModelRecord as MDModelRecord
-from github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 import MonitorStatus as MDMonitorStatus
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import \
-    ModelDeploymentStatus as MDModelDeploymentStatus
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import RunSchedule as MDRunSchedule
-from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1.grpcinferenceservice_pb2 import \
-    PredictRequest as MDPredictRequest, ProbabilityValue as MDProbabilityValue, ShapValue as MDShapValue
+from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import *
+from github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 import *
+from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1.grpcinferenceservice_pb2 import *
 
+from modela.Configuration import datamodel
 from modela.common import Configuration, ConditionStatus, Time, ObjectReference, StatusError, TriggerScheduleEventType
 from modela.inference.common import PredictorConditionType, CanaryMetric, AccessType, PredictorType, \
     ModelDeploymentPhase
@@ -21,7 +14,7 @@ from modela.training.common import TaskType
 from modela.training.models import ModelValidation, ModelValidationResult
 
 
-@dataclass
+@datamodel(proto=RunSchedule)
 class RunSchedule(Configuration):
     Enabled: bool = False
     StartTime: Time = None
@@ -29,11 +22,8 @@ class RunSchedule(Configuration):
     Cron: str = ""
     Type: TriggerScheduleEventType = None
 
-    def to_message(self) -> MDRunSchedule:
-        return self.set_parent(MDRunSchedule()).parent
 
-
-@dataclass
+@datamodel(proto=ModelDeploymentStatus)
 class ModelDeploymentStatus(Configuration):
     ImageName: str = ""
     DeploymentRef: ObjectReference = None
@@ -51,11 +41,8 @@ class ModelDeploymentStatus(Configuration):
     ApprovedBy: str = ""
     ApprovedAt: Time = None
 
-    def to_message(self) -> MDModelDeploymentStatus:
-        return self.set_parent(MDModelDeploymentStatus()).parent
 
-
-@dataclass
+@datamodel(proto=ModelRecord)
 class ModelRecord(Configuration):
     ModelName: str = ""
     ModelVersion: str = ""
@@ -64,11 +51,8 @@ class ModelRecord(Configuration):
     AvgDailyPrediction: int = 0
     AvgLatency: float = 0
 
-    def to_message(self) -> MDModelRecord:
-        return self.set_parent(MDModelRecord()).parent
 
-
-@dataclass
+@datamodel(proto=ModelDeploymentSpec)
 class ModelDeploymentSpec(Configuration):
     ModelName: str = ""
     ModelVersion: str = ""
@@ -82,11 +66,8 @@ class ModelDeploymentSpec(Configuration):
     TrafficSelector: str = ""
     CanaryMetrics: List[CanaryMetric] = field(default_factory=lambda: [])
 
-    def to_message(self) -> MDModelDeploymentSpec:
-        return self.set_parent(MDModelDeploymentSpec()).parent
 
-
-@dataclass
+@datamodel(proto=PredictorCondition)
 class PredictorCondition(Configuration):
     Type: PredictorConditionType = None
     Status: ConditionStatus = None
@@ -94,24 +75,21 @@ class PredictorCondition(Configuration):
     Reason: str = ""
     Message: str = ""
 
-    def to_message(self) -> MDPredictorCondition:
-        return self.set_parent(MDPredictorCondition()).parent
 
-
-@dataclass
+@datamodel(proto=ProgressiveSpec)
 class ProgressiveSpec(Configuration):
     Warmup: int = 0
     TrafficIncrement: int = 0
     CanaryMetrics: List[CanaryMetric] = field(default_factory=lambda: [])
 
 
-@dataclass
+@datamodel(proto=PredictionCacheSpec)
 class PredictionCacheSpec(Configuration):
     Active: bool = False
     ServiceName: str = ""
 
 
-@dataclass
+@datamodel(proto=AutoScaling)
 class AutoScaling(Configuration):
     Enabled: bool = False
     MinReplicas: int = 1
@@ -120,7 +98,7 @@ class AutoScaling(Configuration):
     MemAvgUtilization: int = 80
 
 
-@dataclass
+@datamodel(proto=PredictorHealth)
 class PredictorHealth(Configuration):
     Service: bool = False
     DataDrift: bool = False
@@ -132,7 +110,7 @@ class PredictorHealth(Configuration):
     LastDailyPredictions: List[int] = field(default_factory=lambda: [])
 
 
-@dataclass
+@datamodel(proto=PredictorStatus)
 class PredictorStatus(Configuration):
     ModelStatus: List[ModelDeploymentStatus] = field(default_factory=lambda: [])
     MonitorLastAttemptAt: Time = None
@@ -154,7 +132,7 @@ class PredictorStatus(Configuration):
     Conditions: List[PredictorCondition] = field(default_factory=lambda: [])
 
 
-@dataclass
+@datamodel(proto=MonitorSpec)
 class MonitorSpec(Configuration):
     Enabled: bool = False
     SamplePercent: int = 0
@@ -165,25 +143,22 @@ class MonitorSpec(Configuration):
     LogResponses: bool = False
 
 
-@dataclass
+@datamodel(proto=MonitorStatus)
 class MonitorStatus(Configuration):
     LastPrediction: Time = None
     ValidationResults: List[ModelValidationResult] = field(default_factory=lambda: [])
 
-    def to_message(self) -> MDMonitorStatus:
-        return self.set_parent(MDMonitorStatus()).parent
 
-
-@dataclass
+@datamodel(proto=PredictorAuthSpec)
 class PredictorAuthSpec(Configuration):
     Enabled: bool = False
 
 
-PredictorAccessType = AccessType
-PredictorAutoScaling = AutoScaling
+AccessType_ = AccessType
+AutoScaling_ = AutoScaling
 
 
-@dataclass
+@datamodel(proto=PredictorSpec)
 class PredictorSpec(Configuration):
     VersionName: str = ""
     Description: str = ""
@@ -196,9 +171,9 @@ class PredictorSpec(Configuration):
     Port: int = 8080
     NodePort: int = 30000
     Path: str = ""
-    AccessType: PredictorAccessType = None
+    AccessType: AccessType_ = None
     Replicas: int = 1
-    AutoScaling: PredictorAutoScaling = None
+    AutoScaling: AutoScaling_ = None
     Owner: str = "no-one"
     Resources: Workload = Workload("general-nano")
     Cache: PredictionCacheSpec = None
@@ -211,24 +186,20 @@ class PredictorSpec(Configuration):
     Monitor: MonitorSpec = None
     Auth: PredictorAuthSpec = None
 
-@dataclass
+
+@datamodel(proto=ProbabilityValue)
 class ProbabilityValue(Configuration):
     Label: str = ""
     Probability: float = 0
 
-    def to_message(self) -> MDProbabilityValue:
-        return self.set_parent(MDProbabilityValue()).parent
 
-@dataclass
+@datamodel(proto=ShapValue)
 class ShapValue(Configuration):
     Feature: str = ""
     Value: float = 0
 
-    def to_message(self) -> MDShapValue:
-        return self.set_parent(MDShapValue()).parent
 
-
-@dataclass
+@datamodel(proto=PredictResultLineItem)
 class PredictionResult(Configuration):
     Success: bool = False
     Score: float = 0

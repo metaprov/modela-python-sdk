@@ -28,6 +28,7 @@ class Test_Modela_dataset(unittest.TestCase):
                                       datasource=datasource, task_type=TaskType.MultiClassification)
 
         dataset.submit(replace=True)
+        dataset.visualize(show_progress_bar=False)
 
 
     def test_1_list(self):
@@ -40,7 +41,7 @@ class Test_Modela_dataset(unittest.TestCase):
         print(self.modela.Datasets.list("iris-product")[0].test_prediction)
 
     def test_1_profile(self):
-        ds = self.modela.Datasets.list("iris-product")[1]
+        ds = self.modela.Datasets.list("iris-product")[0]
         print(ds.profile)
 
     def test_2_update(self):
@@ -57,8 +58,7 @@ class Test_Modela_dataset(unittest.TestCase):
 
     def test_4_delete(self):
         dataset = self.modela.Dataset(namespace="iris-product", name="test-ds")
-        # dataset.delete()
-        time.sleep(0.1)
+        dataset.delete()
         self.assertRaises(ResourceNotFoundException, self.modela.Datasets.get, "iris-product", "test-ds")
 
 

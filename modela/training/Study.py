@@ -8,6 +8,7 @@ from github.com.metaprov.modelaapi.services.study.v1.study_pb2 import CreateStud
     GetStudyProfileRequest, CreateStudyProfileRequest, AbortStudyRequest, PauseStudyRequest, ResumeStudyRequest
 from tqdm import tqdm
 
+import modela
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException, ResourceNotFoundException
 from typing import List, Union
@@ -78,7 +79,7 @@ class Study(Resource):
         if type(lab) == Lab:
             lab = lab.reference
         elif type(lab) == str:
-            lab = ObjectReference(Namespace="default-tenant", Name=lab)
+            lab = ObjectReference(Namespace=client.modela.tenant, Name=lab)
         self.spec.LabRef = lab
 
         if bucket is not None:
@@ -107,6 +108,8 @@ class Study(Resource):
 
         if trainer_template is not None:
             self.spec.TrainingTemplate = trainer_template
+
+        self.spec.TrainingTemplate.LabRef = lab
 
         if interpretability is not None:
             self.spec.Interpretability = interpretability

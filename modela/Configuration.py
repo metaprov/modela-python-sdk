@@ -28,6 +28,12 @@ class Configuration(object):
             if typing_utils.issubtype(annotation_type, List):
                 setattr(self, attribute, TrackedList(value, self, attribute))
 
+    def to_message(self):
+        if hasattr(self, "proto_type"):
+            return self.set_parent(self.proto_type()).parent
+        else:
+            raise TypeError("Configuration does not have any protobuf information.")
+
     def apply_field(self, attribute, value, message: Message):
         """ Apply a single attribute to a Protobuf Message."""
         if value is None:
@@ -144,9 +150,6 @@ class Configuration(object):
         if hasattr(self, "_parent"):
             self.apply_field(attribute, value, self._parent)
 
-    def to_message(self):
-        raise NotImplementedError()
-
     @property
     def parent(self):
         return self._parent
@@ -167,3 +170,13 @@ class ImmutableConfiguration(Configuration):
 
     def __setattr__(self, attribute, value):
         object.__setattr__(self, attribute, value)
+
+def datamodel(proto):
+    """
+    Decorator for Configurations to wrap them in a dataclass and store additional information about their related Protobuf message
+    """
+    def wrap(cls):
+        setattr(cls, "proto_type", proto)
+        return dataclass(cls)
+
+    return wrap

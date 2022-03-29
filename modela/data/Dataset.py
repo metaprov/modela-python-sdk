@@ -28,10 +28,6 @@ from modela.util import convert_size
 
 
 class Dataset(Resource):
-    """
-    Testing dataset resource
-    """
-
     def __init__(self, item: MDDataset = MDDataset(), client=None, namespace="", name="",
                  version=Resource.DefaultVersion,
                  gen_datasource: bool = False,
@@ -42,6 +38,7 @@ class Dataset(Resource):
                  data_file: str = None,
                  data_bytes: bytes = None,
                  workload: Workload = Workload("general-large"),
+                 fast: bool = False,
                  sample=SampleSettings(),
                  task_type: TaskType = TaskType.BinaryClassification,
                  notification: NotificationSetting = None):
@@ -60,6 +57,7 @@ class Dataset(Resource):
             contents of the file for ingestion with the Dataset resource.
         :param data_bytes: If specified, the SDK will upload the given raw data for ingestion with the Dataset resource.
         :param workload: The resource requirements which will be allocated for Dataset ingestion.
+        :param fast: If enabled, the Dataset will skip validation, profiling, and reporting.
         :param sample: The sample settings of the dataset, which if enabled will ingest a Dataset with a portion of the uploaded data.
         :param task_type: The target task type in relation to the data being used.
         :param notification: The notification settings, which if enabled will forward events about this resource to a notifier.
@@ -115,6 +113,7 @@ class Dataset(Resource):
         self.spec.DatasourceName = datasource.name
         self.spec.Resources = workload
         self.spec.Task = task_type
+        self.spec.Fast = fast
         if sample is not None:
             self.spec.Sample = sample
 

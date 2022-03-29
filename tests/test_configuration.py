@@ -5,6 +5,10 @@ from google.protobuf.message import Message
 
 
 class Test_Modela_configurations(unittest.TestCase):
+    def test_datamodel(self):
+        ty = DataLocation()
+        print(ty.to_message())
+
     def test_parent_propagation(self):
         conf = CsvFileFormat()
         dc = DataSource()

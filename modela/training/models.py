@@ -1,30 +1,11 @@
-from dataclasses import dataclass, field
+from dataclasses import field
 from typing import List
 
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import Measurement as MDMeasurement
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ModelCondition as MDModelCondition
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    HyperParameterValue as MDHyperParameterValue
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    FeatureEngineeringPipeline as MDFeatureEngineeringPipeline
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    FeatureImportance as MDFeatureImportance
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import StudyCondition as MDStudyCondition
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    TextPipelineSpec as MDTextPipelineSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    ResourceConsumption as MDResourceConsumption
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import DataHashes as MDDataHashes
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    GeneratedColumnSpec as MDGeneratedColumnSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import FeaturePair as MDFeaturePair
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import SegmentSpec as MDSegmentSpec
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ReportCondition as MDReportCondition
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
-    ModelAutobuilderCondition as MDModelAutobuilderCondition
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ModelValidation as MDModelValidation
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ModelValidationResult as MDModelValidationResult
-from modela.Configuration import Configuration, ImmutableConfiguration
+from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import Measurement
+from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import *
+from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import ModelProfile
+
+from modela.Configuration import Configuration, ImmutableConfiguration, datamodel
 from modela.common import PriorityLevel, Time, StatusError, ConditionStatus, ObjectReference, Freq, Plot
 from modela.data.common import DataType
 from modela.data.models import DataLocation, GovernanceSpec, CompilerSettings, Correlation, DataSourceSpec
@@ -33,7 +14,7 @@ from modela.infra.models import Workload, OutputLogs, NotificationSetting
 from modela.training.common import *
 
 
-@dataclass
+@datamodel(proto=ModelValidation)
 class ModelValidation(Configuration):
     Type: ModelValidationType = None
     PrevModel: str = ""
@@ -48,11 +29,8 @@ class ModelValidation(Configuration):
     MaxPercent: float = 0
     Agg: Aggregate = None
 
-    def to_message(self) -> MDModelValidation:
-        return self.set_parent(MDModelValidation()).parent
 
-
-@dataclass
+@datamodel(proto=ModelValidationResult)
 class ModelValidationResult(Configuration):
     Type: str = ""
     DatasetName: str = ""
@@ -66,63 +44,48 @@ class ModelValidationResult(Configuration):
     DurationInSec: int = 0
 
 
-    def to_message(self) -> MDModelValidationResult:
-        return self.set_parent(MDModelValidationResult()).parent
-
-@dataclass
+@datamodel(proto=Measurement)
 class Measurement(ImmutableConfiguration):
     Metric: Metric = Metric.Null
     Value: float = 0
 
-    def to_message(self) -> MDMeasurement:
-        return self.set_parent(MDMeasurement()).parent
 
-
-@dataclass
+@datamodel(proto=SegmentSpec)
 class Segment(Configuration):
     ColumnName: str = ""
     Op: Operation = Operation.EQ
     Value: str = ""
 
-    def to_message(self) -> MDSegmentSpec:
-        return self.set_parent(MDSegmentSpec()).parent
 
-
-@dataclass
+@datamodel(proto=HyperParameterValue)
 class HyperParameterValue(ImmutableConfiguration):
     Name: str = ""
     Value: str = ""
 
-    def to_message(self) -> MDHyperParameterValue:
-        return self.set_parent(MDHyperParameterValue()).parent
 
-
-@dataclass
+@datamodel(proto=ClassicalEstimatorSpec)
 class ClassicalEstimatorSpec(ImmutableConfiguration):
     AlgorithmName: str = ""
     Parameters: List[HyperParameterValue] = field(default_factory=lambda: [])
 
 
-@dataclass
+@datamodel(proto=ChatbotEstimatorSpec)
 class ChatbotEstimatorSpec(ImmutableConfiguration):  # Not Implemented
     Base: str = ""
 
 
-@dataclass
+@datamodel(proto=NLPEstimatorSpec)
 class NLPEstimatorSpec(ImmutableConfiguration):  # Not Implemented
     Base: str = ""
 
 
-@dataclass
+@datamodel(proto=FeatureImportance)
 class FeatureImportance(ImmutableConfiguration):
     Feature: str = ""
     Importance: float = 0
 
-    def to_message(self) -> MDFeatureImportance:
-        return self.set_parent(MDFeatureImportance()).parent
 
-
-@dataclass
+@datamodel(proto=SuccessiveHalvingSpec)
 class SuccessiveHalving(ImmutableConfiguration):
     Budget: int = 0
     Bracket: int = 0
@@ -131,7 +94,7 @@ class SuccessiveHalving(ImmutableConfiguration):
     Modality: ModalityType = None
 
 
-@dataclass
+@datamodel(proto=DataSplitSpec)
 class DataSplit(Configuration):
     Method: DataSplitMethod = DataSplitMethod.Auto
     Train: int = 80
@@ -139,9 +102,11 @@ class DataSplit(Configuration):
     Test: int = 20
     SplitColumn: str = ""
     Segments: List[Segment] = field(default_factory=lambda: [])
+    TrainDataset: str = ""
+    TestDataset: str = ""
 
 
-@dataclass
+@datamodel(proto=TrainingSpec)
 class Training(Configuration):
     Priority: PriorityLevel = PriorityLevel.Medium
     Cvtype: CvType = CvType.CVTypeKFold
@@ -158,14 +123,15 @@ class Training(Configuration):
     Distributed: bool = False
     NodeCount: int = 1
     SamplePct: int = 100
+    LabRef: ObjectReference = ObjectReference("default-tenant", "default-lab")
 
 
-@dataclass
+@datamodel(proto=ServingSpec)
 class ServingSpec(ImmutableConfiguration):
     Resources: Workload = None
 
 
-@dataclass
+@datamodel(proto=TextPipelineSpec)
 class TextPipelineSpec(ImmutableConfiguration):
     Encoder: TextEncoding = TextEncoding.Auto
     Tokenizer: str = ""
@@ -177,46 +143,37 @@ class TextPipelineSpec(ImmutableConfiguration):
     Svd: bool = True
     MaxSvdComponents: int = 0
 
-    def to_message(self) -> MDTextPipelineSpec:
-        return self.set_parent(MDTextPipelineSpec()).parent
 
-
-@dataclass
+@datamodel(proto=ImagePipelineSpec)
 class ImagePipelineSpec(ImmutableConfiguration):  # Not Implemented
     Featurizer: str = None
 
 
-@dataclass
+@datamodel(proto=VideoPipelineSpec)
 class VideoPipelineSpec(ImmutableConfiguration):  # Not Implemented
     Featurizer: str = None
 
 
-@dataclass
+@datamodel(proto=AudioPipelineSpec)
 class AudioPipelineSpec(ImmutableConfiguration):  # Not Implemented
     Featurizer: str = None
 
 
-@dataclass
+@datamodel(proto=ResourceConsumption)
 class ResourceConsumption(ImmutableConfiguration):
     Cpu: float = 0
     Mem: float = 0
     Gpu: float = 0
 
-    def to_message(self) -> MDResourceConsumption:
-        return self.set_parent(MDResourceConsumption()).parent
 
-
-@dataclass
+@datamodel(proto=DataHashes)
 class DataHashes(ImmutableConfiguration):
     TrainHash: str = ""
     TestingHash: str = ""
     ValidationHash: str = ""
 
-    def to_message(self) -> MDDataHashes:
-        return self.set_parent(MDDataHashes()).parent
 
-
-@dataclass
+@datamodel(proto=GeneratedColumnSpec)
 class GeneratedColumnSpec(ImmutableConfiguration):
     Name: str = ""
     Datatype: DataType = DataType.Text
@@ -224,11 +181,8 @@ class GeneratedColumnSpec(ImmutableConfiguration):
     Second: str = ""
     Original: str = ""
 
-    def to_message(self) -> MDGeneratedColumnSpec:
-        return self.set_parent(MDGeneratedColumnSpec()).parent
 
-
-@dataclass
+@datamodel(proto=FeatureSelectionSpec)
 class FeatureSelection(Configuration):
     Enabled: bool = False
     SamplePct: int = 100
@@ -243,16 +197,13 @@ class FeatureSelection(Configuration):
     Reserved: List[str] = field(default_factory=lambda: [])
 
 
-@dataclass
+@datamodel(proto=FeaturePair)
 class FeaturePair(ImmutableConfiguration):
     X: str = ""
     Y: str = ""
 
-    def to_message(self) -> MDFeaturePair:
-        return self.set_parent(MDFeaturePair()).parent
 
-
-@dataclass
+@datamodel(proto=InterpretabilitySpec)
 class Interpretability(Configuration):
     Ice: bool = True
     Icepairs: List[FeaturePair] = field(default_factory=lambda: [])
@@ -272,7 +223,7 @@ DatetimeTransformationType = DatetimeTransformation
 ScalingType = Scaling
 
 
-@dataclass
+@datamodel(proto=FeatureEngineeringPipeline)
 class FeatureEngineeringPipeline(ImmutableConfiguration):
     Name: str = ""
     Datatype: DataType = DataType.Text
@@ -293,18 +244,15 @@ class FeatureEngineeringPipeline(ImmutableConfiguration):
     Drop: bool = False
     Passthrough: bool = False
 
-    def to_message(self) -> MDFeatureEngineeringPipeline:
-        return self.set_parent(MDFeatureEngineeringPipeline()).parent
 
-
-@dataclass
+@datamodel(proto=FeatureEngineeringSpec)
 class FeatureEngineeringSpec(ImmutableConfiguration):
     Pipelines: List[FeatureEngineeringPipeline] = field(default_factory=lambda: [])
     Imbalance: ImbalanceHandling = ImbalanceHandling.ImbalanceAuto
     Selection: FeatureSelection = FeatureSelection()
 
 
-@dataclass
+@datamodel(proto=EnsembleSpec)
 class EnsembleSpec(ImmutableConfiguration):
     Models: List[str] = field(default_factory=lambda: [])
     Estimators: List[ClassicalEstimatorSpec] = field(default_factory=lambda: [])
@@ -316,11 +264,8 @@ TrainingSpec = Training
 InterpretabilitySpec = Interpretability
 
 
-@dataclass
+@datamodel(proto=ModelSpec)
 class ModelSpec(ImmutableConfiguration):
-    """
-    Docstring
-    """
     Owner: str = "no-one"
     VersionName: str = "v0.0.1"
     ModelVersion: str = ""
@@ -360,7 +305,7 @@ class ModelSpec(ImmutableConfiguration):
     Interpretability: InterpretabilitySpec = None
 
 
-@dataclass
+@datamodel(proto=InterpretabilityStatus)
 class InterpretabilityStatus(ImmutableConfiguration):
     TrainingStartTime: Time = None
     TrainingEndTime: Time = None
@@ -370,7 +315,7 @@ class InterpretabilityStatus(ImmutableConfiguration):
     Importance: List[FeatureImportance] = field(default_factory=lambda: [])
 
 
-@dataclass
+@datamodel(proto=ModelCondition)
 class ModelCondition(ImmutableConfiguration):
     Type: ModelConditionType = ModelConditionType.ModelReady
     Status: ConditionStatus = ConditionStatus.ConditionUnknown
@@ -378,14 +323,8 @@ class ModelCondition(ImmutableConfiguration):
     Reason: str = ""
     Message: str = ""
 
-    def to_message(self) -> MDModelCondition:
-        return self.set_parent(MDModelCondition()).parent
 
-
-InterpretabilitySpec = Interpretability
-
-
-@dataclass
+@datamodel(proto=ModelStatus)
 class ModelStatus(ImmutableConfiguration):
     StartTime: Time = None
     TrainingStartTime: Time = None
@@ -438,38 +377,37 @@ class ModelStatus(ImmutableConfiguration):
     TestingResources: ResourceConsumption = None
     TrainedBy: str = ""
     Team: str = ""
-    TrainerImage: str = ""
     Endpoint: str = ""
     Logs: OutputLogs = None
     CorrelationsWithTarget: List[Correlation] = field(default_factory=lambda: [])
     TopCorrelations: List[Correlation] = field(default_factory=lambda: [])
     LastUpdated: Time = None
     # GovernanceStatus: GovernanceStatus = None
-    # Interpretability: InterpretabilityStatus = None
+    Interpretability: InterpretabilityStatus = None
     Conditions: List[ModelCondition] = field(default_factory=lambda: [])
 
 
-@dataclass
+@datamodel(proto=ModelProfile)
 class ModelProfile(ImmutableConfiguration):
     Name: str = ""
     Importance: List[float] = field(default_factory=lambda: [])
     Plots: List[Plot] = field(default_factory=lambda: [])
 
 
-@dataclass
+@datamodel(proto=AlgorithmSearchSpaceSpec)
 class AlgorithmSearchSpace(Configuration):
     Allowlist: List[ClassicEstimator] = field(default_factory=lambda: [])
     Filter: AlgorithmFilter = AlgorithmFilter.NoFilter
 
 
-@dataclass
+@datamodel(proto=SuccessiveHalvingOptions)
 class SuccessiveHalvingOptions(Configuration):
     MaxBudget: int = 81
     EliminationRate: int = 3
     Modality: ModalityType = ModalityType.Epochs
 
 
-@dataclass
+@datamodel(proto=PrunerSpec)
 class PrunerSettings(Configuration):
     Type: Pruner = Pruner.MedianPruner
     StartupTrials: int = 5
@@ -485,7 +423,7 @@ class PrunerSettings(Configuration):
 SamplerType = Sampler
 
 
-@dataclass
+@datamodel(proto=SearchSpec)
 class ModelSearch(Configuration):
     Sampler: SamplerType = SamplerType.TPESearch
     Pruner: PrunerSettings = None
@@ -504,14 +442,14 @@ class ModelSearch(Configuration):
     Objective2: Metric = None
 
 
-@dataclass
+@datamodel(proto=BaselineSpec)
 class BaselineSettings(Configuration):
     Enabled: bool = False
     Baselines: List[ClassicEstimator] = field(default_factory=lambda: [])
     All: bool = False
 
 
-@dataclass
+@datamodel(proto=FeatureEngineeringSearchSpec)
 class FeatureEngineeringSearch(Configuration):
     Enabled: bool = True
     ImbalancedHandler: ImbalanceHandling = ImbalanceHandling.ImbalanceAuto
@@ -525,19 +463,28 @@ class FeatureEngineeringSearch(Configuration):
     FeatureSelectionTemplate: FeatureSelection = FeatureSelection()
 
 
-@dataclass
+@datamodel(proto=StudyScheduleSpec)
 class StudySchedule(Configuration):
     Enabled: bool = False
     StartAt: Time = None
 
 
-@dataclass
+@datamodel(proto=ModelResult)
+class ModelResult(Configuration):
+    Name: str = ""
+    Alg: str = ""
+    Score: float = 0
+    Error: bool = False
+    TrialID: int = 0
+
+
+@datamodel(proto=GarbageCollectionSpec)
 class GarbageCollection(Configuration):
     CollectAtStudyEnd: bool = True
     KeepOnlyBestModelPerAlgorithm: bool = True
 
 
-@dataclass
+@datamodel(proto=EnsemblesSpec)
 class Ensemble(Configuration):
     Enabled: bool = False
     VotingEnsemble: bool = False
@@ -545,7 +492,7 @@ class Ensemble(Configuration):
     Top: int = 3
 
 
-@dataclass
+@datamodel(proto=StudySpec)
 class StudySpec(Configuration):
     VersionName: str = "v0.0.1"
     Description: str = ""
@@ -567,6 +514,7 @@ class StudySpec(Configuration):
     ModelImagePushed: bool = False
     ModelBenchmarked: bool = True
     ModelExplained: bool = True
+    Fast: bool = False
     Location: DataLocation = DataLocation(BucketName="default-minio-bucket")
     Owner: str = "no-one"
     ActiveDeadlineSeconds: int = 600
@@ -579,7 +527,7 @@ class StudySpec(Configuration):
     Ttl: int = 0
 
 
-@dataclass
+@datamodel(proto=StudyCondition)
 class StudyCondition(Configuration):
     Type: StudyConditionType = None
     Status: ConditionStatus = None
@@ -587,16 +535,13 @@ class StudyCondition(Configuration):
     Reason: str = ""
     Message: str = ""
 
-    def to_message(self) -> MDStudyCondition:
-        return self.set_parent(MDStudyCondition()).parent
 
-
-@dataclass
+@datamodel(proto=GarbageCollectionStatus)
 class GarbageCollectionStatus(Configuration):
     Collected: int = 0
+    Models: List[ModelResult] = field(default_factory=lambda: [])
 
-
-@dataclass
+@datamodel(proto=StudyPhaseStatus)
 class StudyPhaseStatus(Configuration):
     StartTime: Time = None
     EndTime: Time = None
@@ -606,7 +551,7 @@ class StudyPhaseStatus(Configuration):
     Completed: int = 0
 
 
-@dataclass
+@datamodel(proto=StudyStatus)
 class StudyStatus(ImmutableConfiguration):
     Models: int = 0
     StartTime: Time = None
@@ -643,7 +588,7 @@ class StudyStatus(ImmutableConfiguration):
     Conditions: List[StudyCondition] = field(default_factory=lambda: [])
 
 
-@dataclass
+@datamodel(proto=ReportCondition)
 class ReportCondition(Configuration):
     Type: ReportConditionType = None
     Status: ConditionStatus = None
@@ -651,19 +596,15 @@ class ReportCondition(Configuration):
     Reason: str = ""
     Message: str = ""
 
-    def to_message(self) -> MDReportCondition:
-        return self.set_parent(MDReportCondition()).parent
+ReportType_ = ReportType
 
 
-MDReportType = ReportType
-
-
-@dataclass
+@datamodel(proto=ReportSpec)
 class ReportSpec(Configuration):
     VersionName: str = "v0.0.1"
     EntityRef: ObjectReference = None
     Location: DataLocation = DataLocation(BucketName="modela")
-    ReportType: MDReportType = None
+    ReportType: ReportType_ = None
     Format: ReportFormat = ReportFormat.Pdf
     NotifierName: str = ""
     Owner: str = "no-one"
@@ -671,7 +612,7 @@ class ReportSpec(Configuration):
     ActiveDeadlineSeconds: int = 600
 
 
-@dataclass
+@datamodel(proto=ReportStatus)
 class ReportStatus(Configuration):
     StartTime: Time = None
     EndTime: Time = None
@@ -685,7 +626,7 @@ class ReportStatus(Configuration):
     Conditions: List[ReportCondition] = field(default_factory=lambda: [])
 
 
-@dataclass
+@datamodel(proto=ModelAutobuilderCondition)
 class ModelAutobuilderCondition(Configuration):
     Type: ModelAutobuilderConditionType = None
     Status: ConditionStatus = None
@@ -693,14 +634,11 @@ class ModelAutobuilderCondition(Configuration):
     Reason: str = ""
     Message: str = ""
 
-    def to_message(self) -> MDModelAutobuilderCondition:
-        return self.set_parent(MDModelAutobuilderCondition()).parent
-
 
 DataSourceTemplate = DataSourceSpec
+DatasetType_ = DatasetType
 
-
-@dataclass
+@datamodel(proto=ModelAutobuilderSpec)
 class ModelAutobuilderSpec(Configuration):
     DataProductName: str = ""
     DataProductVersionName: str = ""
@@ -721,10 +659,14 @@ class ModelAutobuilderSpec(Configuration):
     Aborted: bool = False
     Owner: str = "no-one"
     Resources: Workload = None
+    FeatureEngineering: bool = False
+    FeatureSelection: bool = False
+    ServingSiteRef: ObjectReference = ObjectReference(Namespace="default-tenant", Name="default-serving-site")
     LabRef: ObjectReference = ObjectReference(Namespace="default-tenant", Name="default-lab")
+    DatasetType: DatasetType_ = DatasetType_.Tabular
 
 
-@dataclass
+@datamodel(proto=ModelAutobuilderStatus)
 class ModelAutobuilderStatus(Configuration):
     FlatFileName: str = ""
     DataSourceName: str = ""
