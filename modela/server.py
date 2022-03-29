@@ -2,17 +2,9 @@ import subprocess
 import socket
 from contextlib import closing
 
-from typing import Optional, Callable
+from typing import Callable
 
-import jwt
 from github.com.metaprov.modelaapi.services.account.v1.account_pb2 import AccountLoginRequest
-from grpc import (  # type: ignore
-    UnaryUnaryClientInterceptor,
-    UnaryStreamClientInterceptor,
-    StreamUnaryClientInterceptor,
-    StreamStreamClientInterceptor,
-)
-
 from github.com.metaprov.modelaapi.services.datapipelinerun.v1 import datapipelinerun_pb2_grpc
 from github.com.metaprov.modelaapi.services.datapipeline.v1 import datapipeline_pb2_grpc
 from github.com.metaprov.modelaapi.services.dataproduct.v1 import dataproduct_pb2_grpc
