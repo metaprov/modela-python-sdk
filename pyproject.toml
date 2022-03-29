@@ -14,8 +14,8 @@ include = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-modelaapi = "0.4.473"
-grpcio = "^1.43.0"
+modelaapi = "0.4.524"
+grpcio = "^1.44.0"
 protobuf= "^3.19.3"
 kubernetes ="^21.7.0"
 
