@@ -15,3 +15,5 @@ tabulate
 modelaapi
 grpc-interceptor
 typing_utils
+protoc-gen-swagger
+grpc-interceptor
