@@ -116,7 +116,8 @@ class Resource:
         assert hasattr(self, "_client")
 
     def default(self):
-        print("Resource {0} is missing a default constructor; you may encounter errors upon creation.".format(
+        print("Resource {0} is missing a default constructor; you may encounter errors upon creation.\n"
+              "Please file an issue at https://github.com/metaprov/modela-python-sdk/issues".format(
             self.__class__.__name__))
 
     def __repr__(self):

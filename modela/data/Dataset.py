@@ -107,7 +107,7 @@ class Dataset(Resource):
 
         if gen_datasource:
             datasource = client.modela.DataSource(namespace=namespace, name=name + "-source", version=version,
-                                                  infer_bytes=data_bytes, target_column=target_column)
+                                                  infer_bytes=data_bytes, target_column=target_column, task_type=task_type)
             datasource.submit(replace=True)
 
         self.spec.DatasourceName = datasource.name
@@ -126,6 +126,7 @@ class Dataset(Resource):
 
     @property
     def status(self) -> DatasetStatus:
+        self.sync()
         return DatasetStatus().copy_from(self._object.status)
 
     def default(self):
@@ -136,8 +137,8 @@ class Dataset(Resource):
     def report(self) -> Report:
         """ Fetch the report associated with the Dataset """
         self.ensure_client_repository()
-        if self._object.status.reportName != "":
-            return self._client.modela.Report(namespace=self.namespace, name=self._object.status.reportName)
+        if self.status.ReportName != "":
+            return self._client.modela.Report(namespace=self.namespace, name=self.status.ReportName)
         else:
             print("Dataset {0} has no report.".format(self.name))
 
@@ -160,14 +161,14 @@ class Dataset(Resource):
             [{col.Name: col.Mean if col.Datatype == DataType.Number else self.datasource.column(col.Name).Enum[0]
               for col in self.status.Statistics.Columns if col.Name != target}])
 
-    def submit_and_visualize(self, replace: bool = False):
+    def submit_and_visualize(self, replace: bool = False, show_progress_bar=True):
         """
         Submit the resource and call visualize().
 
         :param replace: Replace the resource if it already exists on the cluster.
         """
         self.submit(replace)
-        self.visualize()
+        self.visualize(show_progress_bar)
 
     def visualize(self, show_progress_bar=True):
         """
@@ -183,7 +184,6 @@ class Dataset(Resource):
         current_status = self.status
         try:
             while True:
-                self.sync()
                 if current_status == self.status:
                     time.sleep(0.1)
                     continue

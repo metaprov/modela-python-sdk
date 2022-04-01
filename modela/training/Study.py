@@ -9,6 +9,9 @@ from github.com.metaprov.modelaapi.services.study.v1.study_pb2 import CreateStud
 from tqdm import tqdm
 
 import modela
+from modela.common import *
+from modela.training.models import ModelSearch, FeatureEngineeringSearch, BaselineSettings, Ensemble, Training, \
+    Interpretability, StudySchedule, NotificationSetting, StudySpec, StudyStatus, DataLocation
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException, ResourceNotFoundException
 from typing import List, Union
@@ -17,8 +20,7 @@ from modela.data.Dataset import Dataset
 from modela.infra.Lab import Lab
 from modela.infra.VirtualBucket import VirtualBucket
 from modela.training.Model import Model
-from modela.training.common import TaskType, _StudyPhaseToProgress
-from modela.training.models import *
+from modela.training.common import *
 
 
 class Study(Resource):
@@ -152,14 +154,14 @@ class Study(Resource):
         self.ensure_client_repository()
         self._client.resume(self.namespace, self.name)
 
-    def submit_and_visualize(self, replace: bool = False):
+    def submit_and_visualize(self, replace: bool = False, show_progress_bar=True):
         """
         Submit the resource and call visualize().
 
         :param replace: Replace the resource if it already exists on the cluster.
         """
         self.submit(replace)
-        self.visualize()
+        self.visualize(show_progress_bar)
 
     def visualize(self, show_progress_bar=True):
         """

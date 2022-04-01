@@ -6,11 +6,14 @@ from github.com.metaprov.modelaapi.services.datasource.v1.datasource_pb2_grpc im
 from github.com.metaprov.modelaapi.services.datasource.v1.datasource_pb2 import CreateDataSourceRequest, \
     UpdateDataSourceRequest, \
     DeleteDataSourceRequest, GetDataSourceRequest, ListDataSourceRequest, InferSchemaRequest
+
+from modela.data.common import *
+from modela.data.models import ExcelNotebookFormat, CsvFileFormat, Column, DataType, DataSourceSpec, ColumnProfile, \
+    DataLocation
 from modela.Resource import *
 from modela.ModelaException import ModelaException
 from typing import List, Union
 import pandas
-from modela.data.models import *
 from modela.training.common import *
 
 
@@ -75,7 +78,6 @@ class DataSource(Resource):
 
             if target_column != None:
                 print("WARNING: The target column {0} was not found in the dataset during inference.".format(target_column))
-
 
         self.spec.FileType = file_type
         self.spec.Task = task_type
