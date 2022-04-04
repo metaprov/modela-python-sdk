@@ -317,8 +317,8 @@ class DatasetSpec(Configuration):
     Snapshotted: bool = False
     Validate: bool = True
     Labeled: bool = True
-    Syntactic: bool = False
-    SyntacticRows: int = 0
+    Synthetic: bool = False
+    Synthetic: int = 0
     Resources: Workload = None
     ActiveDeadlineSeconds: int = 600
     Type: DatasetType = DatasetType.Tabular

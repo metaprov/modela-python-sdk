@@ -20,7 +20,6 @@ class Test_Modela_dataset(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        #cls.clear_resource(cls)
         cls.modela.close()
 
     def request_resource(self, name, **kwargs) -> Dataset:

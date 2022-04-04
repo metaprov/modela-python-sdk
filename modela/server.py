@@ -412,7 +412,7 @@ class Modela:
 
     def DataSource(self, namespace="", name="", version=Resource.DefaultVersion, bucket: str = "default-minio-bucket",
                    infer_file: str = None, infer_dataframe: pandas.DataFrame = None, infer_bytes: bytes = None,
-                   target_column: str = "", file_type: FlatFileType = FlatFileType.Csv,
+                   target_column: str = "", file_type: FlatFileType = None,
                    task_type: TaskType = None, csv_config: CsvFileFormat = None,
                    excel_config: ExcelNotebookFormat = None) -> DataSource:
         """
@@ -428,8 +428,8 @@ class Modela:
             the columns and generate a schema that will be applied to the resource.
         :param target_column: The name of the target column used when training a model. This parameter only has effect
             when data is uploaded to infer a schema.
-        :param file_type: The file type of raw data, used when ingesting a Dataset. Only applicable for flat files.
-            If inferring from a dataframe, the file type will default to CSV.
+        :param file_type: The file type of raw data, used when ingesting a Dataset from a file, or creating a data snapshot
+            from a database source. If inferring from a dataframe, the file type will default to CSV.
         :param task_type: The target task type in relation to the data being used.
         :param csv_config: The CSV file format of the raw data.
         :param excel_config: The Excel file format of the raw data.

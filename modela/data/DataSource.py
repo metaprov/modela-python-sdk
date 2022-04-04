@@ -25,8 +25,8 @@ class DataSource(Resource):
                  infer_dataframe: pandas.DataFrame = None,
                  infer_bytes: bytes = None,
                  target_column: str = "",
-                 file_type: FlatFileType = FlatFileType.Csv,
-                 task_type: TaskType = TaskType.BinaryClassification,
+                 file_type: FlatFileType = None,
+                 task_type: TaskType = None,
                  csv_config: CsvFileFormat = None,
                  excel_config: ExcelNotebookFormat = None):
         """
@@ -43,12 +43,13 @@ class DataSource(Resource):
             the columns and generate a schema that will be applied to the resource.
         :param target_column: The name of the target column used when training a model. This parameter only has effect
             when data is uploaded to infer a schema.
-        :param file_type: The file type of raw data, used when ingesting a Dataset. Only applicable for flat files.
-            If inferring from a dataframe, the file type will default to CSV.
+        :param file_type: The file type of raw data, used when ingesting a Dataset from a file, or creating a data snapshot
+            from a database source. If inferring from a dataframe, the file type will default to CSV.
         :param task_type: The target task type in relation to the data being used.
         :param csv_config: The CSV file format of the raw data.
         :param excel_config: The Excel file format of the raw data.
         """
+        self.default_resource = False
         super().__init__(item, client, namespace=namespace, name=name, version=version)
 
         if infer_file is not None:
@@ -77,10 +78,29 @@ class DataSource(Resource):
                 schema_columns.append(col)
 
             if target_column != None:
-                print("WARNING: The target column {0} was not found in the dataset during inference.".format(target_column))
+                print("WARNING: The target column {0} was not found in the dataset during schema inference.".format(target_column))
 
-        self.spec.FileType = file_type
-        self.spec.Task = task_type
+        if self.default_resource:
+            self.spec.FileType = file_type
+            self.spec.Task = task_type
+        if file_type is not None:
+            self.spec.FileType = file_type
+            if not self.default_resource:
+                print("WARNING: Changing the file type of an existing Data Source is not recommended. "
+                      "Create a new Data Source resource if necessary.")
+        elif self.default_resource:
+            print("WARNING: Data Source was created without a file type. Defaulting to FlatFileType.Csv")
+            self.spec.FileType = FlatFileType.Csv
+
+        if task_type is not None:
+            self.spec.FileType = file_type
+            if not self.default_resource:
+                print("WARNING: Changing the task type of an existing Data Source is not recommended. "
+                      "Create a new Data Source resource if necessary.")
+        elif self.default_resource:
+            print("WARNING: Data Source was created without a task type. Defaulting to TaskType.BinaryClassification")
+            self.spec.Task = TaskType.BinaryClassification
+
         if csv_config is not None:
             self.spec.Csvfile = csv_config
 
@@ -100,7 +120,7 @@ class DataSource(Resource):
         """ Get the target column specified by the schema """
         return [col for col in self.schema.Columns if col.Target][0]
 
-    def column(self, name: str):
+    def column(self, name: str) -> Column:
         """ Get the column with the specified name from the schema """
         search = [col for col in self.schema.Columns if col.Name == name]
         if len(search) == 0:
@@ -108,7 +128,12 @@ class DataSource(Resource):
 
         return search[0]
 
+    def __getitem__(self, col) -> Column:
+        """ Get the column with the specified name from the schema """
+        return self.column(col)
+
     def default(self):
+        self.default_resource = True
         DataSourceSpec().apply_config(self._object.spec)
 
 
