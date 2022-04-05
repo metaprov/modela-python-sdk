@@ -1,13 +1,14 @@
 import time
 import unittest
 
+from modela import *
 from modela.ModelaException import *
 from modela.common import PriorityLevel
 from modela.data.DataProduct import DataProduct
 from modela.data.common import DataType
 from modela.data.models import DataProductSpec
 from modela.server import Modela
-from modela.training.common import Imputation
+from modela.training.common import Imputation, TaskType
 
 
 class Test_Modela_dataproduct(unittest.TestCase):
@@ -22,7 +23,15 @@ class Test_Modela_dataproduct(unittest.TestCase):
         cls.modela.close()
 
     def test_0_create(self):
-        dataproduct = self.modela.DataProduct(namespace="default-tenant", name="test")
+        dataproduct = self.modela.DataProduct(namespace="default-tenant", name="test",
+                                              serving_site="default-serving-site",
+                                              public=True,
+                                              task_type=TaskType.Regression,
+                                              default_training_workload=Workload("general-small"),
+                                              default_resource_workload=Workload("general-small"),
+                                              default_bucket="test",
+
+        )
         assert type(dataproduct) == DataProduct
         dataproduct.submit(replace=True)
 

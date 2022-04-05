@@ -1,5 +1,4 @@
 from abc import ABC
-from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import *
 import modela.data.common as data_common
 from modela.data.common import *
 from modela.infra.Account import Account
@@ -12,12 +11,13 @@ from dataclasses import field
 from typing import List, Union
 from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import CompilerSpec, Stakeholder, \
     PermissionsSpec
-from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import *
-from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import *
+import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
+import github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 as data_pb
+import github.com.metaprov.modelaapi.services.common.v1.common_pb2 as common_pb
 from modela.common import Plot
 from modela.util import TrackedList
 
-@datamodel(proto=DataLocation)
+@datamodel(proto=data_pb.DataLocation)
 class DataLocation(Configuration):
     Type: DataLocationType = DataLocationType.ObjectStorage
     ConnectionName: str = ""
@@ -29,7 +29,7 @@ class DataLocation(Configuration):
     Topic: str = ""
 
 
-@datamodel(proto=SampleSpec)
+@datamodel(proto=data_pb.SampleSpec)
 class SampleSettings(Configuration):
     Enabled: bool = False
     Type: SamplingType = SamplingType.Random
@@ -38,7 +38,7 @@ class SampleSettings(Configuration):
     Filter: str = ""
     Column: str = ""
 
-@datamodel(proto=GovernanceSpec)
+@datamodel(proto=data_pb.GovernanceSpec)
 class GovernanceSpec(Configuration):
     Enabled: bool = False
     Country: str = ""
@@ -47,7 +47,7 @@ class GovernanceSpec(Configuration):
     BusinessReviewer: str = ""
 
 
-@datamodel(proto=CompilerSpec)
+@datamodel(proto=catalog_pb.CompilerSpec)
 class CompilerSettings(Configuration):
     Enable: bool = False
     Compiler: CompilerType = CompilerType.Nothing
@@ -59,23 +59,33 @@ ImageLocationType = ImageLocation
 DataLocationType = DataLocation
 
 
-@datamodel(proto=Stakeholder)
+@datamodel(proto=catalog_pb.Stakeholder)
 class Stakeholder(Configuration):
     Account: str
     Roles: List[ObjectReference] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=PermissionsSpec)
+@datamodel(proto=catalog_pb.PermissionsSpec)
 class PermissionsSpec(Configuration):
     Stakeholders: List[Stakeholder] = field(default_factory=lambda: [])
 
     @classmethod
-    def from_accounts(cls, accounts: dict[Union[Account, str], Union[UserRoleClass]]):
+    def create(cls, accounts: dict[Union[Account, str], Union[UserRoleClass, str]]) -> PermissionsSpec:
         """ Generate a permission specification based on a dictionary of Accounts and their User Role Classes """
-        pass
+        stakeholders = []
+        for account, role in accounts.items():
+            if type(account) == Account:
+                account = account.name
+
+            if type(role) == UserRoleClass:
+                role = role.name
+
+            stakeholders.append(Stakeholder(Account=account, Roles=role))
+
+        return cls(Stakeholders=stakeholders)
 
 
-@datamodel(proto=DataProductSpec)
+@datamodel(proto=data_pb.DataProductSpec)
 class DataProductSpec(Configuration):
     Owner: str = "no-one"
     TenantRef: ObjectReference = ObjectReference(Namespace="modela-system", Name="default-tenant")
@@ -101,7 +111,7 @@ class DataProductSpec(Configuration):
 
 
 
-@datamodel(proto=DataProductVersionSpec)
+@datamodel(proto=data_pb.DataProductVersionSpec)
 class DataProductVersionSpec(Configuration):
     ProductRef: ObjectReference = ObjectReference(Namespace="default-tenant", Name="iris-product")
     Description: str = ""
@@ -110,7 +120,7 @@ class DataProductVersionSpec(Configuration):
     Owner: str = "no-one"
 
 
-@datamodel(proto=CsvFileSpec)
+@datamodel(proto=data_pb.CsvFileSpec)
 class CsvFileFormat(Configuration):
     """
     CsvFileFormat defines the file format of a raw CSV file.
@@ -130,7 +140,7 @@ class CsvFileFormat(Configuration):
     IndexColumn: int = 0
 
 
-@datamodel(proto=ExcelSheetArea)
+@datamodel(proto=data_pb.ExcelSheetArea)
 class ExcelSheetArea(Configuration):
     EntireSheet: bool = True
     FromColumn: int = 1
@@ -139,7 +149,7 @@ class ExcelSheetArea(Configuration):
     ToRow: int = 1
 
 
-@datamodel(proto=ExcelNotebookSpec)
+@datamodel(proto=data_pb.ExcelNotebookSpec)
 class ExcelNotebookFormat(Configuration):
     FirstSheetWithData: bool = False
     SheetName: str = ""
@@ -148,7 +158,7 @@ class ExcelNotebookFormat(Configuration):
     Data: ExcelSheetArea = ExcelSheetArea()
 
 
-@datamodel(proto=Column)
+@datamodel(proto=data_pb.Column)
 class Column(Configuration):
     Name: str = ""
     Datatype: DataType = DataType.Categorical
@@ -197,27 +207,27 @@ class Column(Configuration):
     Step: float = 1
 
 
-@datamodel(proto=TimeSeriesSchema)
+@datamodel(proto=data_pb.TimeSeriesSchema)
 class TimeSeriesSchema(Configuration):
     Freq: Frequency = None
     Country: HolidayCountry = None
 
 
-@datamodel(proto=RecommendationSchema)
+@datamodel(proto=data_pb.RecommendationSchema)
 class RecommendationSchema(Configuration):
     UserIDColumn: str = "user_id"
     ItemIDColumn: str = "item_id"
     RatingColumn: str = "rating"
 
 
-@datamodel(proto=MultiDatasetValidation)
+@datamodel(proto=data_pb.MultiDatasetValidation)
 class MultiDatasetValidation(Configuration):
     Type: MultiDatasetValidationRule = None
     Datasets: List[str] = field(default_factory=lambda: [])
     Generated: bool = False
 
 
-@datamodel(proto=DatasetValidation)
+@datamodel(proto=data_pb.DatasetValidation)
 class DatasetValidation(Configuration):
     Type: DatasetValidationRule = None
     Value: float = 0
@@ -229,7 +239,7 @@ class DatasetValidation(Configuration):
     Generated: bool = False
 
 
-@datamodel(proto=MultiColumnValidation)
+@datamodel(proto=data_pb.MultiColumnValidation)
 class MultiColumnValidation(Configuration):
     Type: MultiColumnValidationRule = None
     Columns: List[str] = field(default_factory=lambda: [])
@@ -242,7 +252,7 @@ class MultiColumnValidation(Configuration):
     Generated: bool = False
 
 
-@datamodel(proto=ColumnValidation)
+@datamodel(proto=data_pb.ColumnValidation)
 class ColumnValidation(Configuration):
     Type: ColumnValidationRule = None
     Column: str = ""
@@ -255,7 +265,7 @@ class ColumnValidation(Configuration):
     Generated: bool = False
 
 
-@datamodel(proto=FileValidation)
+@datamodel(proto=data_pb.FileValidation)
 class FileValidation(Configuration):
     Type: FileValidationRule = None
     BucketName: str = ""
@@ -269,7 +279,7 @@ class FileValidation(Configuration):
     Generated: bool = False
 
 
-@datamodel(proto=ValidationSpec)
+@datamodel(proto=data_pb.ValidationSpec)
 class ValidationRules(Configuration):
     MultiDatasetValidations: List[MultiDatasetValidation] = field(default_factory=lambda: [])
     DatasetValidations: List[DatasetValidation] = field(default_factory=lambda: [])
@@ -281,7 +291,7 @@ class ValidationRules(Configuration):
 MDTimeSeriesSchema = TimeSeriesSchema
 MDRecommendationSchema = RecommendationSchema
 
-@datamodel(proto=Schema)
+@datamodel(proto=data_pb.Schema)
 class Schema(Configuration):
     Columns: List[Column] = field(default_factory=lambda: [])
     TimeSeriesSchema: MDTimeSeriesSchema = None
@@ -289,7 +299,7 @@ class Schema(Configuration):
     Validation: ValidationRules = ValidationRules()
 
 
-@datamodel(proto=RelationshipSpec)
+@datamodel(proto=data_pb.RelationshipSpec)
 class ColumnRelationship(Configuration):
     Type: str = None
     Column: str = None
@@ -297,7 +307,7 @@ class ColumnRelationship(Configuration):
     RelatesTo: str = None
 
 
-@datamodel(proto=CorrelationSpec)
+@datamodel(proto=data_pb.CorrelationSpec)
 class CorrelationSetting(Configuration):
     Cutoff: float = 50
     Method: str = "pearson"
@@ -306,7 +316,7 @@ class CorrelationSetting(Configuration):
 DataSourceSchema = Schema  # workaround for type annotation bug
 
 
-@datamodel(proto=DataSourceSpec)
+@datamodel(proto=data_pb.DataSourceSpec)
 class DataSourceSpec(Configuration):
     Schema: DataSourceSchema = DataSourceSchema()
     Sample: SampleSettings = SampleSettings()
@@ -321,7 +331,7 @@ class DataSourceSpec(Configuration):
     DatasetType: DatasetType = DatasetType.Tabular
 
 
-@datamodel(proto=DatasetSpec)
+@datamodel(proto=data_pb.DatasetSpec)
 class DatasetSpec(Configuration):
     Origin: DataLocation = DataLocation()
     Location: DataLocation = DataLocation()
@@ -346,7 +356,7 @@ class DatasetSpec(Configuration):
     Fast: bool = False
 
 
-@datamodel(proto=ColumnStatistics)
+@datamodel(proto=data_pb.ColumnStatistics)
 class ColumnStatistics(Configuration):
     Name: str = ""
     Datatype: DataType = None
@@ -391,7 +401,7 @@ class ColumnStatistics(Configuration):
     CorrToTarget: float = 0
 
 
-@datamodel(proto=ColumnProfile)
+@datamodel(proto=common_pb.ColumnProfile)
 class ColumnProfile(Configuration):
     Name: str = ""
     Count: int = 0
@@ -441,7 +451,7 @@ class ColumnProfile(Configuration):
     CorrToTarget: float = 0
 
 
-@datamodel(proto=DatasetProfile)
+@datamodel(proto=common_pb.DatasetProfile)
 class DatasetProfile(Configuration):
     Cols: int = 0
     Rows: int = 0
@@ -452,7 +462,7 @@ class DatasetProfile(Configuration):
     Hash: str = ""
 
 
-@datamodel(proto=Correlation)
+@datamodel(proto=data_pb.Correlation)
 class Correlation(Configuration):
     Feature1: str = ""
     Feature2: str = ""
@@ -460,7 +470,7 @@ class Correlation(Configuration):
     Method: str = ""
 
 
-@datamodel(proto=DatasetStatistics)
+@datamodel(proto=data_pb.DatasetStatistics)
 class DatasetStatistics(Configuration):
     Columns: List[ColumnStatistics] = field(default_factory=lambda: [])
     Rows: int = 0
@@ -470,7 +480,7 @@ class DatasetStatistics(Configuration):
     TopCorrelations: List[Correlation] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=DatasetCondition)
+@datamodel(proto=data_pb.DatasetCondition)
 class DatasetCondition(Configuration):
     Type: data_common.DatasetCondition = data_common.DatasetCondition.Ready
     Status: ConditionStatus = ConditionStatus.ConditionUnknown
@@ -479,7 +489,7 @@ class DatasetCondition(Configuration):
     Message: str = ""
 
 
-@datamodel(proto=DataValidationResult)
+@datamodel(proto=data_pb.DataValidationResult)
 class DataValidationResult(Configuration):
     Type: str = ""
     Column: str = ""
@@ -487,7 +497,7 @@ class DataValidationResult(Configuration):
     Passed: bool = False
 
 
-@datamodel(proto=DatasetStatus)
+@datamodel(proto=data_pb.DatasetStatus)
 class DatasetStatus(ImmutableConfiguration):
     Statistics: DatasetStatistics = None
     Phase: DatasetPhase = DatasetPhase.Pending

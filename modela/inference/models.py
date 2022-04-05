@@ -1,8 +1,8 @@
 from dataclasses import field
 from typing import List
 
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import *
-from github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 import *
+import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
+import github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 as inference_pb
 from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1.grpcinferenceservice_pb2 import *
 
 from modela.Configuration import datamodel
@@ -14,7 +14,7 @@ from modela.training.common import TaskType
 from modela.training.models import ModelValidation, ModelValidationResult
 
 
-@datamodel(proto=RunSchedule)
+@datamodel(proto=catalog_pb.RunSchedule)
 class RunSchedule(Configuration):
     Enabled: bool = False
     StartTime: Time = None
@@ -23,7 +23,7 @@ class RunSchedule(Configuration):
     Type: TriggerScheduleEventType = None
 
 
-@datamodel(proto=ModelDeploymentStatus)
+@datamodel(proto=catalog_pb.ModelDeploymentStatus)
 class ModelDeploymentStatus(Configuration):
     ImageName: str = ""
     DeploymentRef: ObjectReference = None
@@ -42,7 +42,7 @@ class ModelDeploymentStatus(Configuration):
     ApprovedAt: Time = None
 
 
-@datamodel(proto=ModelRecord)
+@datamodel(proto=inference_pb.ModelRecord)
 class ModelRecord(Configuration):
     ModelName: str = ""
     ModelVersion: str = ""
@@ -52,7 +52,7 @@ class ModelRecord(Configuration):
     AvgLatency: float = 0
 
 
-@datamodel(proto=ModelDeploymentSpec)
+@datamodel(proto=catalog_pb.ModelDeploymentSpec)
 class ModelDeploymentSpec(Configuration):
     ModelName: str = ""
     ModelVersion: str = ""
@@ -67,7 +67,7 @@ class ModelDeploymentSpec(Configuration):
     CanaryMetrics: List[CanaryMetric] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=PredictorCondition)
+@datamodel(proto=inference_pb.PredictorCondition)
 class PredictorCondition(Configuration):
     Type: PredictorConditionType = None
     Status: ConditionStatus = None
@@ -76,20 +76,20 @@ class PredictorCondition(Configuration):
     Message: str = ""
 
 
-@datamodel(proto=ProgressiveSpec)
+@datamodel(proto=inference_pb.ProgressiveSpec)
 class ProgressiveSpec(Configuration):
     Warmup: int = 0
     TrafficIncrement: int = 0
     CanaryMetrics: List[CanaryMetric] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=PredictionCacheSpec)
+@datamodel(proto=inference_pb.PredictionCacheSpec)
 class PredictionCacheSpec(Configuration):
     Active: bool = False
     ServiceName: str = ""
 
 
-@datamodel(proto=AutoScaling)
+@datamodel(proto=inference_pb.AutoScaling)
 class AutoScaling(Configuration):
     Enabled: bool = False
     MinReplicas: int = 1
@@ -98,7 +98,7 @@ class AutoScaling(Configuration):
     MemAvgUtilization: int = 80
 
 
-@datamodel(proto=PredictorHealth)
+@datamodel(proto=inference_pb.PredictorHealth)
 class PredictorHealth(Configuration):
     Service: bool = False
     DataDrift: bool = False
@@ -110,7 +110,7 @@ class PredictorHealth(Configuration):
     LastDailyPredictions: List[int] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=PredictorStatus)
+@datamodel(proto=inference_pb.PredictorStatus)
 class PredictorStatus(Configuration):
     ModelStatus: List[ModelDeploymentStatus] = field(default_factory=lambda: [])
     MonitorLastAttemptAt: Time = None
@@ -132,7 +132,7 @@ class PredictorStatus(Configuration):
     Conditions: List[PredictorCondition] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=MonitorSpec)
+@datamodel(proto=inference_pb.MonitorSpec)
 class MonitorSpec(Configuration):
     Enabled: bool = False
     SamplePercent: int = 0
@@ -143,13 +143,13 @@ class MonitorSpec(Configuration):
     LogResponses: bool = False
 
 
-@datamodel(proto=MonitorStatus)
+@datamodel(proto=inference_pb.MonitorStatus)
 class MonitorStatus(Configuration):
     LastPrediction: Time = None
     ValidationResults: List[ModelValidationResult] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=PredictorAuthSpec)
+@datamodel(proto=inference_pb.PredictorAuthSpec)
 class PredictorAuthSpec(Configuration):
     Enabled: bool = False
 
@@ -158,7 +158,7 @@ AccessType_ = AccessType
 AutoScaling_ = AutoScaling
 
 
-@datamodel(proto=PredictorSpec)
+@datamodel(proto=inference_pb.PredictorSpec)
 class PredictorSpec(Configuration):
     VersionName: str = ""
     Description: str = ""

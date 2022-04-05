@@ -40,6 +40,15 @@ class UserRoleClass(Resource):
         """ Returns the list of rules associated with the User Role Class """
         return self.spec.Rules
 
+    def rule(self, resource: ResourceKind) -> Rule:
+        """ Returns the rule for an individual resource. Returns an empty rule if the resource does not have one. """
+        rule = [rule for rule in self.rules if rule.Resource == resource]
+        if len(rule) > 0:
+            return rule[0]
+        else:
+            return Rule(Resource=resource)
+
+
     def add_rule(self, rule: Rule):
         """ Adds a rule for a single resource, or merges it if a rule for the resource already exists. """
         existing_rule = [irule for irule in self.rules if irule.Resource == rule.Resource]
@@ -60,7 +69,7 @@ class UserRoleClass(Resource):
         if len(rule) > 0:
             rule = rule[0]
             if verb.All in rule.Verbs:
-                rule.Verbs = [verb.List, verb.Watch, verb.Create, verb.Update, verb.Patch, verb.Delete]
+                rule.Verbs = [verb.List, verb.Watch, verb.Create, verb.Update, verb.Patch, verb.Delete, verb.Get]
 
             try:
                 rule.Verbs.remove(verb)
@@ -100,7 +109,7 @@ class UserRoleClassClient:
 
     def update(self, UserRoleClass: UserRoleClass) -> bool:
         request = UpdateUserRoleClassRequest()
-        request.UserRoleClass.CopyFrom(UserRoleClass.raw_message)
+        request.role.CopyFrom(UserRoleClass.raw_message)
         try:
             self.__stub.UpdateUserRoleClass(request)
             return True
@@ -116,7 +125,7 @@ class UserRoleClassClient:
         request.name = name
         try:
             response = self.__stub.GetUserRoleClass(request)
-            return UserRoleClass(response.UserRoleClass, self)
+            return UserRoleClass(response.role, self)
         except grpc.RpcError as err:
             error = err
 
@@ -141,11 +150,9 @@ class UserRoleClassClient:
         request.namespace = namespace
         try:
             response = self.__stub.ListUserRoleClasss(request)
-            return [UserRoleClass(item, self) for item in response.UserRoleClasss.items]
+            return [UserRoleClass(item, self) for item in response.roles.items]
         except grpc.RpcError as err:
             error = err
 
         ModelaException.process_error(error)
         return False
-
-

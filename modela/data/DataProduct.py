@@ -10,6 +10,8 @@ from github.com.metaprov.modelaapi.services.dataproduct.v1.dataproduct_pb2 impor
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
 from typing import List, Union
+
+from modela.infra.VirtualBucket import VirtualBucket
 from modela.infra.ServingSite import ServingSite
 from modela.infra.Lab import Lab
 import modela.data.models
@@ -26,7 +28,7 @@ class DataProduct(Resource):
                  task_type: TaskType = None,
                  default_training_workload: Workload = None,
                  default_serving_workload: Workload = None,
-                 default_bucket: str = None,
+                 default_bucket: VirtualBucket | str = None,
                  notification_settings: NotificationSetting = None,
                  permissions: PermissionsSpec = None):
         """

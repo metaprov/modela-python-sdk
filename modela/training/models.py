@@ -2,7 +2,6 @@ from dataclasses import field
 from typing import List
 
 from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import Measurement
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import *
 from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import ModelProfile
 
 from modela.Configuration import Configuration, ImmutableConfiguration, datamodel
@@ -13,8 +12,12 @@ from modela.inference.common import AccessType
 from modela.infra.models import Workload, OutputLogs, NotificationSetting
 from modela.training.common import *
 
+import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
+import github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 as training_pb
+import github.com.metaprov.modelaapi.services.common.v1.common_pb2 as common_pb
 
-@datamodel(proto=ModelValidation)
+
+@datamodel(proto=training_pb.ModelValidation)
 class ModelValidation(Configuration):
     Type: ModelValidationType = None
     PrevModel: str = ""
@@ -30,7 +33,7 @@ class ModelValidation(Configuration):
     Agg: Aggregate = None
 
 
-@datamodel(proto=ModelValidationResult)
+@datamodel(proto=training_pb.ModelValidationResult)
 class ModelValidationResult(Configuration):
     Type: str = ""
     DatasetName: str = ""
@@ -44,48 +47,48 @@ class ModelValidationResult(Configuration):
     DurationInSec: int = 0
 
 
-@datamodel(proto=Measurement)
+@datamodel(proto=catalog_pb.Measurement)
 class Measurement(ImmutableConfiguration):
     Metric: Metric = Metric.Null
     Value: float = 0
 
 
-@datamodel(proto=SegmentSpec)
+@datamodel(proto=training_pb.SegmentSpec)
 class Segment(Configuration):
     ColumnName: str = ""
     Op: Operation = Operation.EQ
     Value: str = ""
 
 
-@datamodel(proto=HyperParameterValue)
+@datamodel(proto=training_pb.HyperParameterValue)
 class HyperParameterValue(ImmutableConfiguration):
     Name: str = ""
     Value: str = ""
 
 
-@datamodel(proto=ClassicalEstimatorSpec)
+@datamodel(proto=training_pb.ClassicalEstimatorSpec)
 class ClassicalEstimatorSpec(ImmutableConfiguration):
     AlgorithmName: str = ""
     Parameters: List[HyperParameterValue] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=ChatbotEstimatorSpec)
+@datamodel(proto=training_pb.ChatbotEstimatorSpec)
 class ChatbotEstimatorSpec(ImmutableConfiguration):  # Not Implemented
     Base: str = ""
 
 
-@datamodel(proto=NLPEstimatorSpec)
+@datamodel(proto=training_pb.NLPEstimatorSpec)
 class NLPEstimatorSpec(ImmutableConfiguration):  # Not Implemented
     Base: str = ""
 
 
-@datamodel(proto=FeatureImportance)
+@datamodel(proto=training_pb.FeatureImportance)
 class FeatureImportance(ImmutableConfiguration):
     Feature: str = ""
     Importance: float = 0
 
 
-@datamodel(proto=SuccessiveHalvingSpec)
+@datamodel(proto=training_pb.SuccessiveHalvingSpec)
 class SuccessiveHalving(ImmutableConfiguration):
     Budget: int = 0
     Bracket: int = 0
@@ -94,7 +97,7 @@ class SuccessiveHalving(ImmutableConfiguration):
     Modality: ModalityType = None
 
 
-@datamodel(proto=DataSplitSpec)
+@datamodel(proto=training_pb.DataSplitSpec)
 class DataSplit(Configuration):
     Method: DataSplitMethod = DataSplitMethod.Auto
     Train: int = 80
@@ -106,7 +109,7 @@ class DataSplit(Configuration):
     TestDataset: str = ""
 
 
-@datamodel(proto=TrainingSpec)
+@datamodel(proto=training_pb.TrainingSpec)
 class Training(Configuration):
     Priority: PriorityLevel = PriorityLevel.Medium
     Cvtype: CvType = CvType.CVTypeKFold
@@ -126,12 +129,12 @@ class Training(Configuration):
     LabRef: ObjectReference = ObjectReference("default-tenant", "default-lab")
 
 
-@datamodel(proto=ServingSpec)
+@datamodel(proto=training_pb.ServingSpec)
 class ServingSpec(ImmutableConfiguration):
     Resources: Workload = None
 
 
-@datamodel(proto=TextPipelineSpec)
+@datamodel(proto=training_pb.TextPipelineSpec)
 class TextPipelineSpec(ImmutableConfiguration):
     Encoder: TextEncoding = TextEncoding.Auto
     Tokenizer: str = ""
@@ -144,36 +147,36 @@ class TextPipelineSpec(ImmutableConfiguration):
     MaxSvdComponents: int = 0
 
 
-@datamodel(proto=ImagePipelineSpec)
+@datamodel(proto=training_pb.ImagePipelineSpec)
 class ImagePipelineSpec(ImmutableConfiguration):  # Not Implemented
     Featurizer: str = None
 
 
-@datamodel(proto=VideoPipelineSpec)
+@datamodel(proto=training_pb.VideoPipelineSpec)
 class VideoPipelineSpec(ImmutableConfiguration):  # Not Implemented
     Featurizer: str = None
 
 
-@datamodel(proto=AudioPipelineSpec)
+@datamodel(proto=training_pb.AudioPipelineSpec)
 class AudioPipelineSpec(ImmutableConfiguration):  # Not Implemented
     Featurizer: str = None
 
 
-@datamodel(proto=ResourceConsumption)
+@datamodel(proto=training_pb.ResourceConsumption)
 class ResourceConsumption(ImmutableConfiguration):
     Cpu: float = 0
     Mem: float = 0
     Gpu: float = 0
 
 
-@datamodel(proto=DataHashes)
+@datamodel(proto=training_pb.DataHashes)
 class DataHashes(ImmutableConfiguration):
     TrainHash: str = ""
     TestingHash: str = ""
     ValidationHash: str = ""
 
 
-@datamodel(proto=GeneratedColumnSpec)
+@datamodel(proto=training_pb.GeneratedColumnSpec)
 class GeneratedColumnSpec(ImmutableConfiguration):
     Name: str = ""
     Datatype: DataType = DataType.Text
@@ -182,7 +185,7 @@ class GeneratedColumnSpec(ImmutableConfiguration):
     Original: str = ""
 
 
-@datamodel(proto=FeatureSelectionSpec)
+@datamodel(proto=training_pb.FeatureSelectionSpec)
 class FeatureSelection(Configuration):
     Enabled: bool = False
     SamplePct: int = 100
@@ -197,13 +200,13 @@ class FeatureSelection(Configuration):
     Reserved: List[str] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=FeaturePair)
+@datamodel(proto=training_pb.FeaturePair)
 class FeaturePair(ImmutableConfiguration):
     X: str = ""
     Y: str = ""
 
 
-@datamodel(proto=InterpretabilitySpec)
+@datamodel(proto=training_pb.InterpretabilitySpec)
 class Interpretability(Configuration):
     Ice: bool = True
     Icepairs: List[FeaturePair] = field(default_factory=lambda: [])
@@ -223,7 +226,7 @@ DatetimeTransformationType = DatetimeTransformation
 ScalingType = Scaling
 
 
-@datamodel(proto=FeatureEngineeringPipeline)
+@datamodel(proto=training_pb.FeatureEngineeringPipeline)
 class FeatureEngineeringPipeline(ImmutableConfiguration):
     Name: str = ""
     Datatype: DataType = DataType.Text
@@ -245,14 +248,14 @@ class FeatureEngineeringPipeline(ImmutableConfiguration):
     Passthrough: bool = False
 
 
-@datamodel(proto=FeatureEngineeringSpec)
+@datamodel(proto=training_pb.FeatureEngineeringSpec)
 class FeatureEngineeringSpec(ImmutableConfiguration):
     Pipelines: List[FeatureEngineeringPipeline] = field(default_factory=lambda: [])
     Imbalance: ImbalanceHandling = ImbalanceHandling.ImbalanceAuto
     Selection: FeatureSelection = FeatureSelection()
 
 
-@datamodel(proto=EnsembleSpec)
+@datamodel(proto=training_pb.EnsembleSpec)
 class EnsembleSpec(ImmutableConfiguration):
     Models: List[str] = field(default_factory=lambda: [])
     Estimators: List[ClassicalEstimatorSpec] = field(default_factory=lambda: [])
@@ -264,7 +267,7 @@ TrainingSpec = Training
 InterpretabilitySpec = Interpretability
 
 
-@datamodel(proto=ModelSpec)
+@datamodel(proto=training_pb.ModelSpec)
 class ModelSpec(ImmutableConfiguration):
     Owner: str = "no-one"
     VersionName: str = "v0.0.1"
@@ -305,7 +308,7 @@ class ModelSpec(ImmutableConfiguration):
     Interpretability: InterpretabilitySpec = None
 
 
-@datamodel(proto=InterpretabilityStatus)
+@datamodel(proto=training_pb.InterpretabilityStatus)
 class InterpretabilityStatus(ImmutableConfiguration):
     TrainingStartTime: Time = None
     TrainingEndTime: Time = None
@@ -315,7 +318,7 @@ class InterpretabilityStatus(ImmutableConfiguration):
     Importance: List[FeatureImportance] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=ModelCondition)
+@datamodel(proto=training_pb.ModelCondition)
 class ModelCondition(ImmutableConfiguration):
     Type: ModelConditionType = ModelConditionType.ModelReady
     Status: ConditionStatus = ConditionStatus.ConditionUnknown
@@ -324,7 +327,7 @@ class ModelCondition(ImmutableConfiguration):
     Message: str = ""
 
 
-@datamodel(proto=ModelStatus)
+@datamodel(proto=training_pb.ModelStatus)
 class ModelStatus(ImmutableConfiguration):
     StartTime: Time = None
     TrainingStartTime: Time = None
@@ -387,27 +390,27 @@ class ModelStatus(ImmutableConfiguration):
     Conditions: List[ModelCondition] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=ModelProfile)
+@datamodel(proto=common_pb.ModelProfile)
 class ModelProfile(ImmutableConfiguration):
     Name: str = ""
     Importance: List[float] = field(default_factory=lambda: [])
     Plots: List[Plot] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=AlgorithmSearchSpaceSpec)
+@datamodel(proto=training_pb.AlgorithmSearchSpaceSpec)
 class AlgorithmSearchSpace(Configuration):
     Allowlist: List[ClassicEstimator] = field(default_factory=lambda: [])
     Filter: AlgorithmFilter = AlgorithmFilter.NoFilter
 
 
-@datamodel(proto=SuccessiveHalvingOptions)
+@datamodel(proto=training_pb.SuccessiveHalvingOptions)
 class SuccessiveHalvingOptions(Configuration):
     MaxBudget: int = 81
     EliminationRate: int = 3
     Modality: ModalityType = ModalityType.Epochs
 
 
-@datamodel(proto=PrunerSpec)
+@datamodel(proto=training_pb.PrunerSpec)
 class PrunerSettings(Configuration):
     Type: Pruner = Pruner.MedianPruner
     StartupTrials: int = 5
@@ -423,7 +426,7 @@ class PrunerSettings(Configuration):
 SamplerType = Sampler
 
 
-@datamodel(proto=SearchSpec)
+@datamodel(proto=training_pb.SearchSpec)
 class ModelSearch(Configuration):
     Sampler: SamplerType = SamplerType.TPESearch
     Pruner: PrunerSettings = None
@@ -442,14 +445,14 @@ class ModelSearch(Configuration):
     Objective2: Metric = None
 
 
-@datamodel(proto=BaselineSpec)
+@datamodel(proto=training_pb.BaselineSpec)
 class BaselineSettings(Configuration):
     Enabled: bool = False
     Baselines: List[ClassicEstimator] = field(default_factory=lambda: [])
     All: bool = False
 
 
-@datamodel(proto=FeatureEngineeringSearchSpec)
+@datamodel(proto=training_pb.FeatureEngineeringSearchSpec)
 class FeatureEngineeringSearch(Configuration):
     Enabled: bool = True
     ImbalancedHandler: ImbalanceHandling = ImbalanceHandling.ImbalanceAuto
@@ -463,13 +466,13 @@ class FeatureEngineeringSearch(Configuration):
     FeatureSelectionTemplate: FeatureSelection = FeatureSelection()
 
 
-@datamodel(proto=StudyScheduleSpec)
+@datamodel(proto=training_pb.StudyScheduleSpec)
 class StudySchedule(Configuration):
     Enabled: bool = False
     StartAt: Time = None
 
 
-@datamodel(proto=ModelResult)
+@datamodel(proto=training_pb.ModelResult)
 class ModelResult(Configuration):
     Name: str = ""
     Alg: str = ""
@@ -478,13 +481,13 @@ class ModelResult(Configuration):
     TrialID: int = 0
 
 
-@datamodel(proto=GarbageCollectionSpec)
+@datamodel(proto=training_pb.GarbageCollectionSpec)
 class GarbageCollection(Configuration):
     CollectAtStudyEnd: bool = True
     KeepOnlyBestModelPerAlgorithm: bool = True
 
 
-@datamodel(proto=EnsemblesSpec)
+@datamodel(proto=training_pb.EnsemblesSpec)
 class Ensemble(Configuration):
     Enabled: bool = False
     VotingEnsemble: bool = False
@@ -492,7 +495,7 @@ class Ensemble(Configuration):
     Top: int = 3
 
 
-@datamodel(proto=StudySpec)
+@datamodel(proto=training_pb.StudySpec)
 class StudySpec(Configuration):
     VersionName: str = "v0.0.1"
     Description: str = ""
@@ -527,7 +530,7 @@ class StudySpec(Configuration):
     Ttl: int = 0
 
 
-@datamodel(proto=StudyCondition)
+@datamodel(proto=training_pb.StudyCondition)
 class StudyCondition(Configuration):
     Type: StudyConditionType = None
     Status: ConditionStatus = None
@@ -536,12 +539,12 @@ class StudyCondition(Configuration):
     Message: str = ""
 
 
-@datamodel(proto=GarbageCollectionStatus)
+@datamodel(proto=training_pb.GarbageCollectionStatus)
 class GarbageCollectionStatus(Configuration):
     Collected: int = 0
     Models: List[ModelResult] = field(default_factory=lambda: [])
 
-@datamodel(proto=StudyPhaseStatus)
+@datamodel(proto=training_pb.StudyPhaseStatus)
 class StudyPhaseStatus(Configuration):
     StartTime: Time = None
     EndTime: Time = None
@@ -551,7 +554,7 @@ class StudyPhaseStatus(Configuration):
     Completed: int = 0
 
 
-@datamodel(proto=StudyStatus)
+@datamodel(proto=training_pb.StudyStatus)
 class StudyStatus(ImmutableConfiguration):
     Models: int = 0
     StartTime: Time = None
@@ -588,7 +591,7 @@ class StudyStatus(ImmutableConfiguration):
     Conditions: List[StudyCondition] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=ReportCondition)
+@datamodel(proto=training_pb.ReportCondition)
 class ReportCondition(Configuration):
     Type: ReportConditionType = None
     Status: ConditionStatus = None
@@ -599,7 +602,7 @@ class ReportCondition(Configuration):
 ReportType_ = ReportType
 
 
-@datamodel(proto=ReportSpec)
+@datamodel(proto=training_pb.ReportSpec)
 class ReportSpec(Configuration):
     VersionName: str = "v0.0.1"
     EntityRef: ObjectReference = None
@@ -612,7 +615,7 @@ class ReportSpec(Configuration):
     ActiveDeadlineSeconds: int = 600
 
 
-@datamodel(proto=ReportStatus)
+@datamodel(proto=training_pb.ReportStatus)
 class ReportStatus(Configuration):
     StartTime: Time = None
     EndTime: Time = None
@@ -626,7 +629,7 @@ class ReportStatus(Configuration):
     Conditions: List[ReportCondition] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=ModelAutobuilderCondition)
+@datamodel(proto=training_pb.ModelAutobuilderCondition)
 class ModelAutobuilderCondition(Configuration):
     Type: ModelAutobuilderConditionType = None
     Status: ConditionStatus = None
@@ -638,7 +641,7 @@ class ModelAutobuilderCondition(Configuration):
 DataSourceTemplate = DataSourceSpec
 DatasetType_ = DatasetType
 
-@datamodel(proto=ModelAutobuilderSpec)
+@datamodel(proto=training_pb.ModelAutobuilderSpec)
 class ModelAutobuilderSpec(Configuration):
     DataProductName: str = ""
     DataProductVersionName: str = ""
@@ -666,7 +669,7 @@ class ModelAutobuilderSpec(Configuration):
     DatasetType: DatasetType_ = DatasetType_.Tabular
 
 
-@datamodel(proto=ModelAutobuilderStatus)
+@datamodel(proto=training_pb.ModelAutobuilderStatus)
 class ModelAutobuilderStatus(Configuration):
     FlatFileName: str = ""
     DataSourceName: str = ""

@@ -28,6 +28,8 @@ class TrackedList(_collections_abc.MutableSequence):
                 print(type(data))
                 self.data = list(data)
 
+        self.propagate()
+
     def __repr__(self):
         return repr(self.data)
 
@@ -73,17 +75,17 @@ class TrackedList(_collections_abc.MutableSequence):
 
     def __add__(self, other):
         if isinstance(other, TrackedList):
-            return self.__class__(self.data + other.data)
+            return self.__class__(self.data + other.data, self._parent, self._parent_attr)
         elif isinstance(other, type(self.data)):
-            return self.__class__(self.data + other)
-        return self.__class__(self.data + list(other))
+            return self.__class__(self.data + other, self._parent, self._parent_attr)
+        return self.__class__(self.data + list(other), self._parent, self._parent_attr)
 
     def __radd__(self, other):
         if isinstance(other, TrackedList):
-            return self.__class__(other.data + self.data)
-        elif isinstance(other, type(self.data)):
-            return self.__class__(other + self.data)
-        return self.__class__(list(other) + self.data)
+            return self.__class__(other.data + self.data, self._parent, self._parent_attr)
+        elif isinstance(other, type(self.data), self._parent, self._parent_attr):
+            return self.__class__(other + self.data, self._parent, self._parent_attr)
+        return self.__class__(list(other) + self.data, self._parent, self._parent_attr)
 
     def __iadd__(self, other):
         if isinstance(other, TrackedList):
@@ -95,7 +97,7 @@ class TrackedList(_collections_abc.MutableSequence):
         return self
 
     def __mul__(self, n):
-        return self.__class__(self.data * n)
+        return self.__class__(self.data * n, self._parent, self._parent_attr)
 
     __rmul__ = __mul__
 
@@ -138,7 +140,7 @@ class TrackedList(_collections_abc.MutableSequence):
         self.propagate()
 
     def copy(self):
-        return self.__class__(self)
+        return self.__class__(self, self._parent, self._parent_attr)
 
     def count(self, item):
         return self.data.count(item)

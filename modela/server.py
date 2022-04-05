@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import subprocess
 import socket
 from contextlib import closing
@@ -129,10 +131,10 @@ class AuthClientInterceptor(ClientInterceptor):
         self.token = token
 
     def intercept(
-        self,
-        method: Callable,
-        request_or_iterator,
-        call_details: grpc.ClientCallDetails,
+            self,
+            method: Callable,
+            request_or_iterator,
+            call_details: grpc.ClientCallDetails,
     ):
         new_details = ClientCallDetails(
             call_details.method,
@@ -152,6 +154,7 @@ class Modela:
     resources on your cluster. The class provides you with a directory for all resource API clients, and functions to
     fetch or create each resource.
     """
+
     def __init__(
             self,
             host="localhost",
@@ -184,10 +187,11 @@ class Modela:
                 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                 port = s.getsockname()[1]
 
-            self.pf_process = subprocess.Popen("kubectl port-forward svc/modela-api-gateway %d:8080 -n modela-system" % port,
-                                               shell=True, stderr=subprocess.STDOUT)
+            self.pf_process = subprocess.Popen(
+                "kubectl port-forward svc/modela-api-gateway %d:8080 -n modela-system" % port,
+                shell=True, stderr=subprocess.STDOUT)
 
-            time.sleep(1/4)
+            time.sleep(1 / 4)
             secure, host = False, "localhost"
 
         if secure:
@@ -214,6 +218,8 @@ class Modela:
             token = self.__account_stub.Login(login_request).token
             self._channel = grpc.intercept_channel(self._channel, AuthClientInterceptor(token))
 
+        self.__account_stub = account_pb2_grpc.AccountServiceStub(self._channel)
+        self.__account_client = AccountClient(self.__account_stub, self)
 
         self.__fileservice_stub = fileservices_pb2_grpc.FileServicesServiceStub(self._channel)
         self.__fileservice_client = FileService(self.__fileservice_stub)
@@ -394,22 +400,28 @@ class Modela:
     def DataProducts(self) -> DataProductClient:
         return self.__dataproduct_client
 
-    def DataProduct(self, namespace="", name="", servingsite: str = None,
-                    lab: str = None, task_type: TaskType = TaskType.BinaryClassification,
-                    default_workload: Workload = None,
-                    default_bucket: str = None, notification_setting: NotificationSetting = None) -> DataProduct:
+    def DataProduct(self, namespace="", name="", serving_site: ServingSite | str = None, lab: Lab | str = None,
+                    public: bool = False, task_type: TaskType = None, default_training_workload: Workload = None,
+                    default_serving_workload: Workload = None, default_bucket: str = None,
+                    notification_settings: NotificationSetting = None,
+                    permissions: PermissionsSpec = None) -> DataProduct:
         """
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
-        :param servingsite: The default Serving Site of the Data Product
-        :param lab: The default Lab of the Data Product
-        :param task_type: The default task type of the Data Product
-        :param default_workload: The default workload of the Data Product
-        :param default_bucket: The default bucket used for all Data Product resources.
-        :param notification_setting: The default notification settings used for all Data Product resources.
+        :param serving_site: The default Serving Site of the Data Product.
+        :param lab: The default Lab of the Data Product.
+        :param public: If enabled, the Data Product will be publicly accessible by all users without permissions.
+        :param task_type: The default task type for child resources of the Data Product.
+        :param default_training_workload: The default workload for training Jobs under the Data Product
+        :param default_serving_workload: The default workload for model serving Jobs under the Data Product.
+        :param default_bucket: The default bucket used for child resources of the Data Product.
+        :param notification_settings: The default notification settings used for child resources of the Data Product.
+        :param permissions: The permission specification that dictates which users can access the resources under
+          the Data Product and what actions they can perform.
         """
-        return DataProduct(MDDataProduct(), self.DataProducts, namespace, name, servingsite, lab, task_type,
-                           default_workload, default_bucket, notification_setting)
+        return DataProduct(MDDataProduct(), self.DataProducts, namespace, name, serving_site, lab, public,
+                           task_type, default_training_workload, default_serving_workload, default_bucket,
+                           notification_settings, permissions)
 
     @property
     def DataSources(self) -> DataSourceClient:
@@ -479,7 +491,8 @@ class Modela:
         return self.__dataset_client
 
     def Dataset(self, namespace="", name="", gen_datasource: bool = False, version=Resource.DefaultVersion,
-                target_column: str = None, datasource: Union[DataSource, str] = "", bucket: str = "default-minio-bucket",
+                target_column: str = None, datasource: Union[DataSource, str] = "",
+                bucket: str = "default-minio-bucket",
                 dataframe: pandas.DataFrame = None, data_file: str = None, data_bytes: bytes = None,
                 workload: Workload = Workload("general-large"), fast: bool = False,
                 sample: SampleSettings = None, task_type: TaskType = None,
@@ -509,7 +522,6 @@ class Modela:
         return Dataset(MDDataset(), self.Datasets, namespace, name, version, gen_datasource, target_column,
                        datasource, bucket, dataframe, data_file, data_bytes, workload, fast,
                        sample, task_type, notification)
-
 
     @property
     def FileService(self) -> FileService:
@@ -646,10 +658,10 @@ class Modela:
         return self.__predictor_client
 
     def Predictor(self, namespace="", name="", version=Resource.DefaultVersion,
-                 serving_site: Union[ObjectReference, ServingSite, str] = "default-serving-site",
-                 model: Union[Model, str] = None, models: List[ModelDeploymentSpec] = [], port: int = 3000,
-                 path: str = None, access_type: AccessType = None, replicas: int = 0, autoscale: bool = False,
-                 workload: Workload = None) -> Predictor:
+                  serving_site: Union[ObjectReference, ServingSite, str] = "default-serving-site",
+                  model: Union[Model, str] = None, models: List[ModelDeploymentSpec] = [], port: int = 3000,
+                  path: str = None, access_type: AccessType = None, replicas: int = 0, autoscale: bool = False,
+                  workload: Workload = None) -> Predictor:
         """
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
@@ -774,7 +786,7 @@ class Modela:
 
     @property
     def UserRoleClasses(self) -> UserRoleClassClient:
-        return self.__virtualvolume_client
+        return self.__userroleclass_client
 
     def UserRoleClass(self, namespace="", name="", rules: List[Rule] = None) -> UserRoleClass:
         """
