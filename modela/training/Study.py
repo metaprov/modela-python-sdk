@@ -28,7 +28,6 @@ class Study(Resource):
                  dataset: Union[str, Dataset] = "",
                  lab: Union[ObjectReference, Lab, str] = "default-lab",
                  bucket: Union[VirtualBucket, str] = None,
-                 task_type: TaskType = None,
                  objective: Metric = None,
                  search: ModelSearch = None,
                  fe_search: FeatureEngineeringSearch = None,
@@ -53,7 +52,6 @@ class Study(Resource):
         :param lab: The object reference, Lab object, or lab name under the default-tenant for which all Study-related
             workloads will be performed under.
         :param bucket: The Bucket object or name of the bucket which will store the Study artifacts
-        :param task_type: The ML task type of the Study
         :param objective: The objective metric relevant to the task type.
         :param search: The search parameters define how many models to sample
         :param fe_search: The feature engineering search parameters of the Study
@@ -62,8 +60,8 @@ class Study(Resource):
         :param ensemble: The ensemble settings for the Study, which if enabled will combine the top estimators of
             the study after the initial model search.
         :param trainer_template: The training template for each model created by the Study.
-        :param interpretability: The interpretability settings for the Study, which when enabled can produce ICE, LIME,
-            and Shap value plots
+        :param interpretability: The interpretability configuration for the Study, which specifies what type of
+            model explainability plots will be generated from Shap values if they are computed
         :param schedule: The schedule for the study to run chronically
         :param notification: The notification settings, which if enabled will forward events about this resource to a notifier.
         :param garbage_collect: If enabled, models which did not move past the testing stage will be garbage collected by
@@ -73,63 +71,68 @@ class Study(Resource):
         :param template: If the Study is a template it will not start a search and can only be used as a template for
             other studies.
         """
+        self.default_resource = False
         super().__init__(item, client, namespace=namespace, name=name, version=version)
+        if not self.default_resource:  # Ignore the rest of the constructor; studies are immutable
+            return
+
+        spec = self.spec
         if type(dataset) == Dataset:
-            dataset = dataset.name
-        self._object.spec.datasetName = dataset
+            dataset_name = dataset.name
+        else:
+            dataset_name = dataset
+            dataset = client.modela.Dataset(namespace=namespace, name=dataset)
+        spec.DatasetName = dataset_name
+        spec.Task = dataset.spec.Task
 
         if type(lab) == Lab:
             lab = lab.reference
         elif type(lab) == str:
             lab = ObjectReference(Namespace=client.modela.tenant, Name=lab)
-        self.spec.LabRef = lab
+        spec.LabRef = lab
 
         if bucket is not None:
             if type(bucket) == VirtualBucket:
                 bucket = bucket.name
-            self.spec.Location = DataLocation(BucketName=bucket)
-
-        if task_type is not None:
-            self._object.spec.task = task_type.value
+            spec.Location = DataLocation(BucketName=bucket)
 
         if objective is not None:
-            self._object.spec.search.objective = objective.value
-            self.spec.Search.Objective = objective
+            spec.Search.Objective = objective
 
         if search is not None:
-            self.spec.Search = search
+            spec.Search = search
 
         if fe_search is not None:
-            self.spec.FeSearch = fe_search
+            spec.FeSearch = fe_search
 
         if baseline is not None:
-            self.spec.Baseline = baseline
+            spec.Baseline = baseline
 
         if ensemble is not None:
-            self.spec.Ensembles = ensemble
+            spec.Ensembles = ensemble
 
         if trainer_template is not None:
-            self.spec.TrainingTemplate = trainer_template
+            spec.TrainingTemplate = trainer_template
 
-        self.spec.TrainingTemplate.LabRef = lab
+        spec.TrainingTemplate.LabRef = lab
 
         if interpretability is not None:
-            self.spec.Interpretability = interpretability
+            spec.Interpretability = interpretability
 
         if schedule is not None:
-            self.spec.Schedule = schedule
+            spec.Schedule = schedule
 
         if notification is not None:
-            self.spec.Notification = notification
+            spec.Notification = notification
 
         if garbage_collect:
-            self.spec.Gc.CollectAtStudyEnd = True
+            spec.Gc.CollectAtStudyEnd = True
 
         if keep_best_models:
-            self.spec.Gc.KeepOnlyBestModelPerAlgorithm = True
+            spec.Gc.KeepOnlyBestModelPerAlgorithm = True
 
-        self._object.spec.activeDeadlineSeconds = timeout
-        self._object.spec.template = template
+        spec.ActiveDeadlineSeconds = timeout
+        spec.Template = template
 
     @property
     def spec(self) -> StudySpec:
@@ -140,6 +143,7 @@ class Study(Resource):
         return StudyStatus().copy_from(self._object.status)
 
     def default(self):
+        self.default_resource = True
         StudySpec().apply_config(self._object.spec)
 
     def abort(self):
@@ -159,6 +163,7 @@ class Study(Resource):
         Submit the resource and call visualize().
 
         :param replace: Replace the resource if it already exists on the cluster.
+        :param show_progress_bar: If enabled, the visualization will render a progress bar indicating the study progress.
         """
         self.submit(replace)
         self.visualize(show_progress_bar)
@@ -179,7 +184,7 @@ class Study(Resource):
                 if current_status != self.status:
                     current_status = self.status
                     desc.set_description('Phase: %s | Active Models: %d | Best Algorithm: %s | Best Score: %s' %
-                                         (_StudyPhaseToProgress[self.phase], current_status.Models,
+                                         (StudyPhaseToProgress[self.phase], current_status.Models,
                                           alg_top if alg_top != "" else "[Waiting]",
                                           str(cv_top) if cv_top != 0 else "[Waiting]"))
 

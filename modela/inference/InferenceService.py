@@ -1,4 +1,8 @@
 import hashlib
+import subprocess
+import time
+from contextlib import closing
+import socket
 from typing import List
 
 import grpc
@@ -18,7 +22,7 @@ class InferenceService:
     prediction proxy.
     """
 
-    def __init__(self, host, port=None, tls_cert=None):
+    def __init__(self, host, port=None, tls_cert=None, port_forward=False, service_name="", service_namespace=""):
         """
         Connect to the gRPC service.
 
@@ -27,6 +31,19 @@ class InferenceService:
         :param tls_cert: The TLS certificate of the connection, if connecting through ingress. The Secret containing the
             public key of the ingress can be found in the namespace of the Serving Site that hosts the service.
         """
+        if port_forward:
+            with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
+                s.bind(('', 0))
+                s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                port = s.getsockname()[1]
+
+            self.pf_process = subprocess.Popen("kubectl port-forward svc/%s %d:8080 -n %s" %
+                                               (service_name, port, service_namespace),
+                                               shell=True, stderr=subprocess.STDOUT)
+
+            time.sleep(1/4)
+            tls_cert, host = None, "localhost"
+
         if tls_cert:
             with open(tls_cert, 'rb') as f:
                 credentials = grpc.ssl_channel_credentials(f.read())
@@ -52,6 +69,9 @@ class InferenceService:
         return self
 
     def __exit__(self, exc_type, exc_value, traceback) -> None:
+        if hasattr(self, 'pf_process'):
+            self.pf_process.kill()
+
         self.close()
 
     def predict(self,

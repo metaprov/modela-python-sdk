@@ -515,7 +515,7 @@ class StudyPhase(Enum):
     Paused = "Paused"
 
 
-_StudyPhaseToProgress = {
+StudyPhaseToProgress = {
     StudyPhase.ModelPending: "Pending",
     StudyPhase.Splitting: "Splitting Dataset",
     StudyPhase.Splitted: "Split Complete",

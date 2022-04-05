@@ -318,7 +318,7 @@ class DatasetSpec(Configuration):
     Validate: bool = True
     Labeled: bool = True
     Synthetic: bool = False
-    Synthetic: int = 0
+    SyntheticRows: int = 0
     Resources: Workload = None
     ActiveDeadlineSeconds: int = 600
     Type: DatasetType = DatasetType.Tabular

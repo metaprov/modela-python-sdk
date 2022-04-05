@@ -135,34 +135,36 @@ class Predictor(Resource):
 
         return self._client.predict(self.namespace, self.name, "", predictions)
 
-    def connect(self, node_ip="", connect_dns=False, connect_local=False, local_port: int = None,
-                tls_cert: str = None) -> InferenceService:
+    def connect(self, node_ip="", port_forward=False, tls_cert: str = None) -> InferenceService:
         """
         Connect attempts to make a connection to the gRPC inference service client associated with the Predictor.
 
-        :rtype: InferenceService
-        :param node_ip: If the Predictor's access type is Ingress or LoadBalancer, any Kubernetes node IP of the cluster
-            hosting the current Modela interface must be provided. This IP can be found by executing the command
+        Note that if the Predictor access type is ClusterIP, the SDK will attempt to connect to the Predictor service
+        using its cluster-internal DNS (i.e. my-predictor.default-serving-site.svc.cluster.local), of which can
+        only be accessed by containers running on the cluster.
+
+        :param node_ip: If the Predictor's access type is of type NodePort, a Kubernetes node IP of the cluster
+            hosting the current Modela instance must be provided. This IP can be found by executing the command
             `kubectl get nodes -o wide`
-        :param connect_dns: If enabled, a connection attempt will be made using the DNS path associated
-            with the Predictor (e.g. `predictor.default-serving-site.svc.cluster.local`), which can only be accessed
-            from containers running inside the operational cluster.
-        :param connect_local: If enabled, a connection attempt will be made with localhost.  To connect using localhost,
-            you must port-forward the prediction proxy service by executing the command
-            `kubectl port-forward -n default-serving-site svc/my-predictor-name 3000:3000`
-        :param local_port: If connect_local is enabled, it will connect to this port.
+        :param port_forward: If enabled, the SDK will attempt to port forward the Predictor service using kubectl. Kubectl
+            must be installed and must be connected to the cluster with the Predictor is running on.
+        :param tls_cert: If the Predictor's access type is Ingress, the TLS certificate of the Predictor's Serving Site
+           must be provided.
         :return: The InferenceService client connected to the prediction proxy service
         """
-        if connect_dns:
-            return InferenceService(self.spec.Path, self.spec.Port)
+        assert node_ip != "" or self.spec.AccessType != AccessType.NodePort
 
-        if connect_local:
-            return InferenceService("vcap.me", local_port)
+        if port_forward:
+            return InferenceService(port_forward=True,
+                                    service_namespace=self.spec.ServingsiteRef.Name,
+                                    service_name=self.name)
 
         if self.spec.AccessType == AccessType.NodePort or self.spec.AccessType == AccessType.LoadBalancer:
             return InferenceService((node_ip if node_ip != "" else self.spec.Path), self.spec.NodePort)
-        elif self.spec.AccessType == AccessType.Ingress or self.spec.AccessType == AccessType.ClusterIP:
-            return InferenceService(self.spec.Path, "", tls_cert=tls_cert)
+        elif self.spec.AccessType == AccessType.Ingress:
+            return InferenceService(self.spec.Path, tls_cert=tls_cert)
+        elif self.spec.AccessType == AccessType.ClusterIP:
+            return InferenceService(self.spec.Path)
 
 
 class PredictorClient:

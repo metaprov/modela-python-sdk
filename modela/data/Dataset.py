@@ -39,7 +39,7 @@ class Dataset(Resource):
                  data_bytes: bytes = None,
                  workload: Workload = Workload("general-large"),
                  fast: bool = False,
-                 sample=SampleSettings(),
+                 sample: SampleSettings = SampleSettings(),
                  task_type: TaskType = TaskType.BinaryClassification,
                  notification: NotificationSetting = None):
         """
@@ -69,7 +69,7 @@ class Dataset(Resource):
             return
 
         if not gen_datasource:
-            if type(datasource) != DataSource:  # Fetch the data source in case we need to read the file type
+            if type(datasource) == str:  # Fetch the data source in case we need to read the file type
                 datasource = client.modela.DataSource(namespace=namespace, name=datasource)
 
             file_type = datasource.spec.FileType
@@ -113,6 +113,10 @@ class Dataset(Resource):
         self.spec.DatasourceName = datasource.name
         self.spec.Resources = workload
         self.spec.Task = task_type
+        if task_type != datasource.spec.Task:
+            print("WARNING: Dataset task type does not match the task type of its Data Source (you: %s, it: %s)" %
+                  (task_type.name, datasource.spec.Task.name))
+
         self.spec.Fast = fast
         if sample is not None:
             self.spec.Sample = sample
@@ -166,6 +170,7 @@ class Dataset(Resource):
         Submit the resource and call visualize().
 
         :param replace: Replace the resource if it already exists on the cluster.
+        :param show_progress_bar: If enabled, the visualization will render a progress bar indicating the study progress.
         """
         self.submit(replace)
         self.visualize(show_progress_bar)

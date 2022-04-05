@@ -878,7 +878,7 @@ class Modela:
 
     def Study(self, namespace="", name="", version=Resource.DefaultVersion, dataset: Union[str, Dataset] = "",
               lab: Union[ObjectReference, Lab, str] = "default-lab", bucket: Union[VirtualBucket, str] = None,
-              task_type: TaskType = None, objective: Metric = None, search: ModelSearch = None,
+              objective: Metric = None, search: ModelSearch = None,
               fe_search: FeatureEngineeringSearch = None, baseline: BaselineSettings = None,
               ensemble: Ensemble = None, trainer_template: Training = None, interpretability: Interpretability = None,
               schedule: StudySchedule = None, notification: NotificationSetting = None, garbage_collect: bool = True,
@@ -892,7 +892,6 @@ class Modela:
         :param lab: The object reference, Lab object, or lab name under the default-tenant for which all Study-related
             workloads will be performed under.
         :param bucket: The Bucket object or name of the bucket which will store the Study artifacts
-        :param task_type: The ML task type of the Study
         :param objective: The objective metric relevant to the task type.
         :param search: The search parameters define how many models to sample
         :param fe_search: The feature engineering search parameters of the Study
@@ -901,8 +900,8 @@ class Modela:
         :param ensemble: The ensemble settings for the Study, which if enabled will combine the top estimators of
             the study after the initial model search.
         :param trainer_template: The training template for each model created by the Study.
-        :param interpretability: The interpretability settings for the Study, which when enabled can produce ICE, LIME,
-            and Shap value plots
+        :param interpretability: The interpretability configuration for the Study, which specifies what type of
+            model explainability plots will be generated from Shap values if they are computed
         :param schedule: The schedule for the study to run chronically
         :param notification: The notification settings, which if enabled will forward events about this resource to a notifier.
         :param garbage_collect: If enabled, models which did not move past the testing stage will be garbage collected by
@@ -912,7 +911,7 @@ class Modela:
         :param template: If the Study is a template it will not start a search and can only be used as a template for
             other studies.
         """
-        return Study(MDStudy(), self.Studies, namespace, name, version, dataset, lab, bucket, task_type, objective,
+        return Study(MDStudy(), self.Studies, namespace, name, version, dataset, lab, bucket, objective,
                      search, fe_search, baseline, ensemble, trainer_template, interpretability, schedule,
                      notification, garbage_collect, keep_best_models, timeout, template)
 
