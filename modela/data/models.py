@@ -1,22 +1,21 @@
 from abc import ABC
-
 from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import *
-
-import modela
 import modela.data.common as data_common
 from modela.data.common import *
+from modela.infra.Account import Account
+from modela.infra.UserRoleClass import UserRoleClass
 from modela.infra.models import Workload, NotificationSetting, OutputLogs, GitSettings, ImageLocation
 from modela.training.common import *
 from modela.common import *
 from modela.Configuration import *
 from dataclasses import field
-from typing import List
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import CompilerSpec
+from typing import List, Union
+from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import CompilerSpec, Stakeholder, \
+    PermissionsSpec
 from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import *
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import *
 from modela.common import Plot
 from modela.util import TrackedList
-
 
 @datamodel(proto=DataLocation)
 class DataLocation(Configuration):
@@ -54,11 +53,26 @@ class CompilerSettings(Configuration):
     Compiler: CompilerType = CompilerType.Nothing
     Targets: List[HardwareTarget] = field(default_factory=lambda: [])
 
-
 # Typename collision workaround
 ColorType = Color
 ImageLocationType = ImageLocation
 DataLocationType = DataLocation
+
+
+@datamodel(proto=Stakeholder)
+class Stakeholder(Configuration):
+    Account: str
+    Roles: List[ObjectReference] = field(default_factory=lambda: [])
+
+
+@datamodel(proto=PermissionsSpec)
+class PermissionsSpec(Configuration):
+    Stakeholders: List[Stakeholder] = field(default_factory=lambda: [])
+
+    @classmethod
+    def from_accounts(cls, accounts: dict[Union[Account, str], Union[UserRoleClass]]):
+        """ Generate a permission specification based on a dictionary of Accounts and their User Role Classes """
+        pass
 
 
 @datamodel(proto=DataProductSpec)
@@ -68,7 +82,7 @@ class DataProductSpec(Configuration):
     GitLocation: GitSettings = GitSettings()
     ImageLocation: ImageLocationType = ImageLocation()
     LabName: str = "default-lab"
-    ServingSiteName: str = "default-servingsite"
+    ServingSiteName: str = "default-serving-site"
     Task: TaskType = TaskType.BinaryClassification
     Description: str = ""
     DataLocation: DataLocationType = DataLocationType()
@@ -82,6 +96,9 @@ class DataProductSpec(Configuration):
     Priority: PriorityLevel = PriorityLevel.Medium
     Color: ColorType = ColorType.NoColor
     Governance: GovernanceSpec = GovernanceSpec()
+    Public: bool = False
+    Permissions: PermissionsSpec = PermissionsSpec()
+
 
 
 @datamodel(proto=DataProductVersionSpec)

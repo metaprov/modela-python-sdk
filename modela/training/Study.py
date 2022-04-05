@@ -140,6 +140,7 @@ class Study(Resource):
 
     @property
     def status(self) -> StudyStatus:
+        self.sync()
         return StudyStatus().copy_from(self._object.status)
 
     def default(self):
@@ -180,9 +181,9 @@ class Study(Resource):
         current_status, objective, cv_top, alg_top = None, self.spec.Search.Objective, 0, ""
         try:
             while True:
-                self.sync()
-                if current_status != self.status:
-                    current_status = self.status
+                status = self.status
+                if current_status != status:
+                    current_status = status
                     desc.set_description('Phase: %s | Active Models: %d | Best Algorithm: %s | Best Score: %s' %
                                          (StudyPhaseToProgress[self.phase], current_status.Models,
                                           alg_top if alg_top != "" else "[Waiting]",
@@ -297,13 +298,23 @@ class Study(Resource):
         except KeyboardInterrupt:
             pass
 
+    def wait_until_phase(self, phase: StudyPhase):
+        """ Blocks until the specified phase is reached, or the Study fails """
+        while True:
+            time.sleep(0.2)
+            status_phase = self.status.Phase
+            if status_phase == phase or status_phase == StudyPhase.Failed:
+                break
+
     @property
     def models(self) -> List[Model]:
+        """ Get the list of currently active models produced by the Study """
         self.ensure_client_repository()
         return self._client.modela.Models.list(self.namespace, {'study': self.name})
 
     @property
     def best_model(self) -> Model:
+        """ Get the best model selected by the model search process """
         self.ensure_client_repository()
         return self._client.modela.Models.get(self.namespace, self._object.status.bestModel)
 

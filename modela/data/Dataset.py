@@ -70,7 +70,9 @@ class Dataset(Resource):
 
         if not gen_datasource:
             if type(datasource) == str:  # Fetch the data source in case we need to read the file type
+                assert datasource != ""
                 datasource = client.modela.DataSource(namespace=namespace, name=datasource)
+                assert not datasource.default_resource
 
             file_type = datasource.spec.FileType
         else:

@@ -2,6 +2,9 @@ from dataclasses import field
 
 from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import *
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import GitLocation, ImageLocation
+from github.com.metaprov.modelaapi.pkg.apis.infra.v1alpha1.generated_pb2 import UserRoleClassSpec, RuleSpec
+
+from modela.infra.common import *
 from modela.Configuration import *
 from modela.common import ObjectReference
 
@@ -46,3 +49,17 @@ class GitSettings(Configuration):
 class ImageLocation(Configuration):
     Name: str = ""
     RegistryConnectionName: str = ""
+
+
+@datamodel(proto=RuleSpec)
+class Rule(Configuration):
+    Resource: ResourceKind = None
+    Verbs: List[Verb] = field(default_factory=lambda: [])
+
+
+@datamodel(proto=UserRoleClassSpec)
+class UserRoleClassSpec(Configuration):
+    TenantRef: ObjectReference = None
+    Description: str = ""
+    Owner: str = ""
+    Rules: List[Rule] = field(default_factory=lambda: [])

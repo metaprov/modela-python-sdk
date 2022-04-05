@@ -46,6 +46,7 @@ from github.com.metaprov.modelaapi.services.tenant.v1 import tenant_pb2_grpc
 from github.com.metaprov.modelaapi.services.virtualbucket.v1 import virtualbucket_pb2_grpc
 from github.com.metaprov.modelaapi.services.virtualcluster.v1 import virtualcluster_pb2_grpc
 from github.com.metaprov.modelaapi.services.virtualvolume.v1 import virtualvolume_pb2_grpc
+from github.com.metaprov.modelaapi.services.userroleclass.v1 import userroleclass_pb2_grpc
 from github.com.metaprov.modelaapi.services.meeting.v1 import meeting_pb2_grpc
 from github.com.metaprov.modelaapi.services.postmortem.v1 import postmortem_pb2_grpc
 from github.com.metaprov.modelaapi.services.review.v1 import review_pb2_grpc
@@ -104,6 +105,7 @@ from modela.infra.Tenant import *
 from modela.infra.VirtualBucket import *
 from modela.infra.VirtualCluster import *
 from modela.infra.VirtualVolume import *
+from modela.infra.UserRoleClass import *
 from modela.team.Meeting import *
 from modela.team.PostMortem import *
 from modela.team.Review import *
@@ -332,6 +334,9 @@ class Modela:
 
         self.__virtualvolume_stub = virtualvolume_pb2_grpc.VirtualVolumeServiceStub(self._channel)
         self.__virtualvolume_client = VirtualVolumeClient(self.__virtualvolume_stub, self)
+
+        self.__userroleclass_stub = userroleclass_pb2_grpc.UserRoleClassServiceStub(self._channel)
+        self.__userroleclass_client = UserRoleClassClient(self.__userroleclass_stub, self)
 
         self.__meeting_stub = meeting_pb2_grpc.MeetingServiceStub(self._channel)
         self.__meeting_client = MeetingClient(self.__meeting_stub, self)
@@ -657,8 +662,8 @@ class Modela:
         :param port: The port of the predictor, which if applicable will expose the service internally or externally.
         :param path: The path that the predictor will expose a service on. If this parameter is not specified, then
             a path will be generated based on the access type and predictor name.
-        :param access_type: The access type of the predictor. Documentation on how each access type exposes the prediction
-            service can be found at the modela.ai Predictor resource documentation.
+        :param access_type: The access type of the Predictor. See https://www.modela.ai/docs/docs/serving/production/
+            for documentation on how different access types expose the Predictor service
         :param replicas: The amount of replicas for the predictor, which if greater than zero will serve the prediction
             service on multiple pods.
         :param autoscale: If set to true, the predictor's deployment will scale based on the amount of incoming traffic
@@ -766,6 +771,18 @@ class Modela:
 
     def VirtualVolume(self, namespace="", name="") -> VirtualVolume:
         return VirtualVolume(MDVirtualVolume(), self.VirtualVolumes, namespace, name)
+
+    @property
+    def UserRoleClasses(self) -> UserRoleClassClient:
+        return self.__virtualvolume_client
+
+    def UserRoleClass(self, namespace="", name="", rules: List[Rule] = None) -> UserRoleClass:
+        """
+        :param namespace: The target namespace of the resource.
+        :param name: The name of the resource.
+        :param rules: The list of rules which any Account associated with the User Role Class resource may perform.
+        """
+        return UserRoleClass(MDUserRoleClass(), self.UserRoleClasses, namespace, name, rules)
 
     @property
     def Meetings(self) -> MeetingClient:
@@ -878,7 +895,7 @@ class Modela:
 
     def Study(self, namespace="", name="", version=Resource.DefaultVersion, dataset: Union[str, Dataset] = "",
               lab: Union[ObjectReference, Lab, str] = "default-lab", bucket: Union[VirtualBucket, str] = None,
-              objective: Metric = None, search: ModelSearch = None,
+              objective: Metric = Metric.Accuracy, search: ModelSearch = None,
               fe_search: FeatureEngineeringSearch = None, baseline: BaselineSettings = None,
               ensemble: Ensemble = None, trainer_template: Training = None, interpretability: Interpretability = None,
               schedule: StudySchedule = None, notification: NotificationSetting = None, garbage_collect: bool = True,

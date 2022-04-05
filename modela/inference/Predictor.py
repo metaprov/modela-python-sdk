@@ -37,7 +37,7 @@ class Predictor(Resource):
                  path: str = None,
                  access_type: AccessType = None,
                  replicas: int = 0,
-                 autoscale: bool = False,
+                 autoscale: bool = None,
                  workload: Workload = None):
         """
 
@@ -53,8 +53,8 @@ class Predictor(Resource):
         :param port: The port of the predictor, which if applicable will expose the service internally or externally.
         :param path: The path that the predictor will expose a service on. If this parameter is not specified, then
             a path will be generated based on the access type and predictor name.
-        :param access_type: The access type of the predictor. Documentation on how each access type exposes the prediction
-            service can be found at the modela.ai Predictor resource documentation.
+        :param access_type: The access type of the Predictor. See https://www.modela.ai/docs/docs/serving/production/
+            for documentation on how different access types expose the Predictor service
         :param replicas: The amount of replicas for the predictor, which if greater than zero will serve the prediction
             service on multiple pods.
         :param autoscale: If set to true, the predictor's deployment will scale based on the amount of incoming traffic
@@ -62,13 +62,14 @@ class Predictor(Resource):
         :param workload: The workload specification which determines the resources which will be allocated to the
             prediction service.
         """
+        self.default_resource = False
         super().__init__(item, client, namespace=namespace, name=name, version=version)
 
+        spec = self.spec
         if type(serving_site) == ServingSite:
             serving_site = serving_site.reference
         elif type(serving_site) == str:
             serving_site = ObjectReference(Namespace=client.modela.tenant, Name=serving_site)
-        self.spec.ServingsiteRef = serving_site
 
         if model is not None:
             if type(model) == Model:
@@ -77,20 +78,25 @@ class Predictor(Resource):
         else:
             self.spec.Models = models
 
-        if port is not None:
-            self._object.spec.port = port
+        if not self.default_resource:
+            self.spec.ServingsiteRef = serving_site
+            if port is not None:
+                spec.Port = port
 
-        if path is not None:
-            self._object.spec.path = path
+            if path is not None:
+                spec.Path = path
 
-        if access_type is not None:
-            self._object.spec.accessType = access_type.value
+            if access_type is not None:
+                spec.AccessType = access_type.value
 
         if replicas > 0:
-            self._object.spec.replicas = replicas
+            spec.Replicas = replicas
 
         if workload is not None:
-            self.spec.Resources = workload
+            spec.Resources = workload
+
+        if autoscale is not None:
+            spec.AutoScaling = autoscale
 
     @property
     def spec(self) -> PredictorSpec:
@@ -101,6 +107,7 @@ class Predictor(Resource):
         return PredictorStatus().copy_from(self._object.status)
 
     def default(self):
+        self.default_resource = True
         PredictorSpec().apply_config(self._object.spec)
 
     @property
@@ -164,7 +171,7 @@ class Predictor(Resource):
         elif self.spec.AccessType == AccessType.Ingress:
             return InferenceService(self.spec.Path, tls_cert=tls_cert)
         elif self.spec.AccessType == AccessType.ClusterIP:
-            return InferenceService(self.spec.Path)
+            return InferenceService(self.spec.Path, self.spec.Port)
 
 
 class PredictorClient:
