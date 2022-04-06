@@ -21,7 +21,7 @@ import pandas
 from modela.data.common import *
 from modela.data.DataSource import DataSource
 from modela.data.models import SampleSettings, DatasetSpec, DatasetStatus, DatasetProfile
-from modela.infra.models import Workload, NotificationSetting
+from modela.infra.models import Workload, NotificationSettings
 from modela.training.Report import Report
 from modela.training.common import TaskType
 from modela.util import convert_size
@@ -41,7 +41,7 @@ class Dataset(Resource):
                  fast: bool = False,
                  sample: SampleSettings = SampleSettings(),
                  task_type: TaskType = TaskType.BinaryClassification,
-                 notification: NotificationSetting = None):
+                 notification: NotificationSettings = None):
         """
         :param client: The Dataset client repository, which can be obtained through an instance of Modela.
         :param namespace: The target namespace of the resource.

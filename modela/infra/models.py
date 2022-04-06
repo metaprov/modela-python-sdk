@@ -11,7 +11,7 @@ from modela.common import ObjectReference
 
 
 @datamodel(proto=catalog_pb.NotificationSpec)
-class NotificationSetting(Configuration):
+class NotificationSettings(Configuration):
     ErrorTTL: int = 3600
     SuccessTTL: int = 3600
     NotifierName: str = ""

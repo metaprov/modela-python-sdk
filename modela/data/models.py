@@ -3,7 +3,7 @@ import modela.data.common as data_common
 from modela.data.common import *
 from modela.infra.Account import Account
 from modela.infra.UserRoleClass import UserRoleClass
-from modela.infra.models import Workload, NotificationSetting, OutputLogs, GitSettings, ImageLocation
+from modela.infra.models import Workload, NotificationSettings, OutputLogs, GitSettings, ImageLocation
 from modela.training.common import *
 from modela.common import *
 from modela.Configuration import *
@@ -61,29 +61,45 @@ DataLocationType = DataLocation
 
 @datamodel(proto=catalog_pb.Stakeholder)
 class Stakeholder(Configuration):
-    Account: str
+    Account: str = ""
     Roles: List[ObjectReference] = field(default_factory=lambda: [])
 
 
 @datamodel(proto=catalog_pb.PermissionsSpec)
-class PermissionsSpec(Configuration):
+class Permissions(Configuration):
     Stakeholders: List[Stakeholder] = field(default_factory=lambda: [])
 
     @classmethod
-    def create(cls, accounts: dict[Union[Account, str], Union[UserRoleClass, str]]) -> PermissionsSpec:
-        """ Generate a permission specification based on a dictionary of Accounts and their User Role Classes """
+    def create(cls, accounts: dict[Union[Account, str], Union[UserRoleClass, str, List[UserRoleClass], List[str]]],
+               tenant="default-tenant") -> PermissionsSpec:
+        """
+        Generate a permission specification based on a dictionary of Accounts and their User Role Classes
+        :param accounts: The dictionary of accounts to generate a permission specification from
+        :param tenant: The name of the tenant which the accounts are based under. This parameter is not required if
+          any User Role Class or Account resource is passed as an object (and not as a string)
+        """
         stakeholders = []
-        for account, role in accounts.items():
-            if type(account) == Account:
-                account = account.name
+        for account, roles in accounts.items():
+            roleList, outList = roles if type(roles) == list else [roles], []
+            for role in roleList:
+                if type(account) == Account:
+                    tenant = account.namespace
+                    account = account.name
 
-            if type(role) == UserRoleClass:
-                role = role.name
+                if type(role) == UserRoleClass:
+                    tenant = role.namespace
+                    role = role.name
 
-            stakeholders.append(Stakeholder(Account=account, Roles=role))
+                outList.append(ObjectReference(Namespace=tenant, Name=role))
+            stakeholders.append(Stakeholder(Account=account, Roles=outList))
+
+        for stakeholder in stakeholders:
+            for role in stakeholder.Roles:
+                role.Namespace = tenant
 
         return cls(Stakeholders=stakeholders)
 
+DataProductPermissions = Permissions
 
 @datamodel(proto=data_pb.DataProductSpec)
 class DataProductSpec(Configuration):
@@ -96,7 +112,7 @@ class DataProductSpec(Configuration):
     Task: TaskType = TaskType.BinaryClassification
     Description: str = ""
     DataLocation: DataLocationType = DataLocationType()
-    Notification: NotificationSetting = NotificationSetting()
+    Notification: NotificationSettings = NotificationSettings()
     TrainingResources: Workload = Workload("general-large")
     ServingResources: Workload = Workload("general-large")
     RetriesOnFailure: int = 3
@@ -107,7 +123,7 @@ class DataProductSpec(Configuration):
     Color: ColorType = ColorType.NoColor
     Governance: GovernanceSpec = GovernanceSpec()
     Public: bool = False
-    Permissions: PermissionsSpec = PermissionsSpec()
+    Permissions: DataProductPermissions = DataProductPermissions()
 
 
 
@@ -351,7 +367,7 @@ class DatasetSpec(Configuration):
     Type: DatasetType = DatasetType.Tabular
     Sample: SampleSettings = None
     Task: TaskType = None
-    Notification: NotificationSetting = None
+    Notification: NotificationSettings = None
     Correlation: CorrelationSetting = None
     Fast: bool = False
 

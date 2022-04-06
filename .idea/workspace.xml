@@ -4,16 +4,17 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Implement UserRoleClass CRD, DataProduct constructor">
-      <change afterPath="$PROJECT_DIR$/tests/test_userroleclass_client.py" afterDir="false" />
+    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Implement UserRoleClass unit tests, refactor unsafe star imports">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/DataProduct.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/DataProduct.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/Dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Dataset.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/data/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/inference/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/UserRoleClass.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/UserRoleClass.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/infra/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/training/Study.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Study.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/training/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_dataproducts_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_dataproducts_client.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,7 +97,7 @@
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\infra" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests in test_userroleclass_client.py">
+  <component name="RunManager" selected="Python tests.Python tests in test_dataproducts_client.py">
     <configuration name="go build modela-python-sdk gen_crd_docs.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <working_directory value="$PROJECT_DIR$" />
@@ -403,7 +404,7 @@
       <workItem from="1646668982436" duration="53202000" />
       <workItem from="1647016019085" duration="45503000" />
       <workItem from="1647472365233" duration="41542000" />
-      <workItem from="1648846895452" duration="47038000" />
+      <workItem from="1648846895452" duration="53977000" />
     </task>
     <task id="LOCAL-00001" summary="fixed the client. upgrade version">
       <created>1630772236555</created>
@@ -664,7 +665,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649184715923</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="Implement UserRoleClass unit tests, refactor unsafe star imports">
+      <created>1649201752032</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1649201752032</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -685,7 +693,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/docs/sphinx-markdown-builder" />
     </ignored-roots>
-    <MESSAGE value="Add Report API models &amp; functions" />
     <MESSAGE value="Add Predictor resource" />
     <MESSAGE value="Add Inference Service" />
     <MESSAGE value="Test inference service" />
@@ -710,7 +717,8 @@
     <MESSAGE value="Improve data source unit test" />
     <MESSAGE value="Add port forwarding to Predictor services" />
     <MESSAGE value="Implement UserRoleClass CRD, DataProduct constructor" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement UserRoleClass CRD, DataProduct constructor" />
+    <MESSAGE value="Implement UserRoleClass unit tests, refactor unsafe star imports" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement UserRoleClass unit tests, refactor unsafe star imports" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -727,6 +735,6 @@
     <SUITE FILE_PATH="coverage/modela_python_sdk$build.coverage" NAME="build Coverage Results" MODIFIED="1646678944062" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/docs" />
     <SUITE FILE_PATH="coverage/modela_python_sdk$Validate_Datamodels.coverage" NAME="Validate Datamodels Coverage Results" MODIFIED="1649184339350" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/hack" />
     <SUITE FILE_PATH="coverage/modela_python_sdk$Unittests_in_test_configuration_py.coverage" NAME="Unittests in test_configuration.py Coverage Results" MODIFIED="1648494060547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1649197833079" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1649264283693" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>

@@ -11,7 +11,7 @@ from tqdm import tqdm
 import modela
 from modela.common import *
 from modela.training.models import ModelSearch, FeatureEngineeringSearch, BaselineSettings, Ensemble, Training, \
-    Interpretability, StudySchedule, NotificationSetting, StudySpec, StudyStatus, DataLocation
+    Interpretability, StudySchedule, NotificationSettings, StudySpec, StudyStatus, DataLocation
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException, ResourceNotFoundException
 from typing import List, Union
@@ -36,7 +36,7 @@ class Study(Resource):
                  trainer_template: Training = None,
                  interpretability: Interpretability = None,
                  schedule: StudySchedule = None,
-                 notification: NotificationSetting = None,
+                 notification: NotificationSettings = None,
                  garbage_collect: bool = True,
                  keep_best_models: bool = True,
                  timeout: int = 600,

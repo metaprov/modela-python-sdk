@@ -9,7 +9,7 @@ from modela.common import PriorityLevel, Time, StatusError, ConditionStatus, Obj
 from modela.data.common import DataType
 from modela.data.models import DataLocation, GovernanceSpec, CompilerSettings, Correlation, DataSourceSpec
 from modela.inference.common import AccessType
-from modela.infra.models import Workload, OutputLogs, NotificationSetting
+from modela.infra.models import Workload, OutputLogs, NotificationSettings
 from modela.training.common import *
 
 import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
@@ -524,7 +524,7 @@ class StudySpec(Configuration):
     Compilation: CompilerSettings = None
     Template: bool = False
     Flagged: bool = False
-    Notification: NotificationSetting = NotificationSetting()
+    Notification: NotificationSettings = NotificationSettings()
     # ModelImage: ImageLocation = ImageLocation()
     Gc: GarbageCollection = GarbageCollection()
     Ttl: int = 0

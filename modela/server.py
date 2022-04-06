@@ -401,10 +401,10 @@ class Modela:
         return self.__dataproduct_client
 
     def DataProduct(self, namespace="", name="", serving_site: ServingSite | str = None, lab: Lab | str = None,
-                    public: bool = False, task_type: TaskType = None, default_training_workload: Workload = None,
+                    public: bool = None, task_type: TaskType = None, default_training_workload: Workload = None,
                     default_serving_workload: Workload = None, default_bucket: str = None,
-                    notification_settings: NotificationSetting = None,
-                    permissions: PermissionsSpec = None) -> DataProduct:
+                    notification_settings: NotificationSettings = None,
+                    permissions: Permissions = None) -> DataProduct:
         """
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
@@ -496,7 +496,7 @@ class Modela:
                 dataframe: pandas.DataFrame = None, data_file: str = None, data_bytes: bytes = None,
                 workload: Workload = Workload("general-large"), fast: bool = False,
                 sample: SampleSettings = None, task_type: TaskType = None,
-                notification: NotificationSetting = None) -> Dataset:
+                notification: NotificationSettings = None) -> Dataset:
         """
         Fetch or create a new Dataset resource
 
@@ -910,7 +910,7 @@ class Modela:
               objective: Metric = Metric.Accuracy, search: ModelSearch = None,
               fe_search: FeatureEngineeringSearch = None, baseline: BaselineSettings = None,
               ensemble: Ensemble = None, trainer_template: Training = None, interpretability: Interpretability = None,
-              schedule: StudySchedule = None, notification: NotificationSetting = None, garbage_collect: bool = True,
+              schedule: StudySchedule = None, notification: NotificationSettings = None, garbage_collect: bool = True,
               keep_best_models: bool = True, timeout: int = 600, template: bool = False) -> Study:
         """
         :param namespace: The target namespace of the resource.

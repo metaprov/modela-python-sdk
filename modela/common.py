@@ -1,7 +1,11 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from modela.Configuration import Configuration, ImmutableConfiguration
+from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import Plot
+from k8s.io.api.core.v1.generated_pb2 import ObjectReference, SecretReference
+from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import Time
+
+from modela.Configuration import Configuration, ImmutableConfiguration, datamodel
 
 
 class ConditionStatus(Enum):
@@ -94,13 +98,13 @@ class Freq(Enum):
     Years = "year"
 
 
-@dataclass
+@datamodel(proto=Time)
 class Time(Configuration):
     Seconds: int = 0
     Nanos: int = 0
 
 
-@dataclass
+@datamodel(proto=ObjectReference)
 class ObjectReference(Configuration):
     """
     An Object Reference defines the location of a resource on the current operational cluster, denoted by the namespace
@@ -111,12 +115,12 @@ class ObjectReference(Configuration):
     Name: str = ""
 
 
-@dataclass
+@datamodel(proto=SecretReference)
 class SecretReference(Configuration):
     Name: str = ""
     Namespace: str = ""
 
-@dataclass
+@datamodel(proto=Plot)
 class Plot(ImmutableConfiguration):
     Fname: str = ""
     Img: bytes = ""

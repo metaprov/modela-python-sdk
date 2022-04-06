@@ -15,8 +15,8 @@ from modela.infra.VirtualBucket import VirtualBucket
 from modela.infra.ServingSite import ServingSite
 from modela.infra.Lab import Lab
 import modela.data.models
-from modela.data.models import DataProductSpec, PermissionsSpec, DataLocation
-from modela.infra.models import NotificationSetting, Workload
+from modela.data.models import DataProductSpec, Permissions, DataLocation
+from modela.infra.models import NotificationSettings, Workload
 from modela.training.common import TaskType
 
 
@@ -24,13 +24,13 @@ class DataProduct(Resource):
     def __init__(self, item: MDDataProduct = MDDataProduct(), client=None, namespace="", name="",
                  serving_site: ServingSite | str = None,
                  lab: Lab | str = None,
-                 public: bool = False,
+                 public: bool = None,
                  task_type: TaskType = None,
                  default_training_workload: Workload = None,
                  default_serving_workload: Workload = None,
                  default_bucket: VirtualBucket | str = None,
-                 notification_settings: NotificationSetting = None,
-                 permissions: PermissionsSpec = None):
+                 notification_settings: NotificationSettings = None,
+                 permissions: Permissions = None):
         """
         :param client: The Data Product client repository, which can be obtained through an instance of Modela.
         :param namespace: The target namespace of the resource.
@@ -50,12 +50,16 @@ class DataProduct(Resource):
 
         spec = self.spec
         if type(serving_site) == ServingSite:
-            spec.ServingSiteName = serving_site.name
+            serving_site = serving_site.name
+        spec.ServingSiteName = serving_site
 
         if type(lab) == Lab:
-            spec.LabName = lab.name
+            lab = lab.name
+        spec.LabName = lab
 
-        spec.Public = public
+        if spec.Public is not None:
+            spec.Public = public
+
         if task_type is not None:
             spec.Task = task_type
 
@@ -66,7 +70,7 @@ class DataProduct(Resource):
             spec.ServingResources = default_serving_workload
 
         if default_bucket is not None:
-            spec.DataLocation = DataLocation(Bucket=default_bucket)
+            spec.DataLocation = DataLocation(BucketName=default_bucket)
 
         if notification_settings is not None:
             spec.Notification = notification_settings
@@ -117,7 +121,7 @@ class DataProductClient:
         request.name = name
         try:
             response = self.__stub.GetDataProduct(request)
-            return DataProduct(response.item, self)
+            return DataProduct(response.dataproduct, self)
         except grpc.RpcError as err:
             error = err
 
