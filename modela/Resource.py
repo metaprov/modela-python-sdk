@@ -87,7 +87,7 @@ class Resource:
             if not replace:
                 raise ex
 
-            time.sleep(0.5)
+            time.sleep(0.5)  # Avoid race condition
             self._client.create(self, **kwargs)
 
 

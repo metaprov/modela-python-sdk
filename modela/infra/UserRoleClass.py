@@ -3,7 +3,7 @@ from github.com.metaprov.modelaapi.pkg.apis.infra.v1alpha1.generated_pb2 import 
 from github.com.metaprov.modelaapi.services.userroleclass.v1.userroleclass_pb2_grpc import UserRoleClassServiceStub
 from github.com.metaprov.modelaapi.services.userroleclass.v1.userroleclass_pb2 import CreateUserRoleClassRequest, \
     UpdateUserRoleClassRequest, \
-    DeleteUserRoleClassRequest, GetUserRoleClassRequest, ListUserRoleClasssRequest
+    DeleteUserRoleClassRequest, GetUserRoleClassRequest, ListUserRoleClassesRequest
 
 from modela.Resource import Resource
 from modela.ModelaException import ModelaException
@@ -146,10 +146,10 @@ class UserRoleClassClient:
         return False
 
     def list(self, namespace: str) -> Union[List[UserRoleClass], bool]:
-        request = ListUserRoleClasssRequest()
+        request = ListUserRoleClassesRequest()
         request.namespace = namespace
         try:
-            response = self.__stub.ListUserRoleClasss(request)
+            response = self.__stub.ListUserRoleClasses(request)
             return [UserRoleClass(item, self) for item in response.roles.items]
         except grpc.RpcError as err:
             error = err

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import subprocess
 import socket
 from contextlib import closing
@@ -400,7 +398,8 @@ class Modela:
     def DataProducts(self) -> DataProductClient:
         return self.__dataproduct_client
 
-    def DataProduct(self, namespace="", name="", serving_site: ServingSite | str = None, lab: Lab | str = None,
+    def DataProduct(self, namespace="", name="", serving_site: Union[ServingSite, str] = None,
+                    lab: Union[Lab, str] = None,
                     public: bool = None, task_type: TaskType = None, default_training_workload: Workload = None,
                     default_serving_workload: Workload = None, default_bucket: str = None,
                     notification_settings: NotificationSettings = None,
@@ -490,9 +489,10 @@ class Modela:
     def Datasets(self) -> DatasetClient:
         return self.__dataset_client
 
-    def Dataset(self, namespace="", name="", gen_datasource: bool = False, version=Resource.DefaultVersion,
+    def Dataset(self, namespace="", name="", version=Resource.DefaultVersion, gen_datasource: bool = False,
+                lab: Union[ObjectReference, Lab, str] = "default-lab",
                 target_column: str = None, datasource: Union[DataSource, str] = "",
-                bucket: str = "default-minio-bucket",
+                bucket: Union[VirtualBucket, str] = "default-minio-bucket",
                 dataframe: pandas.DataFrame = None, data_file: str = None, data_bytes: bytes = None,
                 workload: Workload = Workload("general-large"), fast: bool = False,
                 sample: SampleSettings = None, task_type: TaskType = None,
@@ -500,26 +500,28 @@ class Modela:
         """
         Fetch or create a new Dataset resource
 
+        :param client: The Dataset client repository, which can be obtained through an instance of Modela.
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
-        :param version: The version of the resource.
+        :param lab: The object reference, Lab object, or lab name under the tenant of the resource for which all
+            Dataset-related workloads will be performed under.
         :param gen_datasource: If true, a Datasource resource will be created from the uploaded dataset and applied to
             the Dataset resource.
         :param target_column: If gen_datasource is enabled, then the target column of the data source must be specified.
-        :param bucket: The bucket which the raw dataset data will be uploaded to.
         :param datasource: If specified as a string, the SDK will attempt to find a Data Source resource with the given name.
-            If specified as a Data Source object, or if one was found with the given name, it will be applied to the Dataset.
-        :param dataframe: If specified, the Pandas Dataframe will be serialized and uploaded for ingestion with the Dataset resource.
-        :param data_file: If specified, the SDK will attempt read a file with the given path and will upload the
-            contents of the file for ingestion with the Dataset resource.
-        :param data_bytes: If specified, the SDK will upload the given raw data for ingestion with the Dataset resource.
+            If specified as a Data Source, or if one was found with the given name, it will be applied to the Dataset.
+        :param bucket: The bucket which the raw dataset data will be uploaded to.
+        :param dataframe: The Pandas Dataframe will be serialized and uploaded for ingestion with the Dataset resource.
+        :param data_file: The file path which will be read and uploaded for ingestion with the Dataset resource.
+        :param data_bytes: The raw data as bytes that will be uploaded for  ingestion with the Dataset resource.
         :param workload: The resource requirements which will be allocated for Dataset ingestion.
         :param fast: If enabled, the Dataset will skip validation, profiling, and reporting.
-        :param sample: The sample settings of the dataset, which if enabled will ingest a Dataset with a portion of the uploaded data.
+        :param sample: The sample settings of the dataset, which if enabled will select only a portion of the Dataset
+          for further processing.
         :param task_type: The target task type in relation to the data being used.
         :param notification: The notification settings, which if enabled will forward events about this resource to a notifier.
         """
-        return Dataset(MDDataset(), self.Datasets, namespace, name, version, gen_datasource, target_column,
+        return Dataset(MDDataset(), self.Datasets, namespace, name, version, lab, gen_datasource, target_column,
                        datasource, bucket, dataframe, data_file, data_bytes, workload, fast,
                        sample, task_type, notification)
 
@@ -659,14 +661,14 @@ class Modela:
 
     def Predictor(self, namespace="", name="", version=Resource.DefaultVersion,
                   serving_site: Union[ObjectReference, ServingSite, str] = "default-serving-site",
-                  model: Union[Model, str] = None, models: List[ModelDeploymentSpec] = [], port: int = 3000,
+                  model: Union[Model, str] = None, models: List[ModelDeploymentSpec] = None, port: int = 3000,
                   path: str = None, access_type: AccessType = None, replicas: int = 0, autoscale: bool = False,
                   workload: Workload = None) -> Predictor:
         """
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
         :param version: The version of the resource.
-        :param serving_site: The object reference, Serving Site object, or name under default-tenant for which the
+        :param serving_site: The object reference, Serving Site object, or name under the tenant of the resource for which the
             predictor will be deployed under.
         :param model: The Model object or name that the predictor will serve predictions for. This parameter
             will instantiate the predictor with a singe default deployment specification for the model.
@@ -842,8 +844,47 @@ class Modela:
     def ModelAutobuilders(self) -> ModelAutobuilderClient:
         return self.__modelautobuilder_client
 
-    def ModelAutobuilder(self, namespace="", name="") -> ModelAutobuilder:
-        return ModelAutobuilder(MDModelAutobuilder(), self.ModelAutobuilders, namespace, name)
+    def ModelAutobuilder(self, namespace="", name="", version=Resource.DefaultVersion,
+                         lab: Union[ObjectReference, Lab, str] = "default-lab",
+                         serving_site: Union[ObjectReference, ServingSite, str] = "default-serving-site",
+                         task_type: TaskType = TaskType.BinaryClassification, workload: Workload = Workload("general-large"),
+                         bucket: Union[ObjectReference, VirtualBucket, str] = "default-minio-bucket",
+                         dataframe: pandas.DataFrame = None, data_file: str = None, data_bytes: bytes = None,
+                         target_column: str = None, objective: Metric = Metric.Accuracy,
+                         feature_selection: bool = False, feature_engineering: bool = False, max_models: int = 1,
+                         max_time: int = 512, trainers: int = 1, predictor_access_type: AccessType = AccessType.ClusterIP,
+                         predictor_autoscale: bool = False, create_data_app: bool = False) -> ModelAutobuilder:
+        """
+        :param namespace: The target namespace of the resource.
+        :param name: The name of the resource.
+        :param version: The version of the resource.
+        :param lab: The object reference, Lab object, or lab name under the tenant of the resource for which all
+            data science workloads will be performed under.
+        :param serving_site: The object reference, Serving Site object, or name under the tenant of the resource for which
+            the created Predictor will be deployed under.
+        :param task_type: The target task type in relation to the data being used.
+        :param workload: The workload specification which determines the resources which will be allocated for training
+            and serving workloads.
+        :param bucket: The bucket which the raw dataset data will be uploaded to.
+        :param dataframe: The Pandas Dataframe will be serialized and uploaded to create a new Dataset resource.
+        :param data_file: The file path which will be read and uploaded to create a new Dataset resource.
+        :param data_bytes: The raw data as bytes that will be uploaded to create a new Dataset resource.
+        :param target_column: The target column of the Dataset to be created.
+        :param objective: The objective metric to be used when determining the best model from the Study.
+        :param feature_selection: If True feature selection will be performed on the Dataset before the model search.
+        :param feature_engineering: If True feature engineering will be performed on the Dataset before the model search.
+        :param max_models: The maximum number of models to sample before selecting the best model.
+        :param max_time: The maximum amount of time in seconds which the model search can run for.
+        :param trainers: The number of parallel trainers to allocate during the model search
+        :param predictor_access_type: The access type of the Predictor to be created. See https://www.modela.ai/docs/docs/serving/production/
+            for documentation on how different access types expose the Predictor service
+        :param predictor_autoscale: If true the created Predictor will automatically scale for traffic
+        :param create_data_app: If true a Data Application will be created to serve a live model dashboard
+        """
+        return ModelAutobuilder(MDModelAutobuilder(), self.ModelAutobuilders, namespace, name, version, lab,
+                                serving_site, task_type, workload, bucket, dataframe, data_file, data_bytes,
+                                target_column, objective, feature_selection, feature_engineering, max_models,
+                                max_time, trainers, predictor_access_type, predictor_autoscale, create_data_app)
 
     @property
     def ModelCompilerRuns(self) -> ModelCompilerRunClient:

@@ -1,3 +1,4 @@
+import asyncio
 import time
 
 import grpc
@@ -49,7 +50,7 @@ class Study(Resource):
         :param version: The version of the resource.
         :param dataset: If specified as a string, the SDK will attempt to find a Dataset resource with the given name.
             If specified as a Dataset object, or if one was found with the given name, it will be used in the Study.
-        :param lab: The object reference, Lab object, or lab name under the default-tenant for which all Study-related
+        :param lab: The object reference, Lab object, or lab name under the tenant of the resource for which all Study-related
             workloads will be performed under.
         :param bucket: The Bucket object or name of the bucket which will store the Study artifacts
         :param objective: The objective metric relevant to the task type.
@@ -89,7 +90,6 @@ class Study(Resource):
             lab = lab.reference
         elif type(lab) == str:
             lab = ObjectReference(Namespace=client.modela.tenant, Name=lab)
-        spec.LabRef = lab
 
         if bucket is not None:
             if type(bucket) == VirtualBucket:
@@ -298,13 +298,11 @@ class Study(Resource):
         except KeyboardInterrupt:
             pass
 
-    def wait_until_phase(self, phase: StudyPhase):
-        """ Blocks until the specified phase is reached, or the Study fails """
-        while True:
-            time.sleep(0.2)
-            status_phase = self.status.Phase
-            if status_phase == phase or status_phase == StudyPhase.Failed:
-                break
+    async def wait_until_phase(self, phase: StudyPhase):
+        """ Returns a coroutine which blocks until the specified phase is reached, or the Study fails """
+        while self.status.Phase not in (phase, StudyPhase.Failed):
+            await asyncio.sleep(1/5)
+
 
     @property
     def models(self) -> List[Model]:

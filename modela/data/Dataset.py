@@ -14,14 +14,17 @@ from tabulate import tabulate
 from tqdm import tqdm, trange
 
 from modela.Resource import Resource
-from modela.ModelaException import ModelaException
+from modela.ModelaException import ModelaException, ResourceNotFoundException
 from typing import List, Union
 import pandas
 
+from modela.common import ObjectReference
 from modela.data.common import *
 from modela.data.DataSource import DataSource
 from modela.data.models import SampleSettings, DatasetSpec, DatasetStatus, DatasetProfile
 from modela.infra.models import Workload, NotificationSettings
+from modela.infra.Lab import Lab
+from modela.infra.VirtualBucket import VirtualBucket
 from modela.training.Report import Report
 from modela.training.common import TaskType
 from modela.util import convert_size
@@ -30,10 +33,11 @@ from modela.util import convert_size
 class Dataset(Resource):
     def __init__(self, item: MDDataset = MDDataset(), client=None, namespace="", name="",
                  version=Resource.DefaultVersion,
+                 lab: Union[ObjectReference, Lab, str] = "default-lab",
                  gen_datasource: bool = False,
                  target_column: str = None,
                  datasource: Union[DataSource, str] = "",
-                 bucket: str = "default-minio-bucket",
+                 bucket: Union[VirtualBucket, str] = "default-minio-bucket",
                  dataframe: pandas.DataFrame = None,
                  data_file: str = None,
                  data_bytes: bytes = None,
@@ -46,19 +50,21 @@ class Dataset(Resource):
         :param client: The Dataset client repository, which can be obtained through an instance of Modela.
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
+        :param lab: The object reference, Lab object, or lab name under the tenant of the resource for which all
+            Dataset-related workloads will be performed under.
         :param gen_datasource: If true, a Datasource resource will be created from the uploaded dataset and applied to
             the Dataset resource.
         :param target_column: If gen_datasource is enabled, then the target column of the data source must be specified.
         :param datasource: If specified as a string, the SDK will attempt to find a Data Source resource with the given name.
             If specified as a Data Source, or if one was found with the given name, it will be applied to the Dataset.
         :param bucket: The bucket which the raw dataset data will be uploaded to.
-        :param dataframe: If specified, the Pandas Dataframe will be serialized and uploaded for ingestion with the Dataset resource.
-        :param data_file: If specified, the SDK will attempt read a file with the given path and will upload the
-            contents of the file for ingestion with the Dataset resource.
-        :param data_bytes: If specified, the SDK will upload the given raw data for ingestion with the Dataset resource.
+        :param dataframe: The Pandas Dataframe will be serialized and uploaded for ingestion with the Dataset resource.
+        :param data_file: The file path which will be read and uploaded for ingestion with the Dataset resource.
+        :param data_bytes: The raw data as bytes that will be uploaded for  ingestion with the Dataset resource.
         :param workload: The resource requirements which will be allocated for Dataset ingestion.
         :param fast: If enabled, the Dataset will skip validation, profiling, and reporting.
-        :param sample: The sample settings of the dataset, which if enabled will ingest a Dataset with a portion of the uploaded data.
+        :param sample: The sample settings of the dataset, which if enabled will select only a portion of the Dataset
+          for further processing.
         :param task_type: The target task type in relation to the data being used.
         :param notification: The notification settings, which if enabled will forward events about this resource to a notifier.
         """
@@ -68,15 +74,26 @@ class Dataset(Resource):
         if not self.default_resource:  # Ignore the rest of the constructor; datasets are immutable
             return
 
-        if not gen_datasource:
+        spec = self.spec
+        if type(lab) == Lab:
+            lab = lab.reference
+        elif type(lab) == str:
+            lab = ObjectReference(Namespace=client.modela.tenant, Name=lab)
+
+        if type(bucket) == VirtualBucket:
+            bucket = bucket.name
+
+        # FIXME: https://github.com/metaprov/modelaapi/issues/7
+
+        if gen_datasource:
+            file_type = FlatFileType.Csv
+        else:
             if type(datasource) == str:  # Fetch the data source in case we need to read the file type
                 assert datasource != ""
                 datasource = client.modela.DataSource(namespace=namespace, name=datasource)
                 assert not datasource.default_resource
 
             file_type = datasource.spec.FileType
-        else:
-            file_type = FlatFileType.Csv
 
         if data_file is not None:
             with open(data_file, 'r') as f:
@@ -143,11 +160,10 @@ class Dataset(Resource):
     def report(self) -> Report:
         """ Fetch the report associated with the Dataset """
         self.ensure_client_repository()
-        if self.status.ReportName != "":
-            return self._client.modela.Report(namespace=self.namespace, name=self.status.ReportName)
-        else:
-            print("Dataset {0} has no report.".format(self.name))
+        if self.status.ReportName == "":
+            raise ValueError("Dataset {0} has no report.".format(self.name))
 
+        return self._client.modela.Report(namespace=self.namespace, name=self.status.ReportName)
     @property
     def phase(self) -> DatasetPhase:
         """ The phase specified by the status of the Dataset """
@@ -306,7 +322,7 @@ class DatasetClient:
         ModelaException.process_error(error)
         return False
 
-    def get(self, namespace: str, name: str) -> Union[Dataset, bool]:
+    def get(self, namespace: str, name: str) -> Dataset:
         request = GetDatasetRequest()
         request.namespace = namespace
         request.name = name
@@ -317,7 +333,6 @@ class DatasetClient:
             error = err
 
         ModelaException.process_error(error)
-        return False
 
     def delete(self, namespace: str, name: str) -> bool:
         request = DeleteDatasetRequest()
@@ -332,7 +347,7 @@ class DatasetClient:
         ModelaException.process_error(error)
         return False
 
-    def list(self, namespace: str) -> Union[List[Dataset], bool]:
+    def list(self, namespace: str) -> List[Dataset]:
         request = ListDatasetsRequest()
         request.namespace = namespace
         try:
@@ -342,7 +357,6 @@ class DatasetClient:
             error = err
 
         ModelaException.process_error(error)
-        return False
 
     def profile(self, namespace: str, name: str) -> DatasetProfile:
         request = GetDatasetProfileRequest()

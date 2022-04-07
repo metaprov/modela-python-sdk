@@ -651,14 +651,14 @@ class ModelAutobuilderSpec(Configuration):
     Task: TaskType = None
     Objective: Metric = None
     TargetColumn: str = ""
-    MaxTime: int = 60
+    MaxTime: int = 600
     MaxModels: int = 10
     AccessMethod: AccessType = AccessType.ClusterIP
     AutoScale: bool = False
     Dataapp: bool = False
     DataSourceSpec: DataSourceSpec = None
     Trainers: int = 1
-    Sampler: SamplerType = None
+    Sampler: SamplerType = SamplerType.TPESearch
     Aborted: bool = False
     Owner: str = "no-one"
     Resources: Workload = None

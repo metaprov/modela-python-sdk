@@ -39,14 +39,15 @@ class Test_Modela_study(unittest.TestCase):
             Test_Modela_study.resource = None
 
     def test_0_create_actions(self):
+        loop = asyncio.new_event_loop()
         study = self.request_resource("test-study")
         study.submit(replace=True)
-        study.wait_until_phase(StudyPhase.EngineeringFeature)
+        loop.run_until_complete(study.wait_until_phase(StudyPhase.EngineeringFeature))
         study.pause()
         time.sleep(1)
         assert study.status.Phase == StudyPhase.Paused
         study.resume()
-        study.wait_until_phase(StudyPhase.EngineeringFeature)
+        loop.run_until_complete(study.wait_until_phase(StudyPhase.EngineeringFeature))
         study.abort()
         time.sleep(1)
         assert study.status.Phase == StudyPhase.Aborted

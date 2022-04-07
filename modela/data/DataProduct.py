@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import DataProduct as MDDataProduct
 from github.com.metaprov.modelaapi.services.dataproduct.v1.dataproduct_pb2_grpc import DataProductServiceStub
@@ -22,13 +20,13 @@ from modela.training.common import TaskType
 
 class DataProduct(Resource):
     def __init__(self, item: MDDataProduct = MDDataProduct(), client=None, namespace="", name="",
-                 serving_site: ServingSite | str = None,
-                 lab: Lab | str = None,
+                 serving_site: Union[ServingSite, str] = None,
+                 lab: Union[Lab, str] = None,
                  public: bool = None,
                  task_type: TaskType = None,
                  default_training_workload: Workload = None,
                  default_serving_workload: Workload = None,
-                 default_bucket: VirtualBucket | str = None,
+                 default_bucket: Union[VirtualBucket, str] = None,
                  notification_settings: NotificationSettings = None,
                  permissions: Permissions = None):
         """

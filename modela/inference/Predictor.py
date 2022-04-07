@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import json
 import time
 
@@ -32,7 +30,7 @@ class Predictor(Resource):
                  version=Resource.DefaultVersion,
                  serving_site: Union[ObjectReference, ServingSite, str] = "default-serving-site",
                  model: Union[Model, str] = None,
-                 models: List[ModelDeploymentSpec] = [],
+                 models: List[ModelDeploymentSpec] = None,
                  port: int = 3000,
                  path: str = None,
                  access_type: AccessType = None,
@@ -45,7 +43,7 @@ class Predictor(Resource):
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
         :param version: The version of the resource.
-        :param serving_site: The object reference, Serving Site object, or name under default-tenant for which the
+        :param serving_site: The object reference, Serving Site object, or name under the tenant of the resource for which the
             predictor will be deployed under.
         :param model: The Model object or name that the predictor will serve predictions for. This parameter
             will instantiate the predictor with a singe default deployment specification for the model.
@@ -128,7 +126,7 @@ class Predictor(Resource):
 
             break
 
-    def predict(self, predictions: str | dict | list[dict]) -> List[PredictionResult]:
+    def predict(self, predictions: Union[str, dict, list[dict]]) -> List[PredictionResult]:
         """
         Send a batch prediction request
 
