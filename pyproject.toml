@@ -4,7 +4,7 @@ target-version = ["py38"]
 
 [tool.poetry]
 name = "modela"
-version = "0.4.546"
+version = "0.4.554"
 description = "python client sdk for the modela auto ml system."
 authors = ["liam <liam@metaprov.com>"]
 keywords = ["modela", "automl"]
@@ -18,7 +18,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-modelaapi = "0.4.544"
+modelaapi = "0.4.552"
 grpcio = "^1.44.0"
 protobuf= "^3.19.3"
 kubernetes ="^21.7.0"
