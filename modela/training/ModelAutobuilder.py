@@ -112,7 +112,8 @@ class ModelAutobuilder(Resource):
                                                               namespace, version, bucket, "datasets", name)
 
         datasource = client.modela.DataSource(namespace=namespace, name=f"{name}-sdk-autobuilder", version=version,
-                                              infer_bytes=data_bytes, target_column=target_column, task_type=task_type)
+                                              infer_bytes=data_bytes, target_column=target_column, task_type=task_type,
+                                              file_type=FlatFileType.Csv)
         spec.DataSourceSpec = datasource.spec
         spec.DataProductName = namespace
         spec.DataProductVersionName = version
@@ -150,7 +151,7 @@ class ModelAutobuilder(Resource):
         """ Returns the Data Source associated with the resource """
         self.ensure_client_repository()
         if self.status.DataSourceName == "":
-            raise ValueError("Motel Autobuilder {0} has no Data Source.".format(self.name))
+            raise ValueError("Model Autobuilder {0} has no Data Source.".format(self.name))
         return self._client.modela.DataSource(namespace=self.namespace, name=self.status.DataSourceName)
 
     @property
@@ -158,7 +159,7 @@ class ModelAutobuilder(Resource):
         """ Returns the Dataset associated with the resource """
         self.ensure_client_repository()
         if self.status.DatasetName == "":
-            raise ValueError("Motel Autobuilder {0} has no Dataset.".format(self.name))
+            raise ValueError("Model Autobuilder {0} has no Dataset.".format(self.name))
         return self._client.modela.Dataset(namespace=self.namespace, name=self.status.DatasetName)
 
     @property
@@ -166,27 +167,53 @@ class ModelAutobuilder(Resource):
         """ Returns the Study associated with the resource """
         self.ensure_client_repository()
         if self.status.StudyName == "":
-            raise ValueError("Motel Autobuilder {0} has no Study.".format(self.name))
+            raise ValueError("Model Autobuilder {0} has no Study.".format(self.name))
         return self._client.modela.Study(namespace=self.namespace, name=self.status.StudyName)
-
 
     @property
     def predictor(self) -> Predictor:
         """ Returns the Predictor associated with the resource """
         self.ensure_client_repository()
         if self.status.PredictorName == "":
-            raise ValueError("Motel Autobuilder {0} has no Predictor.".format(self.name))
+            raise ValueError("Model Autobuilder {0} has no Predictor.".format(self.name))
         return self._client.modela.Predictor(namespace=self.namespace, name=self.status.PredictorName)
-
 
     @property
     def dataapp(self) -> DataApp:
         """ Returns the Data Application associated with the resource """
         self.ensure_client_repository()
         if self.status.DataSourceName == "":
-            raise ValueError("Motel Autobuilder {0} has no Data Source.".format(self.name))
+            raise ValueError("Model Autobuilder {0} has no Data Application.".format(self.name))
         return self._client.modela.DataApp(namespace=self.namespace, name=self.status.PredictorName)
 
+    def submit_and_visualize(self, replace=False, show_progress_bar=True):
+        """
+        Submit the resource and call visualize().
+
+        :param replace: Replace the resource if it already exists on the cluster.
+        :param show_progress_bar: If enabled, the visualization will render a progress bar indicating the study progress.
+        """
+        self.submit(replace)
+        self.visualize(show_progress_bar)
+
+    def visualize(self, show_progress_bar=True):
+        """ Display a real-time visualization of the Study's progress
+
+        :param show_progress_bar: If enabled, the visualization will render a progress bar.
+         """
+        while self.status.DatasetName == "":
+            time.sleep(1 / 5)
+
+        self.dataset.visualize()
+        while self.status.StudyName == "":
+            time.sleep(1 / 5)
+
+        self.study.visualize(show_progress_bar)
+
+    async def wait_until_phase(self, phase: ModelAutobuilderPhase):
+        """ Returns a coroutine which blocks until the specified phase is reached, or the ModelAutoBuilder fails """
+        while self.status.Phase not in (phase, ModelAutobuilderPhase.Failed):
+            await asyncio.sleep(1 / 5)
 
 
 class ModelAutobuilderClient:

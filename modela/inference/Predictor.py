@@ -126,7 +126,7 @@ class Predictor(Resource):
 
             break
 
-    def predict(self, predictions: Union[str, dict, list[dict]]) -> List[PredictionResult]:
+    def predict(self, predictions: Union[str, dict, List[dict]]) -> List[PredictionResult]:
         """
         Send a batch prediction request
 

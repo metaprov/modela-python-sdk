@@ -15,6 +15,7 @@ class Resource:
 
     def __init__(self, resource: Message, client=None, name="", namespace="", version='v0.0.1'):
         self._object: Message = resource
+
         if client is not None:
             self._client = client
 

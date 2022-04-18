@@ -4,8 +4,8 @@ from modela import *
 import pprint
 
 
-class Test_Modela_model(unittest.TestCase):
-    """Tests for `modela.training.Model`"""
+class Test_Modela_userroleclass(unittest.TestCase):
+    """Tests for `modela.training.UserRoleClass`"""
 
     @classmethod
     def setUpClass(cls):

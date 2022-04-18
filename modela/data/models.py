@@ -8,7 +8,7 @@ from modela.training.common import *
 from modela.common import *
 from modela.Configuration import *
 from dataclasses import field
-from typing import List, Union
+from typing import List, Union, Dict
 from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import CompilerSpec, Stakeholder, \
     PermissionsSpec
 import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
@@ -70,7 +70,7 @@ class Permissions(Configuration):
     Stakeholders: List[Stakeholder] = field(default_factory=lambda: [])
 
     @classmethod
-    def create(cls, accounts: dict[Union[Account, str], Union[UserRoleClass, str, List[UserRoleClass], List[str]]],
+    def create(cls, accounts: Dict[Union[Account, str], Union[UserRoleClass, str, List[UserRoleClass], List[str]]],
                tenant="default-tenant") -> PermissionsSpec:
         """
         Generate a permission specification based on a dictionary of Accounts and their User Role Classes

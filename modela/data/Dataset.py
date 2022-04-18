@@ -1,3 +1,4 @@
+import asyncio
 import io
 import json
 import os.path
@@ -164,6 +165,7 @@ class Dataset(Resource):
             raise ValueError("Dataset {0} has no report.".format(self.name))
 
         return self._client.modela.Report(namespace=self.namespace, name=self.status.ReportName)
+
     @property
     def phase(self) -> DatasetPhase:
         """ The phase specified by the status of the Dataset """
@@ -284,6 +286,11 @@ class Dataset(Resource):
             return self._profile
         else:
             raise AttributeError("Object has no client repository")
+
+    async def wait_until_phase(self, phase: DatasetPhase):
+        """ Returns a coroutine which blocks until the specified phase is reached, or the Dataset fails """
+        while self.status.Phase not in (phase, DatasetPhase.Failed):
+            await asyncio.sleep(1/5)
 
     def __repr__(self):
         out = super().__repr__()

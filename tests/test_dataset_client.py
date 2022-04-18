@@ -11,7 +11,7 @@ from google.protobuf.json_format import MessageToJson
 
 
 class Test_Modela_dataset(unittest.TestCase):
-    """Tests for `modela.data.DataSet`"""
+    """Tests for `modela.data.Dataset`"""
     resource: Dataset = None
 
     @classmethod
