@@ -4,14 +4,13 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Implement ModelAutobuilder CRD">
+    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Add ModelAutobuilder tests &amp; fix python3.8 compat">
+      <change afterPath="$PROJECT_DIR$/hack/transpose_documentation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/Resource.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/Resource.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/Dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/ModelAutobuilder.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/ModelAutobuilder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_dataset_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_dataset_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_modelautobuilder_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_modelautobuilder_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_userroleclass_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_userroleclass_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +21,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Unit Test" />
+        <option value="Python Stub" />
         <option value="Python Script" />
       </list>
     </option>
@@ -70,13 +70,14 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.modules.go.list.on.any.changes.was.set" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/test_modelautobuilder_client.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/hack/transpose_documentation.py" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\PyCharm 2021.3.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -87,20 +88,42 @@
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\inference" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\hack\vendor" />
+      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\hack" />
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\tests\datasets" />
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\docs" />
-      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\hack" />
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\tests" />
-      <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\modela\infra" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for test_modelautobuilder_client.Test_Modela_modelautobuilder.test_create">
+  <component name="RunManager" selected="Python.Add Documentation">
     <configuration name="go build modela-python-sdk gen_crd_docs.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="FILE" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$/gen_crd_docs.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Add Documentation" type="PythonConfigurationType" factoryName="Python">
+      <module name="modela-python-sdk" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\liamm\PycharmProjects\modela-python-sdk\venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/hack" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/hack/transpose_documentation.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
     <configuration name="Validate Datamodels" type="PythonConfigurationType" factoryName="Python">
@@ -404,10 +427,9 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.Add Documentation" />
       <item itemvalue="Python.Validate Datamodels" />
       <item itemvalue="Python.build-docs" />
-      <item itemvalue="Python tests.Python tests in test_modelautobuilder_client.py" />
-      <item itemvalue="Python tests.Python tests in test_userroleclass_client.py" />
       <item itemvalue="Python tests.Python tests in test_account_client.py" />
       <item itemvalue="Python tests.Python tests in test_dataproducts_client.py" />
       <item itemvalue="Python tests.Python tests in test_dataproductversion_client.py" />
@@ -416,13 +438,15 @@
       <item itemvalue="Python tests.Python tests in test_file_service.py" />
       <item itemvalue="Python tests.Python tests in test_inference_service.py" />
       <item itemvalue="Python tests.Python tests in test_model_client.py" />
+      <item itemvalue="Python tests.Python tests in test_modelautobuilder_client.py" />
       <item itemvalue="Python tests.Python tests in test_predictor_client.py" />
       <item itemvalue="Python tests.Python tests in test_report_client.py" />
       <item itemvalue="Python tests.Python tests in test_study_client.py" />
+      <item itemvalue="Python tests.Python tests in test_userroleclass_client.py" />
       <item itemvalue="Python tests.Unittests in test_configuration.py" />
-      <item itemvalue="Python tests.Python tests for test_study_client.Test_Modela_study.test_1_viz" />
-      <item itemvalue="Python tests.Python tests for test_modelautobuilder_client.Test_Modela_modelautobuilder.test_viz" />
       <item itemvalue="Python tests.Python tests for test_modelautobuilder_client.Test_Modela_modelautobuilder.test_create" />
+      <item itemvalue="Python tests.Python tests for test_modelautobuilder_client.Test_Modela_modelautobuilder.test_viz" />
+      <item itemvalue="Python tests.Python tests for test_study_client.Test_Modela_study.test_1_viz" />
     </list>
     <recent_temporary>
       <list>
@@ -453,7 +477,8 @@
       <workItem from="1647472365233" duration="41542000" />
       <workItem from="1648846895452" duration="61822000" />
       <workItem from="1649275110941" duration="37583000" />
-      <workItem from="1650130635514" duration="1342000" />
+      <workItem from="1650130635514" duration="33431000" />
+      <workItem from="1650408340125" duration="445000" />
     </task>
     <task id="LOCAL-00001" summary="fixed the client. upgrade version">
       <created>1630772236555</created>
@@ -735,7 +760,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649357130506</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="Add ModelAutobuilder tests &amp; fix python3.8 compat">
+      <created>1650306132263</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1650306132263</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -756,7 +788,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/docs/sphinx-markdown-builder" />
     </ignored-roots>
-    <MESSAGE value="Test inference service" />
     <MESSAGE value="Debug file service" />
     <MESSAGE value="Fix file service" />
     <MESSAGE value="Fix versioning, add auth, add dataset logic" />
@@ -781,7 +812,8 @@
     <MESSAGE value="Implement UserRoleClass unit tests, refactor unsafe star imports" />
     <MESSAGE value="Finish DataProduct unit tests w/ bug fixes" />
     <MESSAGE value="Implement ModelAutobuilder CRD" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement ModelAutobuilder CRD" />
+    <MESSAGE value="Add ModelAutobuilder tests &amp; fix python3.8 compat" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add ModelAutobuilder tests &amp; fix python3.8 compat" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -798,6 +830,7 @@
     <SUITE FILE_PATH="coverage/modela_python_sdk$build.coverage" NAME="build Coverage Results" MODIFIED="1646678944062" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/docs" />
     <SUITE FILE_PATH="coverage/modela_python_sdk$Validate_Datamodels.coverage" NAME="Validate Datamodels Coverage Results" MODIFIED="1649369875897" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/hack" />
     <SUITE FILE_PATH="coverage/modela_python_sdk$Unittests_in_test_configuration_py.coverage" NAME="Unittests in test_configuration.py Coverage Results" MODIFIED="1648494060547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/modela_python_sdk$Add_Documentation.coverage" NAME="Add Documentation Coverage Results" MODIFIED="1650408743701" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/hack" />
     <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1649449710074" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
 </project>

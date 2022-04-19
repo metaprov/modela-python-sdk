@@ -8,8 +8,12 @@ __pycache__/
 # C extensions
 *.so
 
-# Distribution / packaging
+# Project-specific
 tests/datasets/100MB.bin
+hack/modelaapi
+hack/vendor
+
+# Distribution / packaging
 content/
 .Python
 build/
