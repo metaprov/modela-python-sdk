@@ -4,92 +4,14 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Implement automated documentation transposition 💪">
-      <change afterPath="$PROJECT_DIR$/docs/build.sh" afterDir="false" />
+    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Fix class documentation">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.Configuration.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.ModelaException.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.Resource.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.common.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.DataPipeline.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.DataPipelineRun.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.DataProduct.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.DataProductVersion.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.DataSource.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.Dataset.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.Entity.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.Feature.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.FeatureHistogram.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.FeaturePipeline.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.FeaturePipelineRun.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.Featureset.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.LabelingPipeline.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.LabelingPipelineRun.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.Recipe.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.RecipeRun.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.SqlQuery.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.SqlQueryRun.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.WebRequest.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.WebRequestRun.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.common.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.models.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.data.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.inference.CronPrediction.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.inference.Curtain.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.inference.DataApp.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.inference.InferenceService.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.inference.Prediction.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.inference.Predictor.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.inference.common.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.inference.models.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.inference.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.Account.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.Alert.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.ApiToken.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.Attachment.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.Commit.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.Connection.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.FileService.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.Lab.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.License.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.ModelaSystem.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.Notifier.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.ServingSite.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.Tenant.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.VirtualBucket.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.VirtualCluster.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.VirtualVolume.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.common.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.connection_models.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.models.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.infra.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.server.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.team.Meeting.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.team.PostMortem.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.team.Review.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.team.RunBook.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.team.Todo.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.team.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.training.CronReport.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.training.Model.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.training.ModelAutobuilder.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.training.ModelCompilerRun.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.training.ModelPipeline.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.training.ModelPipelineRun.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.training.Notebook.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.training.NotebookRun.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.training.Report.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.training.Study.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.training.common.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/modela.training.rst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/sphinx-markdown-builder/sphinx_markdown_builder/doctree2md.py" beforeDir="false" afterPath="$PROJECT_DIR$/docs/sphinx-markdown-builder/sphinx_markdown_builder/doctree2md.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hack/transpose_documentation.py" beforeDir="false" afterPath="$PROJECT_DIR$/hack/transpose_documentation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/DataSource.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/DataSource.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/Dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/Dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/inference/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/training/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/inference/InferenceService.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/InferenceService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/inference/Predictor.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/Predictor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/training/Model.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/training/Study.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/Study.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_predictor_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_predictor_client.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -174,7 +96,7 @@
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\hack" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests in test_study_client.py">
+  <component name="RunManager" selected="Python tests.Python tests in test_predictor_client.py">
     <configuration name="go build modela-python-sdk gen_crd_docs.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <working_directory value="$PROJECT_DIR$" />
@@ -557,7 +479,7 @@
       <workItem from="1648846895452" duration="61822000" />
       <workItem from="1649275110941" duration="37583000" />
       <workItem from="1650130635514" duration="33431000" />
-      <workItem from="1650408340125" duration="8579000" />
+      <workItem from="1650408340125" duration="14962000" />
     </task>
     <task id="LOCAL-00001" summary="fixed the client. upgrade version">
       <created>1630772236555</created>
@@ -853,7 +775,14 @@
       <option name="project" value="LOCAL" />
       <updated>1650409019914</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="Fix class documentation">
+      <created>1650655688058</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1650655688058</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -874,7 +803,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/docs/sphinx-markdown-builder" />
     </ignored-roots>
-    <MESSAGE value="Fix file service" />
     <MESSAGE value="Fix versioning, add auth, add dataset logic" />
     <MESSAGE value="Implement more dataset &amp; datasource logic" />
     <MESSAGE value="Implement progress visualizations &amp; other bug fixes" />
@@ -899,7 +827,8 @@
     <MESSAGE value="Implement ModelAutobuilder CRD" />
     <MESSAGE value="Add ModelAutobuilder tests &amp; fix python3.8 compat" />
     <MESSAGE value="Implement automated documentation transposition " />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement automated documentation transposition " />
+    <MESSAGE value="Fix class documentation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix class documentation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -914,9 +843,9 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/modela_python_sdk$build.coverage" NAME="build Coverage Results" MODIFIED="1646678944062" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/docs" />
-    <SUITE FILE_PATH="coverage/modela_python_sdk$Validate_Datamodels.coverage" NAME="Validate Datamodels Coverage Results" MODIFIED="1650652780871" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/hack" />
+    <SUITE FILE_PATH="coverage/modela_python_sdk$Validate_Datamodels.coverage" NAME="Validate Datamodels Coverage Results" MODIFIED="1650668382742" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/hack" />
     <SUITE FILE_PATH="coverage/modela_python_sdk$Unittests_in_test_configuration_py.coverage" NAME="Unittests in test_configuration.py Coverage Results" MODIFIED="1648494060547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/modela_python_sdk$Add_Documentation.coverage" NAME="Add Documentation Coverage Results" MODIFIED="1650652855803" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/hack" />
-    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1650652915210" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1650670323713" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>

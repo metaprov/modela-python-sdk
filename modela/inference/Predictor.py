@@ -1,3 +1,4 @@
+import asyncio
 import json
 import time
 
@@ -19,7 +20,7 @@ from typing import List, Union
 
 from modela.inference.InferenceService import InferenceService
 from modela.inference.common import AccessType
-from modela.inference.models import ModelDeploymentSpec, PredictorSpec, PredictorStatus, PredictionResult
+from modela.inference.models import ModelDeploymentSpec, PredictorSpec, PredictorStatus, PredictionResult, AutoScaling
 from modela.infra.ServingSite import ServingSite
 from modela.infra.models import Workload
 from modela.training.Model import Model
@@ -35,7 +36,7 @@ class Predictor(Resource):
                  path: str = None,
                  access_type: AccessType = None,
                  replicas: int = 0,
-                 autoscale: bool = None,
+                 autoscale: AutoScaling = None,
                  workload: Workload = None):
         """
 
@@ -76,7 +77,7 @@ class Predictor(Resource):
         else:
             self.spec.Models = models
 
-        if not self.default_resource:
+        if self.default_resource:
             self.spec.ServingsiteRef = serving_site
             if port is not None:
                 spec.Port = port
@@ -114,17 +115,17 @@ class Predictor(Resource):
         self.ensure_client_repository()
         return self._client.modela.Model(self.namespace, self.spec.Models[0].ModelName)
 
-    def wait_until_ready(self):
+    async def wait_until_ready(self):
         """ Block until the predictor service is ready to accept prediction requests. """
         payload = self.model.test_prediction
         while True:
             try:
                 self.predict(payload)
             except ResourceNotFoundException:
-                time.sleep(0.2)
+                await asyncio.sleep(1 / 5)
                 continue
 
-            break
+            return
 
     def predict(self, predictions: Union[str, dict, List[dict]]) -> List[PredictionResult]:
         """
@@ -201,7 +202,7 @@ class PredictorClient:
         ModelaException.process_error(error)
         return False
 
-    def get(self, namespace: str, name: str) -> Union[Predictor, bool]:
+    def get(self, namespace: str, name: str) -> Predictor:
         request = GetPredictorRequest()
         request.namespace = namespace
         request.name = name
@@ -212,7 +213,6 @@ class PredictorClient:
             error = err
 
         ModelaException.process_error(error)
-        return False
 
     def delete(self, namespace: str, name: str) -> bool:
         request = DeletePredictorRequest()
@@ -227,7 +227,7 @@ class PredictorClient:
         ModelaException.process_error(error)
         return False
 
-    def list(self, namespace: str, labels: dict = None) -> Union[List[Predictor], bool]:
+    def list(self, namespace: str, labels: dict = None) -> List[Predictor]:
         request = ListPredictorsRequest()
         request.namespace = namespace
         if labels is not None:
@@ -240,7 +240,6 @@ class PredictorClient:
             error = err
 
         ModelaException.process_error(error)
-        return False
 
     def predict(self, namespace: str, name: str, fields: str, values: str) -> List[PredictionResult]:
         request = PredictOneRequest()

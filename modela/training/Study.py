@@ -40,6 +40,7 @@ class Study(Resource):
                  notification: NotificationSettings = None,
                  garbage_collect: bool = True,
                  keep_best_models: bool = True,
+                 fast: bool = False,
                  timeout: int = 600,
                  template: bool = False):
         """
@@ -68,6 +69,7 @@ class Study(Resource):
         :param garbage_collect: If enabled, models which did not move past the testing stage will be garbage collected by
             the system.
         :param keep_best_models: If enabled, the best models from each algorithm will not be garbage collected.
+        :param fast: If enabled, the Study will skip profiling, explaining, and reporting.
         :param timeout: The timeout in seconds after which the Study will fail.
         :param template: If the Study is a template it will not start a search and can only be used as a template for
             other studies.
@@ -85,6 +87,7 @@ class Study(Resource):
             dataset = client.modela.Dataset(namespace=namespace, name=dataset)
         spec.DatasetName = dataset_name
         spec.Task = dataset.spec.Task
+        print("Spec",spec.DatasetName)
 
         if type(lab) == Lab:
             lab = lab.reference
@@ -131,6 +134,7 @@ class Study(Resource):
         if keep_best_models:
             spec.Gc.KeepOnlyBestModelPerAlgorithm = True
 
+        spec.Fast = fast
         spec.ActiveDeadlineSeconds = timeout
         spec.Template = template
 
