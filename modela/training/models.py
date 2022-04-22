@@ -814,7 +814,10 @@ class BaselineSettings(Configuration):
 
 @datamodel(proto=training_pb.FeatureEngineeringSearchSpec)
 class FeatureEngineeringSearch(Configuration):
-    """ FeatureEngineeringSearchSpec specifies the configuration to produce """
+    """
+    FeatureEngineeringSearchSpec specifies the configuration to produce
+    the best-performing feature engineering pipeline for a given dataset
+    """
     Enabled: bool = True
     """ Indicates if the feature engineering search will be performed """
     ImbalancedHandler: ImbalanceHandling = ImbalanceHandling.ImbalanceAuto

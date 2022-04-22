@@ -77,7 +77,10 @@ class ModelRecord(Configuration):
 
 @datamodel(proto=catalog_pb.ModelDeploymentSpec)
 class ModelDeploymentSpec(Configuration):
-    """ ModelDeploymentSpec describes how a single model should be deployed with a Predictor, and """
+    """
+    ModelDeploymentSpec describes how a single model should be deployed with a Predictor, and
+    how prediction traffic will be routed to the model
+    """
     ModelName: str = ''
     """
     The name of a model, which is fully complete and packaged, that exists in the same DataProduct namespace

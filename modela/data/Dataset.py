@@ -45,7 +45,7 @@ class Dataset(Resource):
                  workload: Workload = Workload("general-large"),
                  fast: bool = False,
                  sample: SampleSettings = SampleSettings(),
-                 task_type: TaskType = TaskType.BinaryClassification,
+                 task_type: TaskType = None,
                  notification: NotificationSettings = None):
         """
         :param client: The Dataset client repository, which can be obtained through an instance of Modela.
@@ -80,11 +80,10 @@ class Dataset(Resource):
             lab = lab.reference
         elif type(lab) == str:
             lab = ObjectReference(Namespace=client.modela.tenant, Name=lab)
+        spec.LabRef = lab
 
         if type(bucket) == VirtualBucket:
             bucket = bucket.name
-
-        # FIXME: https://github.com/metaprov/modelaapi/issues/7
 
         if gen_datasource:
             file_type = FlatFileType.Csv
@@ -132,8 +131,10 @@ class Dataset(Resource):
 
         self.spec.DatasourceName = datasource.name
         self.spec.Resources = workload
-        self.spec.Task = task_type
-        if task_type != datasource.spec.Task:
+        self.spec.Task = task_type or TaskType.BinaryClassification
+        if not task_type:
+            print("WARNING: No task type was specified. Defaulting to binary classification")
+        elif task_type != datasource.spec.Task:
             print("WARNING: Dataset task type does not match the task type of its Data Source (you: %s, it: %s)" %
                   (task_type.name, datasource.spec.Task.name))
 

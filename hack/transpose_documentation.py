@@ -123,8 +123,7 @@ def add_docs():
                     else:
                         node.body[0].value.s = docs["comments"][0]
                 elif len(docs["comments"]):
-                    node.body.insert(0, ast.Expr(value=ast.Constant(value=f' {docs["comments"][0]} ')))
-
+                    node.body.insert(0, ast.Expr(value=ast.Constant(value=generate_comment(docs["comments"]))))
 
 
                 fields = node.body.copy()

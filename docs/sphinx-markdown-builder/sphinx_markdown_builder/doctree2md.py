@@ -610,6 +610,9 @@ class Translator(nodes.NodeVisitor):
             if url.split("/")[-1] == "server":
                 return self.builder.get_class_path(node['refid'].split(".")[-1])
 
+        elif 'https' in url:
+            self.add(url)
+            raise nodes.SkipNode
 
         else:  # URL is relative to the current docname.
             this_dir = posixpath.dirname(this_doc)

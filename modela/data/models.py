@@ -19,7 +19,10 @@ from modela.util import TrackedList
 
 @datamodel(proto=data_pb.DataLocation)
 class DataLocation(Configuration):
-    """ DataLocation describes the external location of data that will be accessed by Modela, and additional """
+    """
+    DataLocation describes the external location of data that will be accessed by Modela, and additional
+    information on how to query the data if the location is a non flat-file source.
+    """
     Type: DataLocationType = DataLocationType.ObjectStorage
     """
     The type of location where the data resides, which can either be an object inside an object storage system (i.e. Minio), a SQL location
@@ -116,7 +119,10 @@ class Stakeholder(Configuration):
 
 @datamodel(proto=catalog_pb.PermissionsSpec)
 class Permissions(Configuration):
-    """ PermissionsSpec specifies the Accounts that have access to a DataProduct or Tenant namespace and what permissions """
+    """
+    PermissionsSpec specifies the Accounts that have access to a DataProduct or Tenant namespace and what permissions
+    they possess for resources under the namespace
+    """
     Stakeholders: List[Stakeholder] = field(default_factory=lambda : [])
 
     @classmethod
@@ -288,7 +294,10 @@ class ExcelNotebookFormat(Configuration):
 
 @datamodel(proto=data_pb.Column)
 class Column(Configuration):
-    """ Column specifies the attribute of a single column in a dataset. The fields of the Column align with the """
+    """
+    Column specifies the attribute of a single column in a dataset. The fields of the Column align with the
+    JSON schema standard; you can view detailed documentation at https://json-schema.org/draft/2020-12/json-schema-validation.html
+    """
     Name: str = ''
     """ The name of the column """
     Datatype: DataType = DataType.Categorical
@@ -578,6 +587,8 @@ class DatasetSpec(Configuration):
     created, the resource controller will retrieve the data from the location, validate it against its Data Source
     if applicable, and store it inside the `live` section of the Virtual Bucket resource specified by the location
     """
+    LabRef: ObjectReference = ObjectReference('default-tenant', 'default-lab')
+    """ The reference to the Lab under which Jobs created by the Dataset will be executed """
     Location: DataLocation = DataLocation()
     """
     Location is the final location of the data which was copied from the `Origin` location during the ingestion phase.
@@ -810,7 +821,10 @@ class Correlation(Configuration):
 
 @datamodel(proto=data_pb.DatasetStatistics)
 class DatasetStatistics(Configuration):
-    """ DatasetStatistics contains statistics about the Dataset's overall data, as well as every feature of the data. The """
+    """
+    DatasetStatistics contains statistics about the Dataset's overall data, as well as every feature of the data. The
+    data structure is populated with information during the `Profiling` phase of the parent Dataset.
+    """
     Columns: List[ColumnStatistics] = field(default_factory=lambda : [])
     """ Columns contains the collection of statistics for each feature """
     Rows: int = 0
