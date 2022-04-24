@@ -662,7 +662,7 @@ class Modela:
     def Predictor(self, namespace="", name="", version=Resource.DefaultVersion,
                   serving_site: Union[ObjectReference, ServingSite, str] = "default-serving-site",
                   model: Union[Model, str] = None, models: List[ModelDeploymentSpec] = None, port: int = 3000,
-                  path: str = None, access_type: AccessType = None, replicas: int = 0, autoscale: bool = False,
+                  path: str = None, access_type: AccessType = None, replicas: int = 0, autoscale: AutoScaling = None,
                   workload: Workload = None) -> Predictor:
         """
         :param namespace: The target namespace of the resource.
@@ -952,7 +952,7 @@ class Modela:
               fe_search: FeatureEngineeringSearch = None, baseline: BaselineSettings = None,
               ensemble: Ensemble = None, trainer_template: Training = None, interpretability: Interpretability = None,
               schedule: StudySchedule = None, notification: NotificationSettings = None, garbage_collect: bool = True,
-              keep_best_models: bool = True, timeout: int = 600, template: bool = False) -> Study:
+              keep_best_models: bool = True, fast: bool = False, timeout: int = 600, template: bool = False) -> Study:
         """
         :param namespace: The target namespace of the resource.
         :param name: The name of the resource.
@@ -972,18 +972,19 @@ class Modela:
         :param trainer_template: The training template for each model created by the Study.
         :param interpretability: The interpretability configuration for the Study, which specifies what type of
             model explainability plots will be generated from Shap values if they are computed
-        :param schedule: The schedule for the study to run chronically
+        :param schedule: The schedule for the study to run chronically.
         :param notification: The notification settings, which if enabled will forward events about this resource to a notifier.
         :param garbage_collect: If enabled, models which did not move past the testing stage will be garbage collected by
             the system.
         :param keep_best_models: If enabled, the best models from each algorithm will not be garbage collected.
+        :param fast: If enabled, the Study will skip profiling, explaining, and reporting.
         :param timeout: The timeout in seconds after which the Study will fail.
         :param template: If the Study is a template it will not start a search and can only be used as a template for
             other studies.
         """
         return Study(MDStudy(), self.Studies, namespace, name, version, dataset, lab, bucket, objective,
                      search, fe_search, baseline, ensemble, trainer_template, interpretability, schedule,
-                     notification, garbage_collect, keep_best_models, timeout, template)
+                     notification, garbage_collect, keep_best_models, fast, timeout, template)
 
     def close(self):
         if hasattr(self, 'pf_process'):

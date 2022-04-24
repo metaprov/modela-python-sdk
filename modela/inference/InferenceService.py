@@ -22,7 +22,7 @@ class InferenceService:
     prediction proxy.
     """
 
-    def __init__(self, host, port=None, tls_cert=None, port_forward=False, service_name="", service_namespace=""):
+    def __init__(self, host="localhost", port=None, tls_cert=None, port_forward=False, service_name="", service_namespace=""):
         """
         Connect to the gRPC service.
 

@@ -47,54 +47,37 @@ class Model(Resource):
         raise TypeError("Model resources cannot be updated.")
 
     def profile(self) -> ModelProfile:
-        if hasattr(self, "_client"):
-            profile = self._client.profile(self.namespace, self.name)
-        else:
-            raise AttributeError("Object has no client repository")
-
+        self.ensure_client_repository()
+        profile = self._client.profile(self.namespace, self.name)
         return ModelProfile().copy_from(profile)
 
     def abort(self):
-        if hasattr(self, "_client"):
-            self._client.abort(self.namespace, self.name)
-        else:
-            raise AttributeError("Object has no client repository")
+        self.ensure_client_repository()
+        self._client.abort(self.namespace, self.name)
 
     def pause(self):
-        if hasattr(self, "_client"):
-            self._client.pause(self.namespace, self.name)
-        else:
-            raise AttributeError("Object has no client repository")
+        self.ensure_client_repository()
+        self._client.pause(self.namespace, self.name)
 
     def resume(self):
-        if hasattr(self, "_client"):
-            self._client.resume(self.namespace, self.name)
-        else:
-            raise AttributeError("Object has no client repository")
+        self.ensure_client_repository()
+        self._client.resume(self.namespace, self.name)
 
     def compile(self, target, compiler):
-        if hasattr(self, "_client"):
-            self._client.compile(self.namespace, self.name, target, compiler)
-        else:
-            raise AttributeError("Object has no client repository")
+        self.ensure_client_repository()
+        self._client.compile(self.namespace, self.name, target, compiler)
 
     def publish(self):
-        if hasattr(self, "_client"):
-            self._client.publish(self.namespace, self.name)
-        else:
-            raise AttributeError("Object has no client repository")
+        self.ensure_client_repository()
+        self._client.publish(self.namespace, self.name)
 
     def test(self):
-        if hasattr(self, "_client"):
-            self._client.test(self.namespace, self.name)
-        else:
-            raise AttributeError("Object has no client repository")
+        self.ensure_client_repository()
+        self._client.test(self.namespace, self.name)
 
     def download(self) -> bytes:
-        if hasattr(self, "_client"):
-            return self._client.download(self.namespace, self.name)
-        else:
-            raise AttributeError("Object has no client repository")
+        self.ensure_client_repository()
+        return self._client.download(self.namespace, self.name)
 
     def deploy(self, predictor: str, replicas: int = 0, traffic: int = 0, role: str = ""):
         if hasattr(self, "_client"):

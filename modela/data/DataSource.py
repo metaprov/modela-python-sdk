@@ -93,7 +93,7 @@ class DataSource(Resource):
             self.spec.FileType = FlatFileType.Csv
 
         if task_type is not None:
-            self.spec.FileType = file_type
+            self.spec.Task = file_type
             if not self.default_resource:
                 print("WARNING: Changing the task type of an existing Data Source is not recommended. "
                       "Create a new Data Source resource if necessary.")
