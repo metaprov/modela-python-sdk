@@ -135,7 +135,7 @@ class Study(Resource):
             spec.Gc.KeepOnlyBestModelPerAlgorithm = True
 
         spec.Fast = fast
-        spec.ActiveDeadlineSeconds = timeout
+        # spec.ActiveDeadlineSeconds = timeout
         spec.Template = template
 
     @property

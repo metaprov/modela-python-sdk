@@ -233,6 +233,8 @@ class CsvFileFormat(Configuration):
     """ CsvFileSpec specifies the format of a CSV (comma-separated values) file """
     ColumnDelimiter: Delimiter = Delimiter.Comma
     """ The character used to separate fields (by default, a comma) """
+    RowDelimiter: Delimiter = Delimiter.CRLF
+    """ The character used to signal the end of a row (by default, a newline \\n) """
     EscapeChar: EscapeCharacter = EscapeCharacter.DoubleQuote
     """ The character used to escape the delimiter """
     Quote: QuoteCharacter = QuoteCharacter.DoubleQuote
@@ -324,6 +326,10 @@ class Column(Configuration):
     """ The maximum value of values all values in the column """
     ExclusiveMinimum: bool = False
     """ The exclusive lower limit of all values in the column, which does not include the minimum value """
+    ExclusiveMaximum: bool = False
+    """ The exclusive upper limit of all values in the column, which does not include the maximum value """
+    Minimum: int = 0
+    """ The minimum value of values all values in the column """
     MaxLength: int = 0
     """ The maximum length of values in the column, if the column data type is a string """
     MinLength: int = 0
