@@ -315,6 +315,7 @@ class DataSplitMethod(Enum):
     SplitColumn = "split-column"
     Time = "time"
     Auto = "auto"
+    TestDataset = "test-dataset"
 
 
 class Operation(Enum):

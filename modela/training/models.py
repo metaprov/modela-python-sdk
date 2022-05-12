@@ -212,8 +212,6 @@ class Training(Configuration):
     """ Split specifies the configuration to generate training, testing, and validation datasets """
     EvalMetrics: List[Metric] = field(default_factory=lambda : [])
     """ EvalMetrics specifies the collection of metrics that will be evaluated after model training is complete """
-    EarlyStop: EarlyStopping = EarlyStopping()
-    """ Indicates if the parent Study should stop sampling new models if there is no improvement in score """
     Sh: SuccessiveHalving = None
     """ SuccessiveHalving specifies the configuration for a Study to execute a model search using successive halving """
     Seed: float = 42
@@ -827,6 +825,8 @@ class ModelSearch(Configuration):
     The second objective metric that will be measured and evaluated in tandem with the primary objective.
     The model search optimizer will attempt to optimize both metrics
     """
+    EarlyStop: EarlyStopping = EarlyStopping()
+    """ Indicates if the parent Study should stop sampling new models if there is no improvement in score """
 
 
 @datamodel(proto=training_pb.BaselineSpec)

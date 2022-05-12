@@ -76,7 +76,7 @@ class Test_Modela_datasource(unittest.TestCase):
 
     def test_1_create_infer_df(self):
         df = pandas.read_csv('datasets/iris.csv')
-        resource = self.request_resource("test", infer_file='datasets/iris.csv', infer_dataframe=df, target_column="variety")
+        resource = self.request_resource("test", infer_dataframe=df, target_column="variety")
         resource.submit(replace=True)
         resource = self.modela.DataSource(namespace="iris-product", name="test")
         assert resource.spec.Schema.Columns[0].Name == 'sepal.length'
