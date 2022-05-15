@@ -947,6 +947,7 @@ class Modela:
         return self.__study_client
 
     def Study(self, namespace="", name="", version=Resource.DefaultVersion, dataset: Union[str, Dataset] = "",
+              test_dataset: Union[str, Dataset] = "",
               lab: Union[ObjectReference, Lab, str] = "default-lab", bucket: Union[VirtualBucket, str] = None,
               objective: Metric = Metric.Accuracy, search: ModelSearch = None,
               fe_search: FeatureEngineeringSearch = None, baseline: BaselineSettings = None,
@@ -959,6 +960,8 @@ class Modela:
         :param version: The version of the resource.
         :param dataset: If specified as a string, the SDK will attempt to find a Dataset resource with the given name.
             If specified as a Dataset object, or if one was found with the given name, it will be used in the Study.
+        :param test_dataset: If specified, the Dataset will be used as the test dataset and the Dataset specified by
+            the `dataset` field will be used solely as the training dataset
         :param lab: The object reference, Lab object, or lab name under the default-tenant for which all Study-related
             workloads will be performed under.
         :param bucket: The Bucket object or name of the bucket which will store the Study artifacts
@@ -982,7 +985,7 @@ class Modela:
         :param template: If the Study is a template it will not start a search and can only be used as a template for
             other studies.
         """
-        return Study(MDStudy(), self.Studies, namespace, name, version, dataset, lab, bucket, objective,
+        return Study(MDStudy(), self.Studies, namespace, name, version, dataset, test_dataset, lab, bucket, objective,
                      search, fe_search, baseline, ensemble, trainer_template, interpretability, schedule,
                      notification, garbage_collect, keep_best_models, fast, timeout, template)
 

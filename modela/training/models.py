@@ -169,6 +169,34 @@ class DataSplit(Configuration):
     """
 
 
+@datamodel(proto=training_pb.CheckpointSpec)
+class CheckpointSpec(Configuration):
+    """ CheckpointSpec specifies where to store model checkpoints """
+    Enabled: bool = False
+    """ Indicates if checkpointing is enabled. """
+    CheckpointInterval: int = 10
+    """
+    The interval, in minutes, at which a snapshot of a partially trained model will be saved.
+    Applicable to models with long training times for resiliency if training is suddenly stopped
+    """
+    Location: DataLocation = DataLocation()
+    """ The location of the model checkpoint """
+
+
+@datamodel(proto=training_pb.EarlyStopSpec)
+class EarlyStopping(Configuration):
+    """
+    EarlyStopSpec specifies the configuration to automatically abort a model search
+    if further improvements in model performance cannot be produced
+    """
+    Enabled: bool = False
+    """ Indicates if early stopping is enabled """
+    Initial: int = 10
+    """ The number of models to train before model objective metrics will begin to be checked for early stopping """
+    MinModelsWithNoProgress: int = 5
+    """ The number of models with no improvement in score that are required to abort the model search """
+
+
 @datamodel(proto=training_pb.TrainingSpec)
 class Training(Configuration):
     """ TrainingSpec specifies the configuration of a model training workload """
@@ -184,13 +212,6 @@ class Training(Configuration):
     """ Split specifies the configuration to generate training, testing, and validation datasets """
     EvalMetrics: List[Metric] = field(default_factory=lambda : [])
     """ EvalMetrics specifies the collection of metrics that will be evaluated after model training is complete """
-    EarlyStop: bool = False
-    """ Indicates if the parent Study should stop sampling new models if there is no improvement in score """
-    CheckpointInterval: int = 10
-    """
-    The interval, in minutes, at which a snapshot of a partially trained model will be saved.
-    Applicable to models with long training times for resiliency if training is suddenly stopped
-    """
     Sh: SuccessiveHalving = None
     """ SuccessiveHalving specifies the configuration for a Study to execute a model search using successive halving """
     Seed: float = 42
@@ -203,16 +224,28 @@ class Training(Configuration):
     """ Indicates if model training will be distributed across multiple nodes (currently unimplemented) """
     NodeCount: int = 1
     """ The number of nodes to use, in the case of distributed training """
+    FeatureImportance: bool = True
+    """
+    Indicates if feature importance for the model will be computed as part of training. Some algorithms
+    (e.g. Random Forest) have built in support for feature importance
+    """
+    Checkpoint: CheckpointSpec = CheckpointSpec()
+    """ Checkpoint specifies the location to store model checkpoints """
+    Loglevel: str = 'info'
+    """ The maximum log level for logs produced by Jobs associated with the Model """
     SamplePct: int = 100
     """ The number percentage (0 through 100) of rows to be used during training """
     LabRef: ObjectReference = ObjectReference('default-tenant', 'default-lab')
     """ The reference to the Lab under which the model training Job will be created """
+    TimeoutInSecs: int = 600
+    """ The maximum time, in seconds, that Jobs associated with the Model can run for before being forcefully cancelled. """
 
 
 @datamodel(proto=training_pb.ServingSpec)
 class ServingSpec(ImmutableConfiguration):
     """ ServingSpec specifies the requirements to serve a model """
     Resources: Workload = None
+    Format: ModelServingFormat = ModelServingFormat.CloudPickle
 
 
 @datamodel(proto=training_pb.TextPipelineSpec)
@@ -220,7 +253,7 @@ class TextPipelineSpec(ImmutableConfiguration):
     """ TextPipelineSpec represents a single pipeline for transforming text data """
     Encoder: TextEncoding = TextEncoding.Auto
     """ The text encoder (e.g. TFIDF) """
-    Tokenizer: str = ''
+    Tokenizer: str = ' '
     """ The text tokenizer character """
     Stopwords: bool = True
     """ Indicates if the pipeline will add stop word handling """
@@ -424,7 +457,7 @@ class EnsembleSpec(ImmutableConfiguration):
     """ The collection of models (by their name) to be used as estimators in the ensemble """
     Estimators: List[ClassicalEstimatorSpec] = field(default_factory=lambda : [])
     """ The collection of estimators to be used in the ensemble, derived from Models """
-    Base: ClassicalEstimatorSpec = None
+    Final: ClassicalEstimatorSpec = None
     """ The base estimator """
     Type: EnsembleType = None
     """ The ensembling method """
@@ -438,7 +471,7 @@ InterpretabilitySpec = Interpretability
 class ModelSpec(ImmutableConfiguration):
     """ ModelSpec defines the desired state of the Model resource """
     Owner: str = 'no-one'
-    """ The owner of the Study that created the Model """
+    """ The Account which owns the the Study that created the Model """
     VersionName: str = 'v0.0.1'
     """
     The name of the DataProductVersion which describes the version of the resource
@@ -453,7 +486,7 @@ class ModelSpec(ImmutableConfiguration):
     Task: TaskType = None
     """ The machine learning task type of the Model (i.e. regression, classification), derived from the parent Study """
     Objective: Metric = None
-    """ The objective metric that will be tested and used to evaluate the performance of the model against others """
+    """ The objective metric that will be used to evaluate the performance of the model """
     FeatureEngineering: FeatureEngineeringSpec = None
     """
     FeatureEngineering specifies the preprocessing pipelines that will be applied to the model prior to training.
@@ -497,7 +530,6 @@ class ModelSpec(ImmutableConfiguration):
     """ Forecasted indicates that the Model should perform a forecast """
     Released: bool = False
     """ Released indicates that the Model will be deployed within Predictor """
-    Benchmarked: bool = False
     Explained: bool = False
     """ Explained indicates if a workload to compute SHAP values/diagrams should be executed """
     Baseline: bool = False
@@ -520,6 +552,10 @@ class ModelSpec(ImmutableConfiguration):
     """ Governance specifies the model governance requirements (currently unimplemented) """
     Interpretability: InterpretabilitySpec = None
     """ Interpretability specifies the configuration to generate model interpretability visualizations """
+    Fast: bool = False
+    """ Fast indicates if the Model should skip profiling, explaining, and reporting """
+    Ttl: int = 0
+    """ The time-to-live of the Model, after which the Model will be archived """
 
 
 @datamodel(proto=training_pb.InterpretabilityStatus)
@@ -689,10 +725,9 @@ class AlgorithmSearchSpace(Configuration):
     """ AlgorithmSearchSpaceSpec defines the algorithms available to models produced by a Study """
     Allowlist: List[ClassicEstimator] = field(default_factory=lambda : [])
     """
-    AllowList contains the collection of algorithms available to the parent Study.
-    If AllowList is empty, all algorithms will be available for training
+    AllowList contains the collection of algorithms available to the Study specifying the AlgorithmSearchSpaceSpec.
+    If empty, all algorithms will be available for training
     """
-    Filter: AlgorithmFilter = AlgorithmFilter.NoFilter
 
 
 @datamodel(proto=training_pb.SuccessiveHalvingOptions)
@@ -750,7 +785,7 @@ class ModelSearch(Configuration):
     """ The hyper-parameter optimization search method """
     Pruner: PrunerSettings = None
     """
-    Pruner specifies the configuration to run a model search using a pruner algorithm. Using a pruning
+    Pruner specifies the configuration to run a model search using a pruning algorithm. Using a pruning
     algorithm allows you to train a large number of candidate models with a subset of the dataset
     """
     MaxCost: int = 100
@@ -771,7 +806,7 @@ class ModelSearch(Configuration):
     The number of top candidate models that will be moved to the testing phase once the model search is complete.
     By default, only the best model will be retained
     """
-    RetainTop: int = 10
+    RetainTop: int = 1
     """
     The number of top candidate models, sorted by their objective score, that will be retained in
     the case that garbage collection is enabled. All other models will be archived
@@ -783,19 +818,15 @@ class ModelSearch(Configuration):
     """
     SearchSpace: AlgorithmSearchSpace = AlgorithmSearchSpace()
     """ SearchSpace specifies the algorithms available to candidate models """
-    EarlyStopAfter: int = 0
-    """
-    The number of new models produced by the search which, if there is no improvement
-    in score, the model search will conclude
-    """
-    KeepOnlyTopModel: bool = True
     Objective: Metric = None
     """ The objective metric that will be measured against all models to evaluate their performance """
     Objective2: Metric = None
     """
     The second objective metric that will be measured and evaluated in tandem with the primary objective.
-    The optimizer will attempt to optimize both metrics
+    The model search optimizer will attempt to optimize both metrics
     """
+    EarlyStop: EarlyStopping = EarlyStopping()
+    """ Indicates if the parent Study should stop sampling new models if there is no improvement in score """
 
 
 @datamodel(proto=training_pb.BaselineSpec)
@@ -807,9 +838,9 @@ class BaselineSettings(Configuration):
     algorithm in the parent Study's search space with default hyper-parameters
     """
     Baselines: List[ClassicEstimator] = field(default_factory=lambda : [])
-    """ Baselines contains the collection of algorithms to create models for """
+    """ Baselines contains the collection of algorithms that models will be created with """
     All: bool = False
-    """ Indicates if models will be created for all algorithms, ignoring the Baselines field """
+    """ Indicates if models will be created for every algorithm """
 
 
 @datamodel(proto=training_pb.FeatureEngineeringSearchSpec)
@@ -879,6 +910,15 @@ class ModelResult(Configuration):
     """ The optimizer trial ID of the model """
 
 
+@datamodel(proto=training_pb.ImbalanceHandlingSpec)
+class ImbalanceHandlingSpec(Configuration):
+    """ ImbalanceHandlingSpec specifies the configuration to process an imbalanced dataset """
+    Enabled: bool = False
+    """ Indicates if imbalance handling is enabled """
+    Imbalance: ImbalanceHandling = ImbalanceHandling.ImbalanceAuto
+    """ The technique that will be used to handle the imbalanced dataset """
+
+
 @datamodel(proto=training_pb.GarbageCollectionSpec)
 class GarbageCollection(Configuration):
     """ GarbageCollectionSpec specifies the configuration to garbage-collect unused Model resources """
@@ -921,11 +961,11 @@ class StudySpec(Configuration):
     """
     DatasetName: str = ''
     """
-    The name of the Dataset resource which will be split into training, testing, and
-    validation datasets to be used in training
+    The name of the Dataset resource that will be used to train models with.
+    The dataset will be split into individual training, testing, and validation datasets
     """
     Task: TaskType = TaskType.AutoDetectTask
-    """ The machine learning task type of the Study (i.e. regression, classification) """
+    """ The machine learning task type (i.e. regression, classification) """
     FeSearch: FeatureEngineeringSearch = FeatureEngineeringSearch()
     """ FeatureEngineeringSearch specifies the parameters to perform a feature engineering search """
     Baseline: BaselineSettings = BaselineSettings()
@@ -934,6 +974,13 @@ class StudySpec(Configuration):
     """ Search specifies the configuration to perform the model search for the best algorithm and hyper-parameters """
     Ensembles: Ensemble = Ensemble()
     """ Ensembles specifies to parameters to generate ensemble models """
+    ServingTemplate: ServingSpec = None
+    """
+    ServingTemplate specifies the model format and resource requirements that will be applied to
+    the Predictor created for the Model that will be selected by the Study
+    """
+    ImbalanceHandler: ImbalanceHandlingSpec = ImbalanceHandlingSpec()
+    """ Set the imbalance dataset handling. """
     TrainingTemplate: Training = Training()
     """ TrainingTemplate specifies the configuration to train and evaluate models """
     Schedule: StudySchedule = StudySchedule()
@@ -952,7 +999,6 @@ class StudySpec(Configuration):
     """ ModelPublished indicates that a Docker image will be created containing the best model produced by the Study """
     ModelImagePushed: bool = False
     """ ModelImagePushed indicates that if a Docker image of the best model will be pushed to a Docker image registry """
-    ModelBenchmarked: bool = True
     ModelExplained: bool = True
     """
     ModelExplained indicates if interpretability diagrams, as specified
@@ -964,10 +1010,8 @@ class StudySpec(Configuration):
     """ The data location where Study artifacts (metadata, reports, and model artifacts) generated by the Study will be stored """
     Owner: str = 'no-one'
     """ The name of the Account which created the object, which exists in the same tenant as the object """
-    ActiveDeadlineSeconds: int = 600
-    """ The deadline for any Jobs associated with the Study to be completed in seconds """
     Compilation: CompilerSettings = None
-    """ CompilerSpec specifies the configuration to a compile the best model to a binary (currently unimplemented) """
+    """ CompilerSpec specifies the configuration to compile the best-selected model to a binary (currently unimplemented) """
     Template: bool = False
     """ Indicates if the Study is a template, in which case it will not be executed """
     Flagged: bool = False
@@ -978,6 +1022,10 @@ class StudySpec(Configuration):
     """ GarbageCollectionSpec specifies the configuration to automatically clean-up unused models """
     Ttl: int = 0
     """ The time-to-live, in seconds, for Model resources produced by the Study """
+    ModelVersion: str = ''
+    """ ModelVersion specifies the version assigned to all the Model resources produced by the Study """
+    TimeoutInSecs: int = 14400
+    """ The time, in seconds, after which the execution of the Study will be forcefully aborted (4 hours, by default) """
 
 
 @datamodel(proto=training_pb.StudyCondition)
@@ -1062,7 +1110,6 @@ class StudyStatus(ImmutableConfiguration):
     """ The number of rows in the validation dataset """
     Progress: int = 0
     """ The progress percentage of the Study, which is derived from the Study's current phase """
-    BaselineModel: ClassicEstimator = None
     TrainingDataHash: DataHashes = None
     """
     Sha 256 of the data sig
@@ -1266,6 +1313,8 @@ class ModelAutobuilderStatus(Configuration):
     """ The name of the DataSource associated with resource """
     DatasetName: str = ''
     """ The name of the Dataset associated with the resource """
+    DataappName: str = ''
+    """ The name of the DataApp associated with the resource """
     StudyName: str = ''
     """ The name of the Study associated with the resource """
     BestModelName: str = ''

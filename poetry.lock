@@ -102,7 +102,7 @@ adal = ["adal (>=1.0.2)"]
 
 [[package]]
 name = "modelaapi"
-version = "0.4.414"
+version = "0.4.590"
 description = "A suite of automatic machine learning for kubernetes"
 category = "main"
 optional = false

@@ -315,6 +315,7 @@ class DataSplitMethod(Enum):
     SplitColumn = "split-column"
     Time = "time"
     Auto = "auto"
+    TestDataset = "test-dataset"
 
 
 class Operation(Enum):
@@ -657,3 +658,15 @@ class Aggregate(Enum):
     Median = "median"
     Stddev = "stddev"
     Var = "var"
+
+
+class ModelServingFormat(Enum):
+    Protobuf = "protobuf"
+    Pickle = "pickle"
+    CloudPickle = "cloudpickle"
+    MLLeap = "mlleap"
+    MLModel = "mlmodel"
+    H5 = "h5"
+    Onyx = "onyx"
+    Pmml = "pmml"
+    TorchScript = "pt"

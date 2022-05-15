@@ -27,6 +27,7 @@ from modela.training.common import *
 class Study(Resource):
     def __init__(self, item: MDStudy = MDStudy(), client=None, namespace="", name="", version=Resource.DefaultVersion,
                  dataset: Union[str, Dataset] = "",
+                 test_dataset: Union[str, Dataset] = "",
                  lab: Union[ObjectReference, Lab, str] = "default-lab",
                  bucket: Union[VirtualBucket, str] = None,
                  objective: Metric = None,
@@ -51,6 +52,8 @@ class Study(Resource):
         :param version: The version of the resource.
         :param dataset: If specified as a string, the SDK will attempt to find a Dataset resource with the given name.
             If specified as a Dataset object, or if one was found with the given name, it will be used in the Study.
+        :param test_dataset: If specified, the Dataset will be used as the test dataset and the Dataset specified by
+            the `dataset` field will be used solely as the training dataset
         :param lab: The object reference, Lab object, or lab name under the tenant of the resource for which all Study-related
             workloads will be performed under.
         :param bucket: The Bucket object or name of the bucket which will store the Study artifacts
@@ -85,9 +88,24 @@ class Study(Resource):
         else:
             dataset_name = dataset
             dataset = client.modela.Dataset(namespace=namespace, name=dataset)
+            if dataset.default_resource:
+                raise ResourceNotFoundException("Dataset {0} does not exist".format(dataset_name))
+
         spec.DatasetName = dataset_name
         spec.Task = dataset.spec.Task
-        print("Spec",spec.DatasetName)
+
+        if test_dataset:
+            if type(test_dataset) == Dataset:
+                test_dataset_name = dataset.name
+            else:
+                test_dataset_name = dataset
+                test_dataset = client.modela.Dataset(namespace=namespace, name=dataset)
+                if test_dataset.default_resource:
+                    raise ResourceNotFoundException("Dataset {0} does not exist".format(dataset_name))
+
+            spec.TrainingTemplate.Split.TrainDataset = dataset_name
+            spec.TrainingTemplate.Split.TestDataset = test_dataset_name
+            spec.TrainingTemplate.Split.Method = DataSplitMethod.TestDataset
 
         if type(lab) == Lab:
             lab = lab.reference
@@ -135,7 +153,7 @@ class Study(Resource):
             spec.Gc.KeepOnlyBestModelPerAlgorithm = True
 
         spec.Fast = fast
-        spec.ActiveDeadlineSeconds = timeout
+        # spec.ActiveDeadlineSeconds = timeout
         spec.Template = template
 
     @property

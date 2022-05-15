@@ -37,10 +37,10 @@ def fix_cls_name(cls: bytes):
 
 def generate_comment(doc: list[str]):
     if len(doc) == 1:
-        return f' {doc[0]} '
+        return f' {doc[0]} '.replace('\r', '')
     else:
         docs = '\n    '.join(doc)
-        return f'\n    {docs}\n    '
+        return f'\n    {docs}\n    '.replace('\r', '')
 
 
 def pretty_source(source):
@@ -101,6 +101,7 @@ def add_docs():
             for node in ast.walk(parsed):
                 if not isinstance(node, ast.ClassDef):
                     continue
+                #print(astor.dump_tree(node))
 
                 if not len(node.body):
                     continue
@@ -136,8 +137,11 @@ def add_docs():
                         if len(docs["fields"][doc_fld]) == 0:
                             continue
 
+                        print("Out",generate_comment(docs["fields"][doc_fld]))
                         node.body.insert(n+1, ast.Expr(value=ast.Constant(value=generate_comment(docs["fields"][doc_fld]))))
 
+
+                print(astor.dump_tree(node))
 
             src = astor.to_source(parsed, pretty_source=pretty_source)
             f.truncate(0)
