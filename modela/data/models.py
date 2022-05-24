@@ -844,6 +844,13 @@ class DatasetStatistics(Configuration):
     TopCorrelations: List[Correlation] = field(default_factory=lambda : [])
     """ The top correlations between features, computed per the CorrelationSpec of the parent Dataset """
 
+    def column(self, name) ->ColumnStatistics:
+        """ Get the column with the specified name from the statistics """
+        search = [col for col in self.Columns if col.Name == name]
+        if len(search) == 0:
+            raise ValueError('Column statistics does not have a column named {0}'.format(name))
+        return search[0]
+
 
 @datamodel(proto=data_pb.DatasetCondition)
 class DatasetCondition(Configuration):

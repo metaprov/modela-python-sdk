@@ -55,6 +55,7 @@ class DataBlockRequestIterable(object):
             self.pbar.update(min(self.BLOCK_SIZE, len(self.data)))
             return request
         else:
+            self.pbar.update(min(self.BLOCK_SIZE, len(self.data)))
             raise StopIteration
 
 

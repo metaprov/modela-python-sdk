@@ -80,9 +80,7 @@ class DataSource(Resource):
             if target_column != None:
                 print("WARNING: The target column {0} was not found in the dataset during schema inference.".format(target_column))
 
-        if self.default_resource:
-            self.spec.FileType = file_type
-            self.spec.Task = task_type
+
         if file_type is not None:
             self.spec.FileType = file_type
             if not self.default_resource:
@@ -93,7 +91,7 @@ class DataSource(Resource):
             self.spec.FileType = FlatFileType.Csv
 
         if task_type is not None:
-            self.spec.Task = file_type
+            self.spec.Task = task_type
             if not self.default_resource:
                 print("WARNING: Changing the task type of an existing Data Source is not recommended. "
                       "Create a new Data Source resource if necessary.")

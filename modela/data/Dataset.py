@@ -183,8 +183,8 @@ class Dataset(Resource):
         """ Generate a default prediction payload for a model that would be created with the dataset. """
         target = self.datasource.target_column.Name
         return json.dumps(
-            [{col.Name: col.Mean if col.Datatype == DataType.Number else self.datasource.column(col.Name).Enum[0]
-              for col in self.status.Statistics.Columns if col.Name != target}])
+            [{col.Name: self.status.Statistics.column(col.Name).Mean if col.Datatype == DataType.Number else col.Enum[0]
+              for col in self.datasource.spec.Schema.Columns if col.Name != target}])
 
     def submit_and_visualize(self, replace: bool = False, show_progress_bar=True):
         """
