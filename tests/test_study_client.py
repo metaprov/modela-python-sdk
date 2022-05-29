@@ -21,10 +21,11 @@ class Test_Modela_study(unittest.TestCase):
         except ResourceNotFoundException:
             self.modela.Dataset(namespace="iris-product",
                                 name="test-ds-gen",
-                                data_file='datasets/heart.csv',
+                                data_file='datasets/iris.csv',
                                 bucket="default-minio-bucket",
                                 gen_datasource=True,
-                                target_column="target").submit_and_visualize(replace=True)
+                                task_type=TaskType.MultiClassification,
+                                target_column="variety").submit_and_visualize(replace=True)
 
         Test_Modela_study.resource = self.modela.Study(namespace="iris-product",
                                                        name=name,
@@ -65,7 +66,7 @@ class Test_Modela_study(unittest.TestCase):
 
     def test_2_list(self):
         assert len(self.modela.Studies.list("iris-product")) >= 1
-        assert len(Test_Modela_study.resource.models) == 3
+        assert len(Test_Modela_study.resource.models) > 0
 
     def test_3_update(self):
         Test_Modela_study.resource.set_label("test", "e")

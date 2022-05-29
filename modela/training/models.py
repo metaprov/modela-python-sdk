@@ -166,6 +166,7 @@ class DataSplit(Configuration):
     """
     The name of the Dataset resource which will be used as the testing dataset, applicable
     if the split type uses test-dataset. If enabled, the training dataset will not be split and used as-is
+    If empty, we will not use test dataset
     """
 
 
@@ -231,7 +232,7 @@ class Training(Configuration):
     """
     Checkpoint: CheckpointSpec = CheckpointSpec()
     """ Checkpoint specifies the location to store model checkpoints """
-    Loglevel: str = 'info'
+    LogLevel: str = 'info'
     """ The maximum log level for logs produced by Jobs associated with the Model """
     SamplePct: int = 100
     """ The number percentage (0 through 100) of rows to be used during training """
@@ -411,7 +412,7 @@ class FeatureEngineeringPipeline(ImmutableConfiguration):
     OutlierHandling: OutlierHandlingType = OutlierHandlingType.AutoOutlier
     """
     The method to use when handling outliers
-    Apply only to numeric datatypes.
+    Apply only to numeric data types.
     """
     DatetimeTransformation: DatetimeTransformationType = DatetimeTransformationType.NoneDatetime
     """ The method to use when handling the date-time data type """
@@ -460,7 +461,7 @@ class EnsembleSpec(ImmutableConfiguration):
     Final: ClassicalEstimatorSpec = None
     """ The base estimator """
     Type: EnsembleType = None
-    """ The ensembling method """
+    """ The ensemble type method """
 
 
 TrainingSpec = Training
@@ -640,8 +641,6 @@ class ModelStatus(ImmutableConfiguration):
     """ The URI of the logs file """
     ProfileUri: str = ''
     """ The URI of the model profile, which contains visualizations produced during the profiling phase """
-    MisclassUri: str = ''
-    """ The URI to the misclassification file produced during the testing phase """
     TarUri: str = ''
     """ The URI to the model tarbell file """
     AppUri: str = ''
@@ -684,8 +683,6 @@ class ModelStatus(ImmutableConfiguration):
     """ The name of the Predictor in the case that the Model has been released and deployed """
     ReleasedAt: Time = None
     """ The time at which the Model was set to release """
-    TarfileHash: str = ''
-    """ Sha256 of the model tar file """
     ImageHash: str = ''
     """ Sha256 of the model image """
     TrainingDataHash: DataHashes = None
@@ -732,47 +729,18 @@ class AlgorithmSearchSpace(Configuration):
 
 @datamodel(proto=training_pb.SuccessiveHalvingOptions)
 class SuccessiveHalvingOptions(Configuration):
-    """ SuccessiveHalvingOptions defines the parameters for a successive halving search """
-    MaxBudget: int = 81
-    """
-    The maximum budget allocated to models during the successive halving search. For classical models, this
-    represents the number percentage (0 through 100) of data that can be allocated to the model for training
-    """
-    EliminationRate: int = 3
-    """
-    The denominator for the fraction of models that will be promoted to the next round
-    (i.e. an EliminationRate of 3 will only promote 1/3rd models to the next round)
-    """
-    Modality: ModalityType = ModalityType.Epochs
-    """
-    The type of modality, based on the type of model
-    For classical models, it should be based on data percentage
-    For deep models, it should be based on epochs
-    """
+    MinResources: int = 0
+    ReductionFactor: int = 0
+    """ A parameter for specifying reduction factor of promotable trials """
+    MinEarlyStoppingRate: int = 0
+    """ A parameter for specifying the minimum early-stopping rate """
+    BootstrapCount: int = 0
+    """ Minimum number of trials that need to complete a rung before any trial is considered for promotion into the next rung. """
 
 
 @datamodel(proto=training_pb.PrunerSpec)
 class PrunerSettings(Configuration):
     Type: Pruner = Pruner.MedianPruner
-    StartupTrials: int = 5
-    """ Pruning is disabled until the given number of trials finish in the same study. """
-    WarmupTrials: int = 0
-    """ Pruning is disabled until the trial exceeds the given number of step """
-    MinTrials: int = 1
-    """ Minimum number of reported trials. """
-    IntervalTrials: int = 1
-    """ Interval in number of steps between the pruning checks """
-    Percentile: int = 25
-    """ Keep specific percent of trials. Used only with percentile pruner """
-    Lower: int = 0
-    """ A minimum value which determines whether pruner prunes or not. Used only for threshold pruner """
-    Upper: int = 0
-    """ A maximum value which determines whether pruner prunes or not. Used only for threshold pruner """
-    ShOptions: SuccessiveHalvingOptions = SuccessiveHalvingOptions()
-    """
-    SHOptions is the desired options for successive halving search.
-    All other models are saved into an archive.
-    """
 
 
 SamplerType = Sampler
@@ -791,11 +759,14 @@ class ModelSearch(Configuration):
     MaxCost: int = 100
     """ The maximum cost that can be incurred before stopping the model search (applicable for deep learning models) """
     MaxTime: int = 30
-    """ The maximum number of time, in seconds, that the model search can run for """
+    """ The maximum number of minutes, that the model search can run for """
     MaxModels: int = 10
     """ The maximum number of candidate models that will be sampled and trained """
-    MinScore: float = 0
-    """ The minimum score of a candidate model, after which the model search will forcibly stop """
+    MinBestScore: float = 0
+    """
+    The minimum best score needed to finish the search. The system will finish the search when the minimum is reached.
+    Note that this number can be negative for a regression.
+    """
     Trainers: int = 1
     """
     The desired number of trainers that will train candidate models in parallel. The number
@@ -826,7 +797,10 @@ class ModelSearch(Configuration):
     The model search optimizer will attempt to optimize both metrics
     """
     EarlyStop: EarlyStopping = EarlyStopping()
-    """ Indicates if the parent Study should stop sampling new models if there is no improvement in score """
+    """
+    The number of new models produced by the search which, if there is no improvement
+    in score, the model search will conclude
+    """
 
 
 @datamodel(proto=training_pb.BaselineSpec)
@@ -927,6 +901,11 @@ class GarbageCollection(Configuration):
     KeepOnlyBestModelPerAlgorithm: bool = True
     """
     Indicates if multiple models with the same algorithm are produced by the Study, the
+    model with the lowest score will be garbage-collected
+    """
+    KeepPrunedModels: bool = False
+    """
+    Indicates if we should keep pruned models
     model with the lowest score will be garbage-collected
     """
 
@@ -1067,6 +1046,10 @@ class StudyPhaseStatus(Configuration):
     """ The number of models that experienced an error whilst training """
     Completed: int = 0
     """ The number of models that have been successfully trained """
+    BestScore: float = 0
+    """ Best score so far in this phase. The best score is the value of the objective. """
+    ModelsWithNoProgress: int = 0
+    """ Actual number of models where no progress was made. This used to decide on early stop. """
 
 
 @datamodel(proto=training_pb.StudyStatus)
@@ -1085,7 +1068,10 @@ class StudyStatus(ImmutableConfiguration):
     ProfileUri: str = ''
     """ The URI of the raw profile data produced by the Study """
     ReportName: str = ''
-    """ The name of the Report resource produced by the Study """
+    """
+    Reference to the report object that was generated for the dataset, which exists in the same Data Product namespace
+    as the object
+    """
     Phase: StudyPhase = StudyPhase.ModelPending
     """ The phase of the Study """
     ObservedGeneration: int = 0
@@ -1259,6 +1245,11 @@ class ModelAutobuilderSpec(Configuration):
     """ The deadline for models to complete training, in seconds """
     MaxModels: int = 10
     """ The number of candidate models that will be sampled and trained """
+    Fast: bool = False
+    """
+    Fast indicates if Dataset and Study resources associated with the ModelAutobuilder should run in fast mode.
+    Running in fast mode will skip unnecessary workloads such as profiling, reporting, explaining, etc.
+    """
     AccessMethod: AccessType = AccessType.ClusterIP
     """
     The Kubernetes-native access method which specifies how the Predictor created by the ModelAutobuilder will be exposed.

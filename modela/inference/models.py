@@ -27,7 +27,7 @@ class RunSchedule(Configuration):
     """ The type of schedule, which can be a frequency interval or a cron expression """
 
 
-@datamodel(proto=catalog_pb.ModelDeploymentStatus)
+@datamodel(proto=inference_pb.ModelDeploymentStatus)
 class ModelDeploymentStatus(Configuration):
     ImageName: str = ''
     DeploymentRef: ObjectReference = None
@@ -36,27 +36,33 @@ class ModelDeploymentStatus(Configuration):
     """ The service name that serves this model """
     HpaName: str = ''
     """ the name of the horizonal pod autoscaler, if autoscaling is true """
-    Current95: float = 0
+    P50: float = 0
+    """ P50 latency """
+    P95: float = 0
     """ P95 latency """
-    Current99: float = 0
+    P99: float = 0
     """ P99 is the 99% latency of the model """
     LastPredictionTime: Time = None
     """ Last prediction time is the time of the last prediction """
     DailyPredictionAvg: int = 0
     LastFailure: str = ''
-    """ LastFailure is the last faiure that occur with the model """
+    """ LastFailure is the last failure that occur with the model """
     Phase: ModelDeploymentPhase = None
     """ Phase is the current phase of this model deployment """
     DeployedAt: Time = None
     """ DeployedAt is the last time that this model was deployed """
     ReleasedAt: Time = None
     """ ReleasedAt is the time that this model was released """
-    TrainingDatasetName: str = ''
-    """ The dataset where this model was trained on """
-    ApprovedBy: str = ''
-    """ The account name of the approver """
-    ApprovedAt: Time = None
-    """ The time of approval """
+    DeploymentReady: bool = False
+    """ If true, the deployment is ready """
+    ServiceReady: bool = False
+    """ If true, the service is ready """
+    DataDrift: bool = False
+    """ Indicates if a data drift has been detected based on incoming prediction data """
+    ConceptDrift: bool = False
+    """ Indicates if a concept drift has been detected based on incoming prediction data """
+    LastDailyPredictions: List[int] = field(default_factory=lambda : [])
+    """ The predictions from the last 7 days """
 
 
 @datamodel(proto=inference_pb.ModelRecord)
@@ -113,6 +119,10 @@ class ModelDeploymentSpec(Configuration):
     If the deployment is canary, the metric define how to evaluate the canary.
     Default: none
     """
+    ApprovedBy: str = ''
+    """ The account name of the approver """
+    ApprovedAt: Time = None
+    """ The time of approval """
 
 
 @datamodel(proto=inference_pb.PredictorCondition)
@@ -171,59 +181,17 @@ class AutoScaling(Configuration):
     """
 
 
-@datamodel(proto=inference_pb.PredictorHealth)
-class PredictorHealth(Configuration):
-    """ PredictorHealth describes the health of an active Predictor """
-    Service: bool = False
-    """ Indicates if there is a problem with the Predictor's service """
-    DataDrift: bool = False
-    """ Indicates if a data drift has been detected based on incoming prediction data """
-    ConceptDrift: bool = False
-    """ Indicates if a concept drift has been detected based on incoming prediction data """
-    TotalPredictions: int = 0
-    """ The total number of predictions served by the Predictor """
-    Avg: int = 0
-    TotalP95Requests: int = 0
-    """ The response time for 95% of predictions served """
-    MedianResponseTime: int = 0
-    """ The median response time to serve predictions """
-    LastDailyPredictions: List[int] = field(default_factory=lambda : [])
-    """ The predictions from the last 7 days """
-
-
 @datamodel(proto=inference_pb.PredictorStatus)
 class PredictorStatus(Configuration):
     """ PredictorStatus contain the current state of the Predictor resource """
-    ModelStatus: List[ModelDeploymentStatus] = field(default_factory=lambda : [])
-    """ The collection of statuses for each model deployed with the Predictor """
-    MonitorLastAttemptAt: Time = None
-    """ The last time when model monitoring was computed """
-    MonitorLastScore: float = 0
-    """ The score from the last time model monitoring was computed """
-    MonitorLastLatency: float = 0
-    """ The model latency from the last time model monitoring was computed """
-    Health: PredictorHealth = None
-    """ The health and other statistics of the Predictor """
     ObservedGeneration: int = 0
     """ ObservedGeneration is the last generation that was acted on """
     History: List[ModelRecord] = field(default_factory=lambda : [])
     """ The collection of historical records of models deployed to the Predictor, used internally to roll-back models """
-    MonitorStatus: MonitorStatus = None
-    """ MonitorStatus contains the status of the last model monitoring that was computed """
     LastUpdated: Time = None
     """ The last time the object was updated """
-    TargetColumn: str = ''
-    """ The target feature of the model that the Predictor serves """
-    PositiveLabel: str = ''
-    """ For binary classification, the name of the positive class of the target feature """
-    NegativeLabel: str = ''
-    """ For binary classification, the name of the negative class of the target feature """
     EndPoint: str = ''
     """ The end-point URL of the Predictor """
-    ProxyDeploymentRef: ObjectReference = None
-    """ The reference to the Kubernetes Deployment created for the Predictor's prediction proxy """
-    ProxyServiceRef: ObjectReference = None
-    """ The reference to the Kubernetes Service created for the Predictor's prediction proxy """
     FailureReason: StatusError = None
     """ In the case of failure, the Predictor resource controller will set this field with a failure reason """
     FailureMessage: str = ''
@@ -252,9 +220,11 @@ class MonitorSpec(Configuration):
 
 @datamodel(proto=inference_pb.MonitorStatus)
 class MonitorStatus(Configuration):
-    LastPrediction: Time = None
-    ValidationResults: List[ModelValidationResult] = field(default_factory=lambda : [])
-    """ Validation results contains the latest result """
+    MonitorLastAttemptAt: Time = None
+    MonitorLastScore: float = 0
+    """ The score from the last time model monitoring was computed """
+    MonitorLastLatency: float = 0
+    """ The model latency from the last time model monitoring was computed """
 
 
 @datamodel(proto=inference_pb.PredictorAuthSpec)
@@ -332,6 +302,15 @@ class PredictorSpec(Configuration):
     """ The forward curtain receives prediction requests before the prediction (currently unimplemented) """
     BackwardCurtain: str = ''
     """ The backward curtain receives prediction requests after the prediction (currently unimplemented) """
+    TargetColumn: str = ''
+    """ The target feature of the model that the Predictor serves """
+    PositiveLabel: str = ''
+    """ For binary classification, the name of the positive class of the target feature """
+    NegativeLabel: str = ''
+    """ For binary classification, the name of the negative class of the target feature """
+    TrainingDatasetRef: ObjectReference = None
+    """ The dataset where this model was trained on """
+    REST: bool = True
     Type: PredictorType = PredictorType.Online
     """ The type of predictor (online, batch, or streaming). Online is the only supported type as of the current release """
     Task: TaskType = None

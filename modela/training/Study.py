@@ -225,7 +225,7 @@ class Study(Resource):
                         break
                 elif current_status.Phase == StudyPhase.Completed:
                     model = self._client.modela.Model(self.namespace, current_status.BestModel)
-                    if model.phase != ModelPhase.Completed:
+                    if model.phase not in (ModelPhase.Completed, ModelPhase.Live):
                         continue
 
                     desc.close()
