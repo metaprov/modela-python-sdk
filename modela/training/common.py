@@ -53,6 +53,45 @@ class TaskType(Enum):
     AutoDetectTask = "auto"
 
 
+class SubtaskType(Enum):
+    TextClassification = "text-classification"
+    TextMultiClassification = "text-multi-classification"
+    TextRegression = "text-regression"
+    TextMultiLabelClassification = "text-multi-label-classification"
+    TextConversation = "text-conversation"
+    TextLangGeneration = "text-lang-generation"
+    TextLangModel = "text-lang-model"
+    TextMultiModalClassification = "text-multi-modal"
+    TextNER = "text-ner"
+    TextQA = "text-qa"
+    TextSummarization = "text-summarization"
+    TextSentencePairClassification = "text-sentence-pair"
+    TextRepresentationGeneration = "text-representation-generation"
+    TextSentimentAnalysis = "text-sentiment-analysis"
+    TextCodeGeneration = "text-code-generation"
+    TextTranslation = "text-translation"
+    TextLangDetection = "text-lang-detection"
+    TextGrammarCorrection = "text-grammar-correction"
+    TextParaphrasing = "text-paraphrasing"
+    TextIntentClassification = "text-intent-classification"
+    TextSemanticSimilarity = "text-semantic-similarity"
+    TextKeywordExtraction = "text-keyword-extraction"
+    TextPOS = "text-pos"
+    TextTokenization = "text-tokenization"
+    TextLemmalization = "text-lemma"
+
+    ImageClassification = "image-classification"
+    ImageMultiLabelClassification = "image-multi-label-classification"
+    ImageObjectDetection = "image-object-detection"
+    ImageSegmentation = "image-segmentation"
+
+    VideoActionRecognition = "video-action-recognition"
+    VideoClassification = "video-classification"
+    VideoObjectTracking = "video-object-tracking"
+
+    NoneSubtask = "none"
+
+
 class Metric(Enum):
     Accuracy = "accuracy"
     AveragePrecision = "average-precision"
@@ -639,8 +678,8 @@ class ModelValidationType(Enum):
     PredictionCountDrift = "prediction-count-drift"
     PredictionLatencyDrift = "prediction-latency-drift"
     PredictionLatencySkew = "prediction-latency-skew"
-    ModelPrefSkew = "model-pref-skew"
-    ModelPrefDrift = "model-pref-drift"
+    ModelPerfSkew = "model-pref-skew"
+    ModelPerfDrift = "model-pref-drift"
     CategoricalColumnSkew = "cat-column-skew"
     CategoricalColumnDrift = "cat-column-drift"
     NumericalColumnSkew = "numerical-column-skew"

@@ -168,6 +168,11 @@ class DataSplit(Configuration):
     if the split type uses test-dataset. If enabled, the training dataset will not be split and used as-is
     If empty, we will not use test dataset
     """
+    ValidationDataset: str = ''
+    """
+    The name of the Dataset resource which will be used as the validation dataset, applicable
+    if the split type uses test-dataset. If enabled, the training dataset will not be split and used as-is
+    """
 
 
 @datamodel(proto=training_pb.CheckpointSpec)
@@ -329,8 +334,6 @@ class FeatureSelection(Configuration):
     """ FeatureSelectionSpec specifies the configuration to run feature selection on a dataset """
     Enabled: bool = False
     """ Indicates if feature selection is enabled """
-    SamplePct: int = 100
-    """ The number percentage (0 through 100) of the dataset to sample """
     Embedding: bool = False
     """ Indicates if embedded methods will be tested as part of the candidate algorithms (e.g. tree-based selection) """
     Filter: bool = False
@@ -343,10 +346,10 @@ class FeatureSelection(Configuration):
     """ The threshold as a percentage to remove low variance features """
     CorrThreshold: int = 95
     """ The threshold to remove features with high correlations """
-    TopN: int = 0
+    MaxFeatures: int = 0
     """ The number of features that will be selected based on importance. If TopN is 0, all features will be selected """
-    CumulativeImportancePercent: int = 95
-    """ The cumulative importance threshold of features to be included """
+    Percentile: int = 95
+    """ Percent of features to keep """
     Reserved: List[str] = field(default_factory=lambda : [])
     """ List of features that are reserved and will always be included in the final feature selection """
 
@@ -486,6 +489,8 @@ class ModelSpec(ImmutableConfiguration):
     """ The name of the Dataset resource which the Model is being trained with """
     Task: TaskType = None
     """ The machine learning task type of the Model (i.e. regression, classification), derived from the parent Study """
+    Subtask: SubtaskType = None
+    """ The sub task """
     Objective: Metric = None
     """ The objective metric that will be used to evaluate the performance of the model """
     FeatureEngineering: FeatureEngineeringSpec = None
@@ -648,11 +653,12 @@ class ModelStatus(ImmutableConfiguration):
     ImageName: str = ''
     """ The name of the Docker image produced by the Model """
     Importance: List[FeatureImportance] = field(default_factory=lambda : [])
-    """ The collection of features and their importance, sorted by the greatest importance first """
+    """
+    The collection of features and their importance, sorted by the greatest importance first
+    The collection is measured based on impuriry and uses the native measures by a tree algorithm
+    """
     ForecastUri: str = ''
     """ The URI of the model forecast """
-    PythonVersion: str = ''
-    """ The Python version of the data plane used during training """
     TrainDataset: DataLocation = None
     """ TrainDatasetLocation specifies the location of the training dataset """
     TestDataset: DataLocation = None
@@ -762,7 +768,7 @@ class ModelSearch(Configuration):
     """ The maximum number of minutes, that the model search can run for """
     MaxModels: int = 10
     """ The maximum number of candidate models that will be sampled and trained """
-    MinBestScore: float = 0
+    MinBestScore: float = 1
     """
     The minimum best score needed to finish the search. The system will finish the search when the minimum is reached.
     Note that this number can be negative for a regression.
@@ -858,6 +864,11 @@ class FeatureEngineeringSearch(Configuration):
     Specification for feature selection.
     successful study.
     """
+    EarlyStop: EarlyStopping = EarlyStopping()
+    """
+    The number of new models produced by the fe search which, if there is no improvement
+    in score, the model search will conclude
+    """
 
 
 @datamodel(proto=training_pb.StudyScheduleSpec)
@@ -945,6 +956,8 @@ class StudySpec(Configuration):
     """
     Task: TaskType = TaskType.AutoDetectTask
     """ The machine learning task type (i.e. regression, classification) """
+    Subtask: TaskType = None
+    """ The machine learning subtask relevant to the primary task (text classification, image object detection, etc.) """
     FeSearch: FeatureEngineeringSearch = FeatureEngineeringSearch()
     """ FeatureEngineeringSearch specifies the parameters to perform a feature engineering search """
     Baseline: BaselineSettings = BaselineSettings()
@@ -1237,6 +1250,8 @@ class ModelAutobuilderSpec(Configuration):
     """ The location for data that will be saved in a Dataset resource to train models with """
     Task: TaskType = None
     """ The machine learning task type relevant to the dataset (i.e. regression, classification) """
+    Subtask: SubtaskType = None
+    """ The machine learning subtask relevant to the primary task (text classification, image object detection, etc.) """
     Objective: Metric = None
     """ The objective metric that will be measured against trained models to evaluate their performance """
     TargetColumn: str = ''

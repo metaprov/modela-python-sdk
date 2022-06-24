@@ -187,12 +187,14 @@ class DataLocationType(Enum):
     SQLView = "view"
     Stream = "stream"
     WebApi = "web"
+    PublicDataset = "public-dataset"
+    Dataset = "dataset"
 
 
 class DatasetCondition(Enum):
     Reported = "Reported"
     Validated = "Validated"
-    Snapshotted = "Snapshooted"
+    Snapshotted = "Snapshotted"
     Profiled = "Profiled"
     Ingested = "Ingested"
     Generated = "Generated"

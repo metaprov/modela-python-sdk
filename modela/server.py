@@ -662,7 +662,7 @@ class Modela:
     def Predictor(self, namespace="", name="", version=Resource.DefaultVersion,
                   serving_site: Union[ObjectReference, ServingSite, str] = "default-serving-site",
                   model: Union[Model, str] = None, models: List[ModelDeploymentSpec] = None, port: int = 3000,
-                  path: str = None, access_type: AccessType = None, replicas: int = 0, autoscale: AutoScaling = None,
+                  path: str = None, access_type: AccessType = None, replicas: int = 0, autoscale: AutoScalingSpec = None,
                   workload: Workload = None) -> Predictor:
         """
         :param namespace: The target namespace of the resource.

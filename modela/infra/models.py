@@ -34,7 +34,10 @@ class Workload(Configuration):
 
 @datamodel(proto=catalog_pb.ContainerLog)
 class ContainerLog(Configuration):
-    """ ContainerLog describes the location of logs for a single Job """
+    """
+    Append the logs only if they are not already exists
+    ContainerLog describes the location of logs for a single Job
+    """
     Job: str = ''
     """ The name of the Job """
     Container: str = ''
