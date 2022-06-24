@@ -227,10 +227,6 @@ class MonitorStatus(Configuration):
     """ The model latency from the last time model monitoring was computed """
 
 
-@datamodel(proto=inference_pb.PredictorAuthSpec)
-class PredictorAuthSpec(Configuration):
-    Enabled: bool = False
-
 
 AccessType_ = AccessType
 AutoScaling_ = AutoScaling
