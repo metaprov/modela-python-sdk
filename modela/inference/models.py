@@ -160,7 +160,7 @@ class PredictionCacheSpec(Configuration):
     """ the name of the cache service """
 
 
-@datamodel(proto=inference_pb.AutoScaling)
+@datamodel(proto=inference_pb.AutoScalingSpec)
 class AutoScaling(Configuration):
     """ AutoScaling defines the configuration for the automatic scaling of a service """
     Enabled: bool = False

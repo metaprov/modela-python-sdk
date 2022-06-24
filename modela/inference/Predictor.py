@@ -20,7 +20,7 @@ from typing import List, Union
 
 from modela.inference.InferenceService import InferenceService
 from modela.inference.common import AccessType
-from modela.inference.models import ModelDeploymentSpec, PredictorSpec, PredictorStatus, PredictionResult, AutoScalingSpec
+from modela.inference.models import ModelDeploymentSpec, PredictorSpec, PredictorStatus, PredictionResult, AutoScaling
 from modela.infra.ServingSite import ServingSite
 from modela.infra.models import Workload
 from modela.training.Model import Model
@@ -36,7 +36,7 @@ class Predictor(Resource):
                  path: str = None,
                  access_type: AccessType = None,
                  replicas: int = 0,
-                 autoscale: AutoScalingSpec = None,
+                 autoscale: AutoScaling = None,
                  workload: Workload = None):
         """
 
