@@ -82,13 +82,13 @@ class DataSource(Resource):
 
 
         if file_type is not None:
-            self.spec.FileType = file_type
+            self.spec.Flatfile.FileType = file_type
             if not self.default_resource:
                 print("WARNING: Changing the file type of an existing Data Source is not recommended. "
                       "Create a new Data Source resource if necessary.")
         elif self.default_resource:
             print("WARNING: Data Source was created without a file type. Defaulting to FlatFileType.Csv")
-            self.spec.FileType = FlatFileType.Csv
+            self.spec.Flatfile.FileType = FlatFileType.Csv
 
         if task_type is not None:
             self.spec.Task = task_type
@@ -100,10 +100,10 @@ class DataSource(Resource):
             self.spec.Task = TaskType.BinaryClassification
 
         if csv_config is not None:
-            self.spec.Csvfile = csv_config
+            self.spec.Flatfile.Csv = csv_config
 
         if excel_config is not None:
-            self.spec.ExcelNotebook = excel_config
+            self.spec.Flatfile.Excel = excel_config
 
     @property
     def spec(self) -> DataSourceSpec:

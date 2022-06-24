@@ -45,7 +45,7 @@ class DataLocation(Configuration):
     The path to a flat-file inside an object storage system. When using the Modela API to upload files (through the
     FileService API), Modela will upload the data to a predetermined path based on the Tenant, DataProduct,
     DataProductVersion, and resource type of the resource in relation to the file being uploaded.
-    The path does not need to adhere to this format; you can still pass the path of a file inside a bucket not managed by Modela
+    The path does not need to adhere to this format; you can give the path to a file inside a bucket not managed by Modela
     """
     Table: str = ''
     """ The name of a table inside a database, if applicable """
@@ -55,6 +55,16 @@ class DataLocation(Configuration):
     """ The SQL statement which will be executed to query data from the table specified by Table """
     Topic: str = ''
     """ The name of the streaming topic (currently unsupported) """
+    Url: str = ''
+    """
+    In the case of the location type being WebApi, URL specifies the external location (HTTP or Git) that will be queried
+    and then stored as flat-file by the resource which specifies the DataLocation
+    """
+    ResourceRef: ObjectReference = None
+    """
+    In the case of the location type being Dataset or PublicDataset, ResourceRef references another resource that
+    containing data that will be used as a data source
+    """
 
 
 @datamodel(proto=data_pb.SampleSpec)
@@ -170,7 +180,9 @@ class DataProductSpec(Configuration):
     ServingSiteName: str = 'default-serving-site'
     """ The name of the Serving Site which will be used by default with all Predictor resources """
     Task: TaskType = TaskType.BinaryClassification
-    """ Task denote the machine learning task of the product (classification/regression,etc.) """
+    """ Task specifies the default machine learning task of the product (classification, regression, etc.) """
+    Subtask: SubtaskType = None
+    """ Subtask specifies the default subtask relevant to the primary task (text classification, image object detection, etc.) """
     Description: str = ''
     """ User-provided description of the object """
     DataLocation: DataLocationType = DataLocationType()
@@ -377,8 +389,8 @@ class Column(Configuration):
     """ The threshold skew for skew detection """
     DriftThreshold: float = None
     """ The threshold drift value for model drift detection. """
-    Index: bool = True
-    """ Indicates if the column is an index column """
+    Index: int = 0
+    """ Contain the Index for the column in the schema """
     Fold: bool = False
     """ Indicates if the column holds fold values """
     Weight: bool = False
@@ -397,6 +409,8 @@ class Column(Configuration):
     """ Indicates if the column is an ID column """
     Step: float = 1
     """ The step value if the column values are a sequence of numbers """
+    IndexColumn: bool = False
+    """ Indicates if the column is an index column """
 
 
 @datamodel(proto=data_pb.TimeSeriesSchema)
@@ -545,6 +559,17 @@ class CorrelationSetting(Configuration):
     """ The number of top correlations to be included in the correlation results """
 
 
+@datamodel(proto=data_pb.FlatFileFormatSpec)
+class FlatFileFormat(Configuration):
+    """ FlatFileFormatSpec defines the format for incoming flat-files to be parsed """
+    FileType: FlatFileType = FlatFileType.Csv
+    """ The file type of incoming data which uses the DataSource (by default, a CSV file) """
+    Csv: CsvFileFormat = CsvFileFormat()
+    """ The file format for CSV files, if applicable """
+    Excel: ExcelNotebookFormat = ExcelNotebookFormat()
+    """ The file format for Excel files, if applicable """
+
+
 DataSourceSchema = Schema
 
 
@@ -569,19 +594,19 @@ class DataSourceSpec(Configuration):
     """
     Description: str = ''
     """ User-provided description of the object """
-    FileType: FlatFileType = FlatFileType.Csv
-    """ The file type of incoming data which uses the DataSource (by default, a CSV file) """
     Task: TaskType = TaskType.BinaryClassification
     """
-    The default task for Dataset resources created from the DataSource. If null, this will be determined from
-    the default task of the DataProduct which owns the DataSource
+    The default task for Dataset resources created from the Data Source. If null, the task type will default to the
+    the default task type of the Data Product which contains the Data Source
     """
-    Csvfile: CsvFileFormat = CsvFileFormat()
-    """ The file format for CSV files, if applicable """
-    ExcelNotebook: ExcelNotebookFormat = None
-    """ The file format of excel files, if applicable """
+    Subtask: SubtaskType = None
+    """ The machine learning subtask relevant to the primary task (text classification, image object detection, etc.) """
+    Flatfile: FlatFileFormat = FlatFileFormat()
+    """ Flat file spec define the paramter needed to read a flat file. """
     DatasetType: DatasetType = DatasetType.Tabular
     """ The type of dataset; currently, the only supported type is `tabular` """
+    InferredFrom: DataLocation = None
+    """ InferredFrom specifies the location of the data that was used to generate the schema of the Data Source """
 
 
 @datamodel(proto=data_pb.DatasetSpec)
@@ -645,6 +670,8 @@ class DatasetSpec(Configuration):
     """
     Task: TaskType = None
     """ The machine learning task relevant to the Dataset. This field *must* be the same as the Data Source of the object """
+    Subtask: SubtaskType = None
+    """ The machine learning sub task relevant to the Dataset. This field *must* be the same as the Data Source of the object """
     Notification: NotificationSettings = None
     """ The notification specification that determines which notifiers will receive Alerts generated by the object """
     Correlation: CorrelationSetting = None
@@ -657,6 +684,15 @@ class DatasetSpec(Configuration):
     Indicates if the Dataset should be quickly processed.
     If enabled, the validation, profiling, and reporting phases will be skipped.
     """
+
+
+@datamodel(proto=data_pb.OutlierStat)
+class OutlierStat(Configuration):
+    Lower: int = 0
+    Upper: int = 0
+    """ The number of outliers above baseline """
+    Percent: float = 0
+    """ Percentage of rows detected as outliers  """
 
 
 @datamodel(proto=data_pb.ColumnStatistics)
@@ -737,8 +773,6 @@ class ColumnStatistics(Configuration):
     """ Indicates if the column is a duplicate of another column """
     Reserved: bool = False
     """ Indicates if the column is reserved and must be a feature included in model training """
-    Outliers: int = 0
-    """ The amount of outliers detected in the columns values """
     Completeness: float = 0
     """ The ratio between non-null and null values in the column """
     DistinctValueCount: float = 0
@@ -749,6 +783,10 @@ class ColumnStatistics(Configuration):
     """ Used for text attributes """
     CorrToTarget: float = 0
     """ Correlation to the target feature """
+    Index: int = 0
+    """ The column index in the dataset """
+    Outliers: OutlierStat = None
+    """ Outlier statistics. """
 
 
 @datamodel(proto=common_pb.ColumnProfile)
@@ -792,13 +830,16 @@ class ColumnProfile(Configuration):
     Constant: bool = False
     Duplicate: bool = False
     Reserved: bool = False
-    Outliers: int = 0
     Completeness: float = 0
     DistinctValueCount: float = 0
     MostFreqValuesRatio: float = 0
     IndexOfPeculiarity: float = 0
     Values: List[str] = field(default_factory=lambda : [])
     CorrToTarget: float = 0
+    OutliersUpper: int = 0
+    OutliersLower: int = 0
+    OutliersPercent: float = 0
+    Index: int = 0
 
 
 @datamodel(proto=common_pb.DatasetProfile)

@@ -15,6 +15,12 @@ class PredictorConditionType(Enum):
     PredictorSaved = "Saved"
 
 
+class ModelRole(Enum):
+    Champion = "champion"
+    Challenger = "challenger"
+    Shadow = "shadow"
+
+
 class ModelDeploymentPhase(Enum):
     Deploying = "Deploying"
     Deployed = "Deployed"
