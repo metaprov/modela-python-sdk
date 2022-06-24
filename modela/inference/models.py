@@ -315,9 +315,7 @@ class PredictorSpec(Configuration):
     """ The prediction threshold """
     Monitor: MonitorSpec = None
     """ Monitor spec specify the monitor for this predictor. """
-    Auth: PredictorAuthSpec = None
-    """ The specification to authenticate requests to the prediction service """
-
+    
 
 @datamodel(proto=ProbabilityValue)
 class ProbabilityValue(Configuration):
