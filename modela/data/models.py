@@ -576,7 +576,7 @@ DataSourceSchema = Schema
 @datamodel(proto=data_pb.DataSourceSpec)
 class DataSourceSpec(Configuration):
     """ DataSourceSpec defines the desired state of the DataSource """
-    Schema: DataSourceSchema = DataSourceSchema()
+    Schema: Schema = Schema()
     """ The schema which will be used during the ingestion process of any Dataset resources which specify the DataSource """
     Sample: SampleSettings = SampleSettings()
     """
