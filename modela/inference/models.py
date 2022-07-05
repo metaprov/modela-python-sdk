@@ -9,7 +9,7 @@ from modela.inference.common import PredictorConditionType, CanaryMetric, Access
 from modela.infra.models import Workload
 from modela.data.models import DataLocation
 from modela.training.common import TaskType
-from modela.training.models import ModelValidation, ModelValidationResult
+from modela.training.models import ModelTest, ModelTestResult
 
 
 @datamodel(proto=catalog_pb.RunSchedule)
@@ -249,9 +249,9 @@ class MonitorSpec(Configuration):
     """ The schedule on which model monitoring computations will be performed """
     NotifierRef: ObjectReference = None
     """ NotifierRef references a Notifier resource that will be triggered in the case that a concept or data drift is detected """
-    Validations: List[ModelValidation] = field(default_factory=lambda : [])
+    Tests: List[ModelTest] = field(default_factory=lambda : [])
     """
-    Validations contains the collection of model validations that will be 
+    tests contains the collection of model tests that will be 
     performed based on incoming prediction traffic
     """
     OutlierDetectionModelRef: ObjectReference = None

@@ -673,7 +673,7 @@ class ModelAutobuilderPhase(Enum):
     Failed = "Failed"
 
 
-class ModelValidationType(Enum):
+class ModelTestName(Enum):
     ModelTest = "model-test"
     PredictionCountDrift = "prediction-count-drift"
     PredictionLatencyDrift = "prediction-latency-drift"

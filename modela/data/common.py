@@ -110,7 +110,7 @@ class DataDomain(Enum):
     Nothing = "none"
 
 
-class MultiDatasetValidationRule(Enum):
+class MultiDatasetTestName(Enum):
     SameNumberOfRows = "same-number-of-rows"
     OuterJoinEmpty = "outer-join-empty"
     OuterJoinNotEmpty = "outer-join-not-empty"
@@ -122,7 +122,7 @@ class MultiDatasetValidationRule(Enum):
     RightJoinNotEmpty = "right-join-not-empty"
 
 
-class DatasetValidationRule(Enum):
+class DatasetTestName(Enum):
     ColumnsCountEqual = "columns-count-equal"
     ColumnsNameInSet = "columns-in-set"
     ColumnsInOrderedList = "columns-in-ordered-list"
@@ -131,11 +131,11 @@ class DatasetValidationRule(Enum):
     NameEmpty = "dataset-empty"
 
 
-class MultiColumnValidationRule(Enum):
+class MultiColumnTestName(Enum):
     MultiColumnCorrelation = "multi-column-corr"
 
 
-class ColumnValidationRule(Enum):
+class ColumnTestName(Enum):
     ColumnExist = "column-exist"
     ColumnHaveValues = "have-values"
     ColumnHasNoValue = "has-no-values"
@@ -149,7 +149,7 @@ class ColumnValidationRule(Enum):
     MatchRegex = "value-match-regex"
     IsDate = "value-is-date"
     IsJson = "value-is-json"
-    ColumnValidationInDomain = "value-in-domain"
+    ColumnValueInDomain = "value-in-domain"
     UniqueValueCountBetween = "unique-value-count-between"
     OutlierValueUniqueBetween = "outlier-value-count-between"
     ValidValueUniqueBetween = "valid-values-count-between"
@@ -160,12 +160,12 @@ class ColumnValidationRule(Enum):
     AvgBetween = "average-between"
     UpperQuartileBetween = "upper-quartile-between"
     MaxBetween = "max-between"
-    ColumnValidationStddevBetween = "stddev-between"
-    ColumnValidationChiSquarePValueBetween = "chi-square-p-value-between"
-    ColumnValidationPairCramersBetween = "pair-cramers-between"
+    StddevBetween = "stddev-between"
+    ChiSquarePValueBetween = "chi-square-p-value-between"
+    PairCramersBetween = "pair-cramers-between"
 
 
-class FileValidationRule(Enum):
+class FileTestName(Enum):
     FileSizeBetween = "file-size-between"
     FileExist = "file-exist"
     FileRegexMatchCountBetween = "file-regex-match-count-between"

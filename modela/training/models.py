@@ -14,11 +14,11 @@ import github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 as
 import github.com.metaprov.modelaapi.services.common.v1.common_pb2 as common_pb
 
 
-@datamodel(proto=training_pb.ModelValidation)
-class ModelValidation(Configuration):
-    """ ModelValidation defines a single validation to be run against a model """
-    Type: ModelValidationType = None
-    """ The type of model validation """
+@datamodel(proto=training_pb.ModelTest)
+class ModelTest(Configuration):
+    """ ModelValidation defines a single test to be run against a model """
+    Type: ModelTestName = None
+    """ The type of model test """
     PrevModel: str = ''
     """ PrevModel specifies a previous model to compare against """
     DatasetName: str = ''
@@ -35,8 +35,8 @@ class ModelValidation(Configuration):
     """ Agg specifies the type of aggregate when measuring aggregate performance (e.g. median, average) """
 
 
-@datamodel(proto=training_pb.ModelValidationResult)
-class ModelValidationResult(Configuration):
+@datamodel(proto=training_pb.ModelTestResult)
+class ModelTestResult(Configuration):
     Type: str = ''
     DatasetName: str = ''
     """ DatasetName is the name of the dataset used to perform the validation """
