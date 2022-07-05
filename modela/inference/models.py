@@ -258,15 +258,6 @@ class MonitorSpec(Configuration):
     """ Reference to a model that will be used for outlier detection. If empty, an outlier detection model. """
 
 
-@datamodel(proto=inference_pb.MonitorStatus)
-class MonitorStatus(Configuration):
-    MonitorLastAttemptAt: Time = None
-    MonitorLastScore: float = 0
-    """ The score from the last time model monitoring was computed """
-    MonitorLastLatency: float = 0
-    """ The model latency from the last time model monitoring was computed """
-
-
 @datamodel(proto=inference_pb.PredictionLoggingSpec)
 class PredictionLoggingSpec(Configuration):
     """ PredictionLoggingSpec specifies the configuration to log incoming and outgoing prediction requests """

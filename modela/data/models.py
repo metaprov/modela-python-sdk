@@ -520,7 +520,7 @@ class Tests(Configuration):
 
 MDTimeSeriesSchema = TimeSeriesSchema
 MDRecommendationSchema = RecommendationSchema
-
+MDTests = Tests
 
 @datamodel(proto=data_pb.Schema)
 class Schema(Configuration):
@@ -531,7 +531,7 @@ class Schema(Configuration):
     """ The time-series schema, which sets time-series specific parameters """
     RecommendationSchema: MDRecommendationSchema = None
     """ The recommendation schema, which is used for the recommendation ML task """
-    Tests: Tests = Tests()
+    Tests: MDTests = MDTests()
     """ The specification for test rules which will be performed on new Datasets """
 
 
@@ -576,7 +576,7 @@ DataSourceSchema = Schema
 @datamodel(proto=data_pb.DataSourceSpec)
 class DataSourceSpec(Configuration):
     """ DataSourceSpec defines the desired state of the DataSource """
-    Schema: Schema = Schema()
+    Schema: DataSourceSchema = DataSourceSchema()
     """ The schema which will be used during the ingestion process of any Dataset resources which specify the DataSource """
     Sample: SampleSettings = SampleSettings()
     """
