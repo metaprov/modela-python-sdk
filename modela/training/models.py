@@ -9,6 +9,7 @@ from modela.data.models import DataLocation, GovernanceSpec, CompilerSettings, C
 from modela.inference.common import AccessType
 from modela.infra.models import Workload, OutputLogs, NotificationSettings
 from modela.training.common import *
+from model.common import Metric
 import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
 import github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 as training_pb
 import github.com.metaprov.modelaapi.services.common.v1.common_pb2 as common_pb

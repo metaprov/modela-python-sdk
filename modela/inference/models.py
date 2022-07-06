@@ -5,11 +5,12 @@ import github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 a
 from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1.grpcinferenceservice_pb2 import *
 from modela.Configuration import datamodel
 from modela.common import Configuration, ConditionStatus, Time, ObjectReference, StatusError, TriggerScheduleEventType
-from modela.inference.common import PredictorConditionType, CanaryMetric, AccessType, PredictorType, ModelDeploymentPhase, ModelRole
+from modela.inference.common import PredictorConditionType, AccessType, PredictorType, ModelDeploymentPhase, ModelRole
 from modela.infra.models import Workload
 from modela.data.models import DataLocation
 from modela.training.common import TaskType
 from modela.training.models import ModelTest, ModelTestResult
+from modela.common import Metric
 
 
 @datamodel(proto=catalog_pb.RunSchedule)
@@ -133,7 +134,7 @@ class ModelDeploymentSpec(Configuration):
     """ MountTar means that we would mount the model tar file. Else we would use baked image. """
     TrafficSelector: str = ''
     """ TrafficSelector is a filter on the traffic to this model """
-    CanaryMetrics: List[CanaryMetric] = field(default_factory=lambda : [])
+    CanaryMetrics: List[Metric] = field(default_factory=lambda : [])
     """ If the deployment is canary, the metric define how to evaluate the canary """
     ApprovedBy: str = ''
     """ The account name of the approver """
@@ -163,7 +164,7 @@ class ProgressiveSpec(Configuration):
     """ The time, in seconds, for the warm-up period """
     TrafficIncrement: int = 0
     """ The percentage of traffic to increment """
-    CanaryMetrics: List[CanaryMetric] = field(default_factory=lambda : [])
+    CanaryMetrics: List[Metric] = field(default_factory=lambda : [])
     """ What metric to use when comparing the candidate model to the current model """
 
 

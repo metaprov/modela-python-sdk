@@ -12,8 +12,9 @@ from modela.Resource import Resource
 from modela.ModelaException import ModelaException
 from typing import List, Union
 
+from modela.common import Metric
 from modela.training.Report import Report
-from modela.training.common import ModelPhase, TaskType, Metric
+from modela.training.common import ModelPhase, TaskType
 from modela.training.models import ModelSpec, ModelStatus, ModelProfile
 
 

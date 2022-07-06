@@ -30,6 +30,8 @@ from modela.Resource import Resource
 from modela.ModelaException import ModelaException
 from modela.common import ObjectReference
 from typing import List, Union
+from modela.common import Metric
+
 
 
 class ModelAutobuilder(Resource):

@@ -7,6 +7,8 @@ from grpc import (  # type: ignore
     StreamStreamClientInterceptor
 )
 
+from modela.common import Metric
+
 from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1 import grpcinferenceservice_pb2
 from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1 import grpcinferenceservice_pb2_grpc
 

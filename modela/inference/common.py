@@ -36,10 +36,3 @@ class PredictorType(Enum):
     Streaming = "streaming"
 
 
-class CanaryMetric(Enum):
-    Cpu = "cpu"
-    Mem = "mem"
-    Latency = "latency"
-    Crash = "crash"
-
-

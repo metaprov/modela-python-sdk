@@ -122,6 +122,7 @@ from modela.training.Notebook import *
 from modela.training.Report import *
 from modela.training.Study import *
 from grpc_interceptor import ClientCallDetails, ClientInterceptor
+from modela.common import Metric
 
 
 class AuthClientInterceptor(ClientInterceptor):
