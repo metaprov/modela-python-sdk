@@ -7,10 +7,11 @@ from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import Plot
 from k8s.io.api.core.v1.generated_pb2 import ObjectReference, SecretReference
 from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import Time
 
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import TestSuite, TestCase, TestSuiteResult, \
-    TestCaseResult
+from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import TestSuite, DataTestCase, TestSuiteResult, \
+    DataTestCaseResult
 
 from modela.Configuration import Configuration, ImmutableConfiguration, datamodel
+import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
 
 
 class ConditionStatus(Enum):
@@ -61,65 +62,76 @@ class StatusError(Enum):
     DeleteError = "DeleteError"
 
 
-class TestCaseName(Enum):
-    MultiDatasetSameNumberOfRows = "MultiDatasetSameNumberOfRows"
-    MultiDatasetOuterJoinEmpty = "MultiDatasetOuterJoinEmpty"
-    MultiDatasetOuterJoinNotEmpty = "MultiDatasetOuterJoinNotEmpty"
-    MultiDatasetInnerJoinEmpty = "MultiDatasetInnerJoinEmpty"
-    MultiDatasetInnerJoinNotEmpty = "MultiDatasetInnerJoinNotEmpty"
-    MultiDatasetLeftJoinEmpty = "MultiDatasetLeftJoinEmpty"
-    MultiDatasetLeftJoinNotEmpty = "MultiDatasetLeftJoinNotEmpty"
-    MultiDatasetRightJoinEmpty = "MultiDatasetRightJoinEmpty"
-    MultiDatasetRightJoinNotEmpty = "MultiDatasetRightJoinNotEmpty"
-    DatasetColumnsCountEqual = "DatasetColumnsCountEqual"
-    DatasetColumnsNameInSet = "DatasetColumnsNameInSet"
-    DatasetColumnsInOrderedList = "DatasetColumnsInOrderedList"
-    DatasetRowCountBetween = "DatasetRowCountBetween"
-    DatasetNotEmpty = "DatasetNotEmpty"
-    DatasetTestNameNameEmpty = "DatasetTestNameNameEmpty"
-    MultiColumnCorr = "MultiColumnCorr"
-    ColumnTestNameColumnExist = "ColumnTestNameColumnExist"
-    ColumnHaveValues = "ColumnHaveValues"
-    ColumnHasNoValue = "ColumnHasNoValue"
-    ColumnHaveNulls = "ColumnHaveNulls"
-    ColumnHasNoNull = "ColumnHasNoNull"
-    ColumnOfType = "ColumnOfType"
-    ColumnValuesInSet = "ColumnValuesInSet"
-    ColumnValuesIncreasing = "ColumnValuesIncreasing"
-    ColumnsValuesDecreasing = "ColumnsValuesDecreasing"
-    ColumnValueLengthBetween = "ColumnValueLengthBetween"
-    ColumnValueNameMatchRegex = "ColumnValueNameMatchRegex"
-    ColumnValueIsDate = "ColumnValueIsDate"
-    ColumnValueIsJson = "ColumnValueIsJson"
-    ColumnValueInDomain = "ColumnValueInDomain"
-    ColumnUniqueValueCountBetween = "ColumnUniqueValueCountBetween"
-    ColumnOutlierValueUniqueBetween = "ColumnOutlierValueUniqueBetween"
-    ColumnValidValueUniqueBetween = "ColumnValidValueUniqueBetween"
-    ColumnMismatchValueBetween = "ColumnMismatchValueBetween"
-    ColumnValueMinBetween = "ColumnValueMinBetween"
-    ColumnValueLowerQuartileBetween = "ColumnValueLowerQuartileBetween"
-    ColumnValueMedianBetween = "ColumnValueMedianBetween"
-    ColumnValueAvgBetween = "ColumnValueAvgBetween"
-    ColumnValueUpperQuartileBetween = "ColumnValueUpperQuartileBetween"
-    ColumnValueMaxBetween = "ColumnValueMaxBetween"
-    ColumnValueStddevBetween = "ColumnValueStddevBetween"
-    ColumnValueChiSquarePValueBetween = "ColumnValueChiSquarePValueBetween"
-    ColumnValuePairCramersBetween = "ColumnValuePairCramersBetween"
-    FileSizeBetween = "FileSizeBetween"
-    FileExist = "FileExist"
-    FileRegexMatchCountBetween = "FileRegexMatchCountBetween"
-    FileValidJson = "FileValidJson"
-    FileValidCsv = "FileValidCsv"
+class AssertionType(Enum):
+    MultiDatasetSameNumberOfRows = "multi-dataset-same-number-of-rows"
+    MultiDatasetOuterJoinEmpty = "multi-dataset-outer-join-empty"
+    MultiDatasetOuterJoinNotEmpty = "multi-dataset-outer-join-not-empty"
+    MultiDatasetInnerJoinEmpty = "multi-dataset-inner-join-empty"
+    MultiDatasetInnerJoinNotEmpty = "multi-dataset-inner-join-not-empty"
+    MultiDatasetLeftJoinEmpty = "multi-dataset-left-join-empty"
+    MultiDatasetLeftJoinNotEmpty = "multi-dataset-left-join-not-empty"
+    MultiDatasetRightJoinEmpty = "multi-dataset-right-join-empty"
+    MultiDatasetRightJoinNotEmpty = "multi-dataset-right-join-not-empty"
+    DatasetColumnsCountEqual = "dataset-columns-count-equal"
+    DatasetColumnsNameInSet = "dataset-columns-in-set"
+    DatasetColumnsInOrderedList = "dataset-columns-in-ordered-list"
+    DatasetRowCountBetween = "dataset-row-count-between"
+    DatasetNotEmpty = "dataset-dataset-not-empty"
+    DatasetTestNameNameEmpty = "dataset-empty"
+    MultiColumnCorr = "multi-column-corr"
+    ColumnTestNameColumnExist = "column-exist"
+    ColumnHaveValues = "column-have-values"
+    ColumnHasNoValue = "column-has-no-values"
+    ColumnHaveNulls = "column-value-have-nulls"
+    ColumnHasNoNull = "column-value-has-no-nulls"
+    ColumnOfType = "column-of-type"
+    ColumnValuesInSet = "column-values-in-set"
+    ColumnValuesIncreasing = "column-values-increasing"
+    ColumnsValuesDecreasing = "column-values-decreasing"
+    ColumnValueLengthBetween = "column-value-length-between"
+    ColumnValueNameMatchRegex = "column-value-match-regex"
+    ColumnValueIsDate = "column-value-is-date"
+    ColumnValueIsJson = "column-value-is-json"
+    ColumnValueInDomain = "column-value-in-domain"
+    ColumnUniqueValueCountBetween = "column-unique-value-count-between"
+    ColumnOutlierValueUniqueBetween = "column-outlier-value-count-between"
+    ColumnValidValueUniqueBetween = "column-valid-values-count-between"
+    ColumnMismatchValueBetween = "column-mismatch-values-between"
+    ColumnValueMinBetween = "column-value-min-between"
+    ColumnValueLowerQuartileBetween = "column-value-lower-quartile-between"
+    ColumnValueMedianBetween = "column-value-median-between"
+    ColumnValueAvgBetween = "column-value-average-between"
+    ColumnValueUpperQuartileBetween = "column-value-upper-quartile-between"
+    ColumnValueMaxBetween = "column-value-max-between"
+    ColumnValueStddevBetween = "column-value-stddev-between"
+    ColumnValueChiSquarePValueBetween = "column-value-chi-square-p-value-between"
+    ColumnValuePairCramersBetween = "column-value-pair-cramers-between"
+    FileSizeBetween = "file-size-between"
+    FileExist = "file-exist"
+    FileRegexMatchCountBetween = "file-regex-match-count-between"
+    FileValidJson = "file-valid-json"
+    FileValidCsv = "file-valid-csv"
 
     # Model Tests
-    ModelAccuracy = "ModelAccuracy"
-    ModelRocAuc = "ModelRocAuc"
-    ModelF1 = "ModelF1"
-    ModelPrecision = "ModelPrecision"
-    ModelRecall = "ModelRecall"
-    ModelMSE = "ModelMSE"
-    ModelRMSE = "ModelRMSE"
-    ModelMAPE = "ModelMAPE"
+    ModelAccuracy     = "model-accuracy-greater-than"
+    ModelRocAuc     = "model-roc-auc-greater-than"
+    ModelF1     = "model-f1-greater-than"
+    ModelPrecision     = "model-precision-greater-than"
+    ModelRecall     = "model-recall-less-than"
+    ModelMSE     = "model-mse-less-than"
+    ModelRMSE     = "model-rmse-less-than"
+    ModelMAPE     = "model-mape-less-than"
+
+    ModelAccuracyGreaterThanBaseline      = "model-accuracy-greater-than-baseline"
+    ModelRocAucGreaterThanBaseline     = "model-roc-auc-greater-than-baseline"
+    ModelF1GreaterThanBaseline     = "model-f1-greater-than-baseline"
+    ModelPrecisionGreaterThanBaseline     = "model-precision-greater-than-baseline"
+    ModelRecallGreaterThanBaseline     = "model-recall-less-than-baseline"
+    ModelMSELessThanBaseline     = "model-mse-less-than-baseline"
+    ModelRMSELessThanBaseline     = "model-rmse-less-than-baseline"
+    ModelMAPELessThanBaseline     = "model-mape-less-than-baseline"
+
+    NoneAssertion = "none"
 
 
 class PriorityLevel(Enum):
@@ -274,41 +286,56 @@ class Plot(ImmutableConfiguration):
     Url: str = ""
 
 
+@datamodel(proto=catalog_pb.Measurement)
+class Measurement(ImmutableConfiguration):
+    """ Measurement is a value for a specific metric """
+    Metric: Metric = Metric.Null
+    """ The metric type name (e.g. F1 / Accuracy) """
+    Value: float = 0
+    """ The value of the metric """
+
+##########################################
+# Test classes
+##########################################
+
 @datamodel(proto=TestSuite)
 class TestSuite(Configuration):
-    Tests: List[TestCase] = field(default_factory=lambda: [])
+    Enabled: bool = False
+    Tests: List[DataTestCase] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=TestCase)
-class TestCase(Configuration):
-    Name: TestCaseName
-    Metric: Metric
-    Column: str
-    Value: float
-    Min: float
-    Max: float
-    StrictMin: bool
-    StrictMax: bool
-    Generated: bool
-    BucketName: str
-    Path: str
+@datamodel(proto=DataTestCase)
+class DataTestCase(Configuration):
+    Enabled: bool = True
+    AssertThat: AssertionType = AssertionType.NoneAssertion
+    Metric: Metric = Metric.Null
+    Entity: str = ""
+    ExpectedNumber: float = 0
+    ExpectedString: str = ""
+    Min: float = 0.0
+    Max: float = 0.0
+    ExpectedSet: List[str] = field(default_factory=lambda: [])
+    StrictMin: bool = False
+    StrictMax: bool = False
+    Generated: bool = False
+    DisplayName: str = ""
+    Tags: List[str] = field(default_factory=lambda: [])
 
 
 @datamodel(proto=TestSuiteResult)
 class TestSuiteResult(Configuration):
-    Failures: int
-    Success: int
-    Started: Time
-    Ended: Time
-    Tests: List[TestCaseResult]
+    Fixture: ObjectReference
+    Failures: int = 0
+    Errors: int = 0
+    StartTime: Time
+    StopTime: Time
+    Tests: List[DataTestCaseResult] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=TestCaseResult)
-class TestSuiteResult(Configuration):
-    Name: TestCaseName
-    Metric: Metric
-    Column: str
-    Failed: bool
-    TotalValues: int
-    FailedValues: int
-    SampleFailedValues: str
+
+@datamodel(proto=DataTestCaseResult)
+class TestCaseResult(Configuration):
+    Actual: Measurement = Measurement()
+    Failure: bool = False
+    Error: bool = False
+    FailureMsg: str = ""

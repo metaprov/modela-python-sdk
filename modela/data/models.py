@@ -305,6 +305,11 @@ class ExcelNotebookFormat(Configuration):
     Data: ExcelSheetArea = ExcelSheetArea()
     """ The specification for the bounds of the data """
 
+@datamodel(proto=data_pb.ParquetFileSpec)
+class ParquetFileFormat(Configuration):
+    Engine: str = ''
+    """ The name of the engine that exists in the excel file to read data from """
+
 
 @datamodel(proto=data_pb.Column)
 class Column(Configuration):
@@ -429,22 +434,22 @@ class RecommendationSchema(Configuration):
     """ The name of the column that specifies ratings """
 
 
-@datamodel(proto=data_pb.TestSpec)
-class Tests(Configuration):
-    MultiDatasetTests: List[TestCase] = field(default_factory=lambda : [])
-    DatasetTests: List[TestCase] = field(default_factory=lambda : [])
+@datamodel(proto=data_pb.DatasetTestSuite)
+class DatasetTestSuite(Configuration):
+    MultiDatasetTests: TestSuite = TestSuite()
+    DatasetTests: TestSuite = TestSuite()
     """ DatasetTests contains tests for the whole dataset """
-    MultiColumnTests: List[TestCase] = field(default_factory=lambda : [])
+    MultiColumnTests: TestSuite = TestSuite()
     """ MultiColumnTests defines tests for multiple columns from the dataset """
-    ColumnTests: List[TestCase] = field(default_factory=lambda : [])
+    ColumnTests: TestSuite = TestSuite()
     """ ColumnTests defines assertions for columns from the dataset """
-    FileTests: List[TestCase] = field(default_factory=lambda : [])
+    FileTests: TestSuite = TestSuite()
     """ FileTests defines assertions for the contents of the data file """
 
 
 MDTimeSeriesSchema = TimeSeriesSchema
 MDRecommendationSchema = RecommendationSchema
-MDTests = Tests
+
 
 @datamodel(proto=data_pb.Schema)
 class Schema(Configuration):
@@ -455,7 +460,7 @@ class Schema(Configuration):
     """ The time-series schema, which sets time-series specific parameters """
     RecommendationSchema: MDRecommendationSchema = None
     """ The recommendation schema, which is used for the recommendation ML task """
-    Tests: MDTests = MDTests()
+    TestTemplate: DatasetTestSuite = DatasetTestSuite()
     """ The specification for test rules which will be performed on new Datasets """
 
 
@@ -492,6 +497,7 @@ class FlatFileFormat(Configuration):
     """ The file format for CSV files, if applicable """
     Excel: ExcelNotebookFormat = ExcelNotebookFormat()
     """ The file format for Excel files, if applicable """
+    Parquet:ParquetFileFormat = ParquetFileFormat()
 
 
 DataSourceSchema = Schema
@@ -607,6 +613,14 @@ class DatasetSpec(Configuration):
     """
     Indicates if the Dataset should be quickly processed.
     If enabled, the validation, profiling, and reporting phases will be skipped.
+    """
+    PredictionDatasetRef: ObjectReference = ObjectReference()
+    """
+    Prediction dataset ref is a reference to a prediction dataset ref (dataset that contain the predictions log).
+    """
+    PredictorRef: ObjectReference = ObjectReference()
+    """
+    Used for prediction dataset, contain a reference to the predictor resource that created this dataset
     """
 
 

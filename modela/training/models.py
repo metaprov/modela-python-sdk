@@ -1,7 +1,7 @@
 from dataclasses import field
 from typing import List
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import Measurement
-from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import ModelProfile
+
+
 from modela.Configuration import Configuration, ImmutableConfiguration, datamodel
 from modela.common import PriorityLevel, Time, StatusError, ConditionStatus, ObjectReference, Freq, Plot
 from modela.data.common import DataType
@@ -9,63 +9,9 @@ from modela.data.models import DataLocation, GovernanceSpec, CompilerSettings, C
 from modela.inference.common import AccessType
 from modela.infra.models import Workload, OutputLogs, NotificationSettings
 from modela.training.common import *
-from model.common import Metric
-import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
+from modela.common import Metric,Measurement
 import github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 as training_pb
 import github.com.metaprov.modelaapi.services.common.v1.common_pb2 as common_pb
-
-
-@datamodel(proto=training_pb.ModelTest)
-class ModelTest(Configuration):
-    """ ModelValidation defines a single test to be run against a model """
-    Type: ModelTestName = None
-    """ The type of model test """
-    PrevModel: str = ''
-    """ PrevModel specifies a previous model to compare against """
-    DatasetName: str = ''
-    """ The name of a labeled dataset used to test the model, when measuring a performance metric """
-    DriftFreq: Freq = None
-    DriftInterval: int = 0
-    Column: str = ''
-    Metric: Metric = None
-    Min: float = 0
-    Max: float = 0
-    MinPercent: float = 0
-    MaxPercent: float = 0
-    Agg: Aggregate = None
-    """ Agg specifies the type of aggregate when measuring aggregate performance (e.g. median, average) """
-
-
-@datamodel(proto=training_pb.ModelTestResult)
-class ModelTestResult(Configuration):
-    Type: str = ''
-    DatasetName: str = ''
-    """ DatasetName is the name of the dataset used to perform the validation """
-    ModelName: str = ''
-    """ ModelName is the name of the model under test """
-    Column: str = ''
-    """ Column is the name of the feature. """
-    Error: str = ''
-    """ Error is a string. """
-    Metric: Metric = None
-    """ Metric is the measurement """
-    ActualValue: float = 0
-    """ Actual value is the actual value """
-    Passed: bool = False
-    """ Passed indicate if the result passed. """
-    At: Time = None
-    """ At is the time the validation was performed. """
-    DurationInSec: int = 0
-    """ The amount of time it took to compute this result """
-
-
-@datamodel(proto=catalog_pb.Measurement)
-class Measurement(ImmutableConfiguration):
-    """ Measurement is a value for a specific metric """
-    Metric: Metric = Metric.Null
-    """ The metric type name (e.g. F1 / Accuracy) """
-    Value: float = 0
-    """ The value of the metric """
 
 
 @datamodel(proto=training_pb.SegmentSpec)

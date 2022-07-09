@@ -4,7 +4,7 @@ import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as 
 import github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 as inference_pb
 from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1.grpcinferenceservice_pb2 import *
 from modela.Configuration import datamodel
-from modela.common import Configuration, ConditionStatus, Time, ObjectReference, StatusError, TriggerScheduleEventType
+from modela.common import Configuration, ConditionStatus, Time, ObjectReference, StatusError, TriggerScheduleEventType,TestSuite
 from modela.inference.common import PredictorConditionType, AccessType, PredictorType, ModelDeploymentPhase, ModelRole
 from modela.infra.models import Workload
 from modela.data.models import DataLocation
@@ -237,24 +237,24 @@ class PredictorStatus(Configuration):
     Conditions: List[PredictorCondition] = field(default_factory=lambda : [])
 
 
-@datamodel(proto=inference_pb.MonitorSpec)
-class MonitorSpec(Configuration):
+@datamodel(proto=inference_pb.PredictorMonitorSpec)
+class PredictorMonitorSpec(Configuration):
     """
     MonitorSpec defines the specification to monitor a model in production
     """
     Enabled: bool = False
-    """ Indicates if model monitoring is enabled for the model """
-    SamplePercent: int = 0
-    """ The percentage of rows (0 through 100) of incoming data to sample for model monitoring """
-    Schedule: RunSchedule = None
-    """ The schedule on which model monitoring computations will be performed """
-    NotifierRef: ObjectReference = None
-    """ NotifierRef references a Notifier resource that will be triggered in the case that a concept or data drift is detected """
-    Tests: List[ModelTest] = field(default_factory=lambda : [])
+    """
+    Indicates if model monitoring is enabled for the model
+    """
+    Tests:TestSuite = TestSuite()
     """
     tests contains the collection of model tests that will be 
     performed based on incoming prediction traffic
     """
+    Schedule: RunSchedule = None
+    """ The schedule on which model monitoring computations will be performed """
+    NotifierRef: ObjectReference = None
+    """ NotifierRef references a Notifier resource that will be triggered in the case that a concept or data drift is detected """
     OutlierDetectionModelRef: ObjectReference = None
     """ Reference to a model that will be used for outlier detection. If empty, an outlier detection model. """
 
@@ -281,6 +281,79 @@ class ModelServingSpec(Configuration):
     """
     If Serverless is true, the Kubernetes Deployment which serves the model will not be created 
     until it starts to receive prediction traffic, and will be destroyed once the model becomes dormant
+    """
+
+
+@datamodel(proto=inference_pb.ForwardCurtainSpec)
+class ForwardCurtainSpec(Configuration):
+    """ AccessSpec specifies the configuration to expose a Predictor service externally """
+    Enabled: bool = False
+    """
+    Is Forward curtain spec enabled
+    """
+    CurtainRef:ObjectReference = None
+    """
+    The forward curtain receives prediction requests before the prediction (currently unimplemented)
+    """
+    Percent: int = 0
+    """
+    Percent of request that are sent to the foreward curtain.
+    """
+
+@datamodel(proto=inference_pb.ForwardCurtainSpec)
+class BackwardCurtainSpec(Configuration):
+    """ AccessSpec specifies the configuration to expose a Predictor service externally """
+    Enabled: bool = False
+    """
+    Is Forward curtain spec enabled
+    """
+    CurtainRef:ObjectReference = None
+    """
+    The forward curtain receives prediction requests before the prediction (currently unimplemented)
+    """
+    ConfidenceLow: float = 0.4
+    """
+    For backward curtain is the confidence low
+    """
+    ConfidenceHigh: float = 0.6
+    """
+    For backward curtain is the confidence high
+    """
+
+@datamodel(proto=inference_pb.OnlineFeatureStoreSpec)
+class OnlineFeatureStoreSpec(Configuration):
+    """ AccessSpec specifies the configuration to expose a Predictor service externally """
+    Enabled: bool = False
+    """
+    Is online feature store enabled
+    """
+    HostName:str = ""
+    """
+    The forward curtain receives prediction requests before the prediction (currently unimplemented)
+    """
+
+@datamodel(proto=inference_pb.FastSlowModelSpec)
+class FastSlowModelSpec(Configuration):
+    """ AccessSpec specifies the configuration to expose a Predictor service externally """
+    Enabled: bool = False
+    """
+    Is fast slow enabled
+    """
+    FastModelRef: ObjectReference = None
+    """
+    Reference to the fast model
+    """
+    SlowModelRef:ObjectReference = None
+    """
+    Reference to the slow model
+    """
+    ProbaLowPct:int = 40
+    """
+    The low range of confidence.
+    """
+    ProbaHighPct:int = 60
+    """
+    The high range of confidence , Must be higher than probalow
     """
 
 
@@ -367,12 +440,19 @@ class PredictorSpec(Configuration):
     """ Resources specifies the resource requirements allocated to the prediction service """
     Cache: PredictionCacheSpec = PredictionCacheSpec()
     """ Cache specifies the configuration of the prediction cache """
+    Store: OnlineFeatureStoreSpec = OnlineFeatureStoreSpec()
+
+    ForwardCurtain: ForwardCurtainSpec = ForwardCurtainSpec()
+
+    BackwardCurtain: BackwardCurtainSpec = BackwardCurtainSpec()
+
     Task: TaskType = None
     """ The task type of the Predictor, which should match the task type of the models being served """
     PredictionThreshold: float = 0
     """ The prediction threshold """
-    Monitor: MonitorSpec = None
+    Monitor: PredictorMonitorSpec = None
     """ Monitor spec specify the monitor for this predictor. """
+    FastSlow: FastSlowModelSpec = FastSlowModelSpec()
 
 
 @datamodel(proto=ProbabilityValue)
@@ -397,3 +477,39 @@ class PredictionResult(Configuration):
     MissingColumns: List[str] = field(default_factory=lambda : [])
     OutOfBound: List[str] = field(default_factory=lambda : [])
     BaseShapValue: float = 0
+
+
+
+
+@datamodel(proto=inference_pb.BackwardCurtainSpec)
+class BackwardCurtainSpec(Configuration):
+    """ AccessSpec specifies the configuration to expose a Predictor service externally """
+    Port: int = 0
+    """
+    The port number that will be exposed on the Predictor's Pods to serve prediction traffic through the GRPCInferenceService API.
+    The Kubernetes Service created by the Predictor will expose the port and forward GRPC traffic to the backend pods
+    """
+    NodePort: int = 0
+    """
+    The port number that will be exposed on the external address of every node on the cluster, in the case of the
+    Predictor's access type being NodePort. Traffic from the port will be forwarded to the Predictor's backend service
+    """
+    Path: str = 0
+    """
+    The auto-generated DNS path where the Predictor service can be accessed. If the access type is ClusterIP, it will
+    be a cluster-internal DNS name (i.e. predictor.default-serving-site.svc.cluster.local). In the case of the Ingress
+    access type, it will be determined by the FQDN of the host ServingSite (i.e. predictor.default-serving-site.your-domain.ai).
+    """
+    AccessType: AccessType_ = AccessType_.ClusterIP
+    """
+    The Kubernetes-native access method which specifies how the Kubernetes Service created by the Predictor will be exposed.
+    See https://modela.ai/docs/docs/serving/production/#access-method for a detailed description of each access type
+    (defaults to cluster-ip)
+    """
+    Rest: bool = False
+    """
+    Indicates if the prediction service should expose an additional port to serve the GRPCInferenceService API through REST.
+    The port one digit above the number specified by the Port field will be exposed to accept HTTP/1.1 traffic
+    """
+    ApikeySecretRef: ObjectReference = None
+    """ ApiKeySecretRef references a Kubernetes Secret containing an API key that must be passed in prediction requests to the Predictor """
