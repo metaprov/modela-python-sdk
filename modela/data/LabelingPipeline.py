@@ -1,13 +1,16 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import LabelingPipeline as MDLabelingPipeline
-from github.com.metaprov.modelaapi.services.labelingpipeline.v1.labelingpipeline_pb2_grpc import LabelingPipelineServiceStub
-from github.com.metaprov.modelaapi.services.labelingpipeline.v1.labelingpipeline_pb2 import CreateLabelingPipelineRequest, \
+from github.com.metaprov.modelaapi.services.labelingpipeline.v1.labelingpipeline_pb2 import \
+    CreateLabelingPipelineRequest, \
     UpdateLabelingPipelineRequest, \
     DeleteLabelingPipelineRequest, GetLabelingPipelineRequest, ListLabelingPipelineRequest
+from github.com.metaprov.modelaapi.services.labelingpipeline.v1.labelingpipeline_pb2_grpc import \
+    LabelingPipelineServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class LabelingPipeline(Resource):

@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.team.v1alpha1.generated_pb2 import Todo as MDTodo
-from github.com.metaprov.modelaapi.services.todo.v1.todo_pb2_grpc import TodoServiceStub
 from github.com.metaprov.modelaapi.services.todo.v1.todo_pb2 import CreateTodoRequest, \
     UpdateTodoRequest, \
     DeleteTodoRequest, GetTodoRequest, ListTodosRequest
+from github.com.metaprov.modelaapi.services.todo.v1.todo_pb2_grpc import TodoServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class Todo(Resource):

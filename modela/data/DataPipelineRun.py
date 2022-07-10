@@ -1,13 +1,15 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import DataPipelineRun as MDDataPipelineRun
-from github.com.metaprov.modelaapi.services.datapipelinerun.v1.datapipelinerun_pb2_grpc import DataPipelineRunServiceStub
 from github.com.metaprov.modelaapi.services.datapipelinerun.v1.datapipelinerun_pb2 import CreateDataPipelineRunRequest, \
     UpdateDataPipelineRunRequest, \
     DeleteDataPipelineRunRequest, GetDataPipelineRunRequest, ListDataPipelineRunRequest
+from github.com.metaprov.modelaapi.services.datapipelinerun.v1.datapipelinerun_pb2_grpc import \
+    DataPipelineRunServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class DataPipelineRun(Resource):

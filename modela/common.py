@@ -1,7 +1,6 @@
-from dataclasses import dataclass
 from enum import Enum
 from typing import List
-from dataclasses import dataclass, field
+from dataclasses import field
 
 from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import Plot
 from k8s.io.api.core.v1.generated_pb2 import ObjectReference, SecretReference
@@ -12,6 +11,19 @@ from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 impor
 
 from modela.Configuration import Configuration, ImmutableConfiguration, datamodel
 import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
+from dataclasses import field
+from enum import Enum
+from typing import List
+
+import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
+from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import TestSuite, DataTestCase, \
+    TestSuiteResult, \
+    DataTestCaseResult
+from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import Plot
+from k8s.io.api.core.v1.generated_pb2 import ObjectReference, SecretReference
+from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import Time
+
+from modela.Configuration import Configuration, ImmutableConfiguration, datamodel
 
 
 class ConditionStatus(Enum):
@@ -324,11 +336,11 @@ class DataTestCase(Configuration):
 
 @datamodel(proto=TestSuiteResult)
 class TestSuiteResult(Configuration):
-    Fixture: ObjectReference
+    Fixture: ObjectReference = None
     Failures: int = 0
     Errors: int = 0
-    StartTime: Time
-    StopTime: Time
+    StartTime: Time = None
+    StopTime: Time = None
     Tests: List[DataTestCaseResult] = field(default_factory=lambda: [])
 
 

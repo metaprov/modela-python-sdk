@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.infra.v1alpha1.generated_pb2 import VirtualBucket as MDVirtualBucket
-from github.com.metaprov.modelaapi.services.virtualbucket.v1.virtualbucket_pb2_grpc import VirtualBucketServiceStub
 from github.com.metaprov.modelaapi.services.virtualbucket.v1.virtualbucket_pb2 import CreateVirtualBucketRequest, \
     UpdateVirtualBucketRequest, \
     DeleteVirtualBucketRequest, GetVirtualBucketRequest, ListVirtualBucketsRequest
+from github.com.metaprov.modelaapi.services.virtualbucket.v1.virtualbucket_pb2_grpc import VirtualBucketServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class VirtualBucket(Resource):

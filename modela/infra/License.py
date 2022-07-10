@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.infra.v1alpha1.generated_pb2 import License as MDLicense
-from github.com.metaprov.modelaapi.services.license.v1.license_pb2_grpc import LicenseServiceStub
 from github.com.metaprov.modelaapi.services.license.v1.license_pb2 import CreateLicenseRequest, \
     UpdateLicenseRequest, \
     DeleteLicenseRequest, GetLicenseRequest, ListLicensesRequest
+from github.com.metaprov.modelaapi.services.license.v1.license_pb2_grpc import LicenseServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class License(Resource):

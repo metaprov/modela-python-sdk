@@ -1,14 +1,17 @@
-import grpc
-from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import DataProductVersion as MDDataProductVersion
-from github.com.metaprov.modelaapi.services.dataproductversion.v1.dataproductversion_pb2_grpc import DataProductVersionServiceStub
-from github.com.metaprov.modelaapi.services.dataproductversion.v1.dataproductversion_pb2 import CreateDataProductVersionRequest, \
-    UpdateDataProductVersionRequest, \
-    DeleteDataProductVersionRequest, GetDataProductVersionRequest, ListDataProductVersionsRequest
-
-from modela.Resource import Resource
-from modela.ModelaException import ModelaException
 from typing import List, Union
 
+import grpc
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import \
+    DataProductVersion as MDDataProductVersion
+from github.com.metaprov.modelaapi.services.dataproductversion.v1.dataproductversion_pb2 import \
+    CreateDataProductVersionRequest, \
+    UpdateDataProductVersionRequest, \
+    DeleteDataProductVersionRequest, GetDataProductVersionRequest, ListDataProductVersionsRequest
+from github.com.metaprov.modelaapi.services.dataproductversion.v1.dataproductversion_pb2_grpc import \
+    DataProductVersionServiceStub
+
+from modela.ModelaException import ModelaException
+from modela.Resource import Resource
 from modela.data.models import DataProductVersionSpec
 
 

@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.team.v1alpha1.generated_pb2 import Meeting as MDMeeting
-from github.com.metaprov.modelaapi.services.meeting.v1.meeting_pb2_grpc import MeetingServiceStub
 from github.com.metaprov.modelaapi.services.meeting.v1.meeting_pb2 import CreateMeetingRequest, \
     UpdateMeetingRequest, \
     DeleteMeetingRequest, GetMeetingRequest, ListMeetingsRequest
+from github.com.metaprov.modelaapi.services.meeting.v1.meeting_pb2_grpc import MeetingServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class Meeting(Resource):

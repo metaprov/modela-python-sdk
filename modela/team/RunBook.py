@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.team.v1alpha1.generated_pb2 import RunBook as MDRunBook
-from github.com.metaprov.modelaapi.services.runbook.v1.runbook_pb2_grpc import RunBookServiceStub
 from github.com.metaprov.modelaapi.services.runbook.v1.runbook_pb2 import CreateRunBookRequest, \
     UpdateRunBookRequest, \
     DeleteRunBookRequest, GetRunBookRequest, ListRunBooksRequest
+from github.com.metaprov.modelaapi.services.runbook.v1.runbook_pb2_grpc import RunBookServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class RunBook(Resource):

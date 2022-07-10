@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 import CronPrediction as MDCronPrediction
-from github.com.metaprov.modelaapi.services.cronprediction.v1.cronprediction_pb2_grpc import CronPredictionServiceStub
 from github.com.metaprov.modelaapi.services.cronprediction.v1.cronprediction_pb2 import CreateCronPredictionRequest, \
     UpdateCronPredictionRequest, \
     DeleteCronPredictionRequest, GetCronPredictionRequest, ListCronPredictionsRequest
+from github.com.metaprov.modelaapi.services.cronprediction.v1.cronprediction_pb2_grpc import CronPredictionServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class CronPrediction(Resource):

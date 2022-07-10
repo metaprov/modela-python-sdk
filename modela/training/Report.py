@@ -1,19 +1,19 @@
 import os
+import tempfile
 import time
+import webbrowser
+from typing import List, Union
 
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import Report as MDReport
+from github.com.metaprov.modelaapi.services.report.v1.report_pb2 import DeleteReportRequest, GetReportRequest, \
+    ListReportsRequest, DownloadReportRequest
 from github.com.metaprov.modelaapi.services.report.v1.report_pb2_grpc import ReportServiceStub
-from github.com.metaprov.modelaapi.services.report.v1.report_pb2 import CreateReportRequest, \
-    UpdateReportRequest, DeleteReportRequest, GetReportRequest, ListReportsRequest, DownloadReportRequest
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
-
+from modela.Resource import Resource
 from modela.training.models import ReportSpec, ReportStatus
-import tempfile
-import webbrowser
+
 
 class Report(Resource):
     def __init__(self, item: MDReport = MDReport(), client=None, namespace="", name=""):

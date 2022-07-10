@@ -1,26 +1,21 @@
 import asyncio
 import json
-import time
+from typing import List, Union
 
 import grpc
-from google.protobuf import json_format
-
 from github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 import Predictor as MDPredictor
-from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1.grpcinferenceservice_pb2 import \
-    PredictResultLineItem
-from github.com.metaprov.modelaapi.services.predictor.v1.predictor_pb2_grpc import PredictorServiceStub
 from github.com.metaprov.modelaapi.services.predictor.v1.predictor_pb2 import CreatePredictorRequest, \
     UpdatePredictorRequest, \
     DeletePredictorRequest, GetPredictorRequest, ListPredictorsRequest, PredictOneRequest
+from github.com.metaprov.modelaapi.services.predictor.v1.predictor_pb2_grpc import PredictorServiceStub
 
-from modela.common import ObjectReference
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException, ResourceNotFoundException
-from typing import List, Union
-
+from modela.Resource import Resource
+from modela.common import ObjectReference
 from modela.inference.InferenceService import InferenceService
 from modela.inference.common import AccessType
-from modela.inference.models import ModelDeploymentSpec, PredictorSpec, PredictorStatus, PredictionResult, AutoScalingSpec
+from modela.inference.models import ModelDeploymentSpec, PredictorSpec, PredictorStatus, PredictionResult, \
+    AutoScalingSpec
 from modela.infra.ServingSite import ServingSite
 from modela.infra.models import Workload
 from modela.training.Model import Model

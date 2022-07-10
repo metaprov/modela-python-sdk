@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.infra.v1alpha1.generated_pb2 import ModelaSystem as MDModelaSystem
-from github.com.metaprov.modelaapi.services.modelasystem.v1.modelasystem_pb2_grpc import ModelaSystemServiceStub
 from github.com.metaprov.modelaapi.services.modelasystem.v1.modelasystem_pb2 import CreateModelaSystemRequest, \
     UpdateModelaSystemRequest, \
     DeleteModelaSystemRequest, GetModelaSystemRequest, ListModelaSystemsRequest
+from github.com.metaprov.modelaapi.services.modelasystem.v1.modelasystem_pb2_grpc import ModelaSystemServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class ModelaSystem(Resource):

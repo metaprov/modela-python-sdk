@@ -1,13 +1,15 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import FeaturePipeline as MDFeaturePipeline
-from github.com.metaprov.modelaapi.services.featurepipeline.v1.featurepipeline_pb2_grpc import FeaturePipelineServiceStub
 from github.com.metaprov.modelaapi.services.featurepipeline.v1.featurepipeline_pb2 import CreateFeaturePipelineRequest, \
     UpdateFeaturePipelineRequest, \
     DeleteFeaturePipelineRequest, GetFeaturePipelineRequest, ListFeaturePipelineRequest
+from github.com.metaprov.modelaapi.services.featurepipeline.v1.featurepipeline_pb2_grpc import \
+    FeaturePipelineServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class FeaturePipeline(Resource):

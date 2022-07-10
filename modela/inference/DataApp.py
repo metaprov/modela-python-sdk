@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 import DataApp as MDDataApp
-from github.com.metaprov.modelaapi.services.dataapp.v1.dataapp_pb2_grpc import DataAppServiceStub
 from github.com.metaprov.modelaapi.services.dataapp.v1.dataapp_pb2 import CreateDataAppRequest, \
     UpdateDataAppRequest, \
     DeleteDataAppRequest, GetDataAppRequest, ListDataAppsRequest
+from github.com.metaprov.modelaapi.services.dataapp.v1.dataapp_pb2_grpc import DataAppServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class DataApp(Resource):

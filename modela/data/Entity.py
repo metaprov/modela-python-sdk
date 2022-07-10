@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import Entity as MDEntity
-from github.com.metaprov.modelaapi.services.entity.v1.entity_pb2_grpc import EntityServiceStub
 from github.com.metaprov.modelaapi.services.entity.v1.entity_pb2 import CreateEntityRequest, \
     UpdateEntityRequest, \
     DeleteEntityRequest, GetEntityRequest, ListEntitiesRequest
+from github.com.metaprov.modelaapi.services.entity.v1.entity_pb2_grpc import EntityServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class Entity(Resource):

@@ -4,12 +4,12 @@ import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as 
 import github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 as inference_pb
 from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1.grpcinferenceservice_pb2 import *
 from modela.Configuration import datamodel
-from modela.common import Configuration, ConditionStatus, Time, ObjectReference, StatusError, TriggerScheduleEventType,TestSuite
+from modela.common import Configuration, ConditionStatus, Time, ObjectReference, StatusError, TriggerScheduleEventType, \
+    TestSuite, TestSuiteResult
 from modela.inference.common import PredictorConditionType, AccessType, PredictorType, ModelDeploymentPhase, ModelRole
 from modela.infra.models import Workload
 from modela.data.models import DataLocation
 from modela.training.common import TaskType
-from modela.training.models import ModelTest, ModelTestResult
 from modela.common import Metric
 
 
@@ -62,7 +62,7 @@ class ModelDeploymentStatus(Configuration):
     """ Indicates if a data drift has been detected based on incoming prediction data """
     ConceptDrift: bool = False
     """ Indicates if a concept drift has been detected based on incoming prediction data """
-    LastDailyPredictions: List[int] = field(default_factory=lambda : [])
+    LastDailyPredictions: List[int] = field(default_factory=lambda: [])
     """ The predictions from the last 7 days """
 
 
@@ -88,7 +88,7 @@ class PredictorletStatus(Configuration):
     """ The total number of predictions served by the Predictorlet """
     LastFailure: str = ''
     """ LastFailure contains the last failure that occured with a model served by the Predictorlet """
-    LastDailyPredictions: List[int] = field(default_factory=lambda : [])
+    LastDailyPredictions: List[int] = field(default_factory=lambda: [])
     """ The predictions from the last 7 days """
 
 
@@ -134,7 +134,7 @@ class ModelDeploymentSpec(Configuration):
     """ MountTar means that we would mount the model tar file. Else we would use baked image. """
     TrafficSelector: str = ''
     """ TrafficSelector is a filter on the traffic to this model """
-    CanaryMetrics: List[Metric] = field(default_factory=lambda : [])
+    CanaryMetrics: List[Metric] = field(default_factory=lambda: [])
     """ If the deployment is canary, the metric define how to evaluate the canary """
     ApprovedBy: str = ''
     """ The account name of the approver """
@@ -164,7 +164,7 @@ class ProgressiveSpec(Configuration):
     """ The time, in seconds, for the warm-up period """
     TrafficIncrement: int = 0
     """ The percentage of traffic to increment """
-    CanaryMetrics: List[Metric] = field(default_factory=lambda : [])
+    CanaryMetrics: List[Metric] = field(default_factory=lambda: [])
     """ What metric to use when comparing the candidate model to the current model """
 
 
@@ -212,20 +212,54 @@ class AutoScalingSpec(Configuration):
     """
 
 
+@datamodel(proto=inference_pb.PredictionCacheStatus)
+class PredictionCacheStatus(Configuration):
+    LastAccessed: Time = None
+
+
+@datamodel(proto=inference_pb.OnlineStoreStatus)
+class OnlineStoreStatus(Configuration):
+    LastAccessed: Time = None
+
+
+@datamodel(proto=inference_pb.GroundTruthTestStatus)
+class GroundTruthTestStatus(Configuration):
+    Results: TestSuiteResult = TestSuiteResult()
+
+    LastRun: Time = None
+
+
+@datamodel(proto=inference_pb.DriftDetectionStatus)
+class DriftDetectionStatus(Configuration):
+    Results: TestSuiteResult = None
+    """ The drift detection test results """
+    LastRun: Time = None
+    """ Last time we performed the last run """
+
 @datamodel(proto=inference_pb.PredictorStatus)
 class PredictorStatus(Configuration):
     """ PredictorStatus contain the current state of the Predictor resource """
     ObservedGeneration: int = 0
     """ ObservedGeneration is the last generation that was acted on """
-    History: List[ModelRecord] = field(default_factory=lambda : [])
+    History: List[ModelRecord] = field(default_factory=lambda: [])
     """ The collection of historical records of models deployed to the Predictor, used internally to roll-back models """
-    Models: List[ModelDeploymentStatus] = field(default_factory=lambda : [])
+    Models: List[ModelDeploymentStatus] = field(default_factory=lambda: [])
     """ The collection of statuses for each model deployed with the Predictor """
     Predictorlet: PredictorletStatus = None
     """
     The status of the Predictorlet associated with the Predictor. The Predictorlet is a service which handles prediction traffic
     and routes predictions to individual models based on the specification of the Predictor
     """
+    CacheStatus: PredictionCacheStatus = None
+    """ Cache status is the status of the prediction cache """
+    OnlineStore: OnlineStoreStatus = OnlineStoreStatus()
+    """ Online store status status is the status of the prediction cache """
+    LastPredictionDataset: Time = None
+    """ Last time the the predictor perform a prediction"""
+    GroundTruth: GroundTruthTestStatus = GroundTruthTestStatus()
+    """ Ground Truth is the status of the ground truth tests """
+    Drift: DriftDetectionStatus = DriftDetectionStatus()
+    """ Drift is the status of the drift status"""
     LastUpdated: Time = None
     """ The last time the object was updated """
     EndPoint: str = ''
@@ -234,27 +268,39 @@ class PredictorStatus(Configuration):
     """ In the case of failure, the Predictor resource controller will set this field with a failure reason """
     FailureMessage: str = ''
     """ In the case of failure, the Predictor resource controller will set this field with a failure reason """
-    Conditions: List[PredictorCondition] = field(default_factory=lambda : [])
+    Conditions: List[PredictorCondition] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=inference_pb.PredictorMonitorSpec)
-class PredictorMonitorSpec(Configuration):
-    """
-    MonitorSpec defines the specification to monitor a model in production
-    """
+@datamodel(proto=inference_pb.GroundTruthTestSpec)
+class GroundTruthTestSpec(Configuration):
     Enabled: bool = False
     """
     Indicates if model monitoring is enabled for the model
     """
-    Tests:TestSuite = TestSuite()
-    """
-    tests contains the collection of model tests that will be 
-    performed based on incoming prediction traffic
-    """
+    GroundTrueDatasetRef: ObjectReference = None
+    """ The training dataset to use when calculated metrics """
+    TrainingDatasetRef: ObjectReference = None
+    """ The training dataset to use when calculated metrics """
+    Tests: TestSuite = TestSuite()
+    """ Test to run in order to calculate the predictor"""
     Schedule: RunSchedule = None
     """ The schedule on which model monitoring computations will be performed """
-    NotifierRef: ObjectReference = None
-    """ NotifierRef references a Notifier resource that will be triggered in the case that a concept or data drift is detected """
+
+
+@datamodel(proto=inference_pb.DriftDetectionSpec)
+class DriftDetectionSpec(Configuration):
+    Enabled: bool = False
+    """
+    Indicates if model monitoring is enabled for the model
+    """
+    LiveHistogramRef: ObjectReference = None
+    """ The training dataset to use when calculated metrics """
+    TrainingHistogramRef: ObjectReference = None
+    """ The training dataset to use when calculated metrics """
+    Tests: TestSuite = TestSuite()
+    """ Test to run in order to calculate the predictor"""
+    Schedule: RunSchedule = None
+    """ The schedule on which model monitoring computations will be performed """
     OutlierDetectionModelRef: ObjectReference = None
     """ Reference to a model that will be used for outlier detection. If empty, an outlier detection model. """
 
@@ -291,7 +337,7 @@ class ForwardCurtainSpec(Configuration):
     """
     Is Forward curtain spec enabled
     """
-    CurtainRef:ObjectReference = None
+    CurtainRef: ObjectReference = None
     """
     The forward curtain receives prediction requests before the prediction (currently unimplemented)
     """
@@ -300,6 +346,7 @@ class ForwardCurtainSpec(Configuration):
     Percent of request that are sent to the foreward curtain.
     """
 
+
 @datamodel(proto=inference_pb.ForwardCurtainSpec)
 class BackwardCurtainSpec(Configuration):
     """ AccessSpec specifies the configuration to expose a Predictor service externally """
@@ -307,7 +354,7 @@ class BackwardCurtainSpec(Configuration):
     """
     Is Forward curtain spec enabled
     """
-    CurtainRef:ObjectReference = None
+    CurtainRef: ObjectReference = None
     """
     The forward curtain receives prediction requests before the prediction (currently unimplemented)
     """
@@ -320,6 +367,7 @@ class BackwardCurtainSpec(Configuration):
     For backward curtain is the confidence high
     """
 
+
 @datamodel(proto=inference_pb.OnlineFeatureStoreSpec)
 class OnlineFeatureStoreSpec(Configuration):
     """ AccessSpec specifies the configuration to expose a Predictor service externally """
@@ -327,10 +375,11 @@ class OnlineFeatureStoreSpec(Configuration):
     """
     Is online feature store enabled
     """
-    HostName:str = ""
+    HostName: str = ""
     """
     The forward curtain receives prediction requests before the prediction (currently unimplemented)
     """
+
 
 @datamodel(proto=inference_pb.FastSlowModelSpec)
 class FastSlowModelSpec(Configuration):
@@ -343,15 +392,15 @@ class FastSlowModelSpec(Configuration):
     """
     Reference to the fast model
     """
-    SlowModelRef:ObjectReference = None
+    SlowModelRef: ObjectReference = None
     """
     Reference to the slow model
     """
-    ProbaLowPct:int = 40
+    ProbaLowPct: int = 40
     """
     The low range of confidence.
     """
-    ProbaHighPct:int = 60
+    ProbaHighPct: int = 60
     """
     The high range of confidence , Must be higher than probalow
     """
@@ -408,7 +457,7 @@ class PredictorSpec(Configuration):
     """ The reference to the DataProduct that the resource exists under """
     ServingsiteRef: ObjectReference = ObjectReference('default-tenant', 'default-lab')
     """ The reference to the ServingSite resource that hosts the Predictor """
-    Models: List[ModelDeploymentSpec] = field(default_factory=lambda : [])
+    Models: List[ModelDeploymentSpec] = field(default_factory=lambda: [])
     """
     The collection of model deployment specifications that define which Model resources will be deployed to the
     Predictor service and how they will be deployed. Each model should be trained with the same type of
@@ -441,18 +490,21 @@ class PredictorSpec(Configuration):
     Cache: PredictionCacheSpec = PredictionCacheSpec()
     """ Cache specifies the configuration of the prediction cache """
     Store: OnlineFeatureStoreSpec = OnlineFeatureStoreSpec()
-
+    """ Store specify the connection to an online feature store """
     ForwardCurtain: ForwardCurtainSpec = ForwardCurtainSpec()
-
+    """ Forward curtain specify the connection to a forward curtain """
     BackwardCurtain: BackwardCurtainSpec = BackwardCurtainSpec()
-
+    """ Forward curtain specify the connection to a forward curtain """
     Task: TaskType = None
     """ The task type of the Predictor, which should match the task type of the models being served """
     PredictionThreshold: float = 0
     """ The prediction threshold """
-    Monitor: PredictorMonitorSpec = None
-    """ Monitor spec specify the monitor for this predictor. """
+    Drift: DriftDetectionSpec = DriftDetectionSpec()
+    """ Drift specify the drift detection settings"""
+    GroundTruth: GroundTruthTestSpec = GroundTruthTestSpec()
+    """ Ground truth specify how to assign ground truth """
     FastSlow: FastSlowModelSpec = FastSlowModelSpec()
+    """ Fast Slow define the configuration of fast slow models """
 
 
 @datamodel(proto=ProbabilityValue)
@@ -472,13 +524,11 @@ class PredictionResult(Configuration):
     Success: bool = False
     Score: float = 0
     Label: str = ''
-    Probabilities: List[ProbabilityValue] = field(default_factory=lambda : [])
-    ShapValues: List[ShapValue] = field(default_factory=lambda : [])
-    MissingColumns: List[str] = field(default_factory=lambda : [])
-    OutOfBound: List[str] = field(default_factory=lambda : [])
+    Probabilities: List[ProbabilityValue] = field(default_factory=lambda: [])
+    ShapValues: List[ShapValue] = field(default_factory=lambda: [])
+    MissingColumns: List[str] = field(default_factory=lambda: [])
+    OutOfBound: List[str] = field(default_factory=lambda: [])
     BaseShapValue: float = 0
-
-
 
 
 @datamodel(proto=inference_pb.BackwardCurtainSpec)

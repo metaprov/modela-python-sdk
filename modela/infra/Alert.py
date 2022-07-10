@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.infra.v1alpha1.generated_pb2 import Alert as MDAlert
-from github.com.metaprov.modelaapi.services.alert.v1.alert_pb2_grpc import AlertServiceStub
 from github.com.metaprov.modelaapi.services.alert.v1.alert_pb2 import CreateAlertRequest, \
     UpdateAlertRequest, \
     DeleteAlertRequest, GetAlertRequest, ListAlertsRequest
+from github.com.metaprov.modelaapi.services.alert.v1.alert_pb2_grpc import AlertServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class Alert(Resource):

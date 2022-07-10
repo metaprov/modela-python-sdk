@@ -3,10 +3,11 @@ import hashlib
 import grpc
 from github.com.metaprov.modelaapi.services.fileservices.v1.fileservices_pb2 import DataBlock
 from github.com.metaprov.modelaapi.services.fileservices.v1.fileservices_pb2_grpc import FileServicesServiceStub
-
-from modela.data.models import DataLocation
-from modela.ModelaException import ModelaException
 from tqdm import *
+
+from modela.ModelaException import ModelaException
+from modela.data.models import DataLocation
+
 
 class DataBlockRequestIterable(object):
     BLOCK_SIZE = 200000

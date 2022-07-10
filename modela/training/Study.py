@@ -1,27 +1,25 @@
 import asyncio
 import time
+from typing import List, Union
 
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import Study as MDStudy
-from github.com.metaprov.modelaapi.services.study.v1.study_pb2_grpc import StudyServiceStub
 from github.com.metaprov.modelaapi.services.study.v1.study_pb2 import CreateStudyRequest, \
     UpdateStudyRequest, DeleteStudyRequest, GetStudyRequest, ListStudyRequest, \
     GetStudyProfileRequest, CreateStudyProfileRequest, AbortStudyRequest, PauseStudyRequest, ResumeStudyRequest
+from github.com.metaprov.modelaapi.services.study.v1.study_pb2_grpc import StudyServiceStub
 from tqdm import tqdm
 
-import modela
-from modela.common import *
-from modela.training.models import ModelSearch, FeatureEngineeringSearch, BaselineSettings, Ensemble, Training, \
-    Interpretability, StudySchedule, NotificationSettings, StudySpec, StudyStatus, DataLocation
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException, ResourceNotFoundException
-from typing import List, Union
-
+from modela.Resource import Resource
+from modela.common import *
 from modela.data.Dataset import Dataset
 from modela.infra.Lab import Lab
 from modela.infra.VirtualBucket import VirtualBucket
 from modela.training.Model import Model
 from modela.training.common import *
+from modela.training.models import ModelSearch, FeatureEngineeringSearch, BaselineSettings, Ensemble, Training, \
+    Interpretability, StudySchedule, NotificationSettings, StudySpec, StudyStatus, DataLocation
 
 
 class Study(Resource):

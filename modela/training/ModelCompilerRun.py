@@ -1,13 +1,17 @@
+from typing import List, Union
+
 import grpc
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ModelCompilerRun as MDModelCompilerRun
-from github.com.metaprov.modelaapi.services.modelcompilerrun.v1.modelcompilerrun_pb2_grpc import ModelCompilerRunServiceStub
-from github.com.metaprov.modelaapi.services.modelcompilerrun.v1.modelcompilerrun_pb2 import CreateModelCompilerRunRequest, \
+from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
+    ModelCompilerRun as MDModelCompilerRun
+from github.com.metaprov.modelaapi.services.modelcompilerrun.v1.modelcompilerrun_pb2 import \
+    CreateModelCompilerRunRequest, \
     UpdateModelCompilerRunRequest, \
     DeleteModelCompilerRunRequest, GetModelCompilerRunRequest, ListModelCompilerRunsRequest
+from github.com.metaprov.modelaapi.services.modelcompilerrun.v1.modelcompilerrun_pb2_grpc import \
+    ModelCompilerRunServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class ModelCompilerRun(Resource):

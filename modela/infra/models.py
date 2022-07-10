@@ -1,10 +1,12 @@
 from dataclasses import field
+
 import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
-import github.com.metaprov.modelaapi.pkg.apis.infra.v1alpha1.generated_pb2 as infra_pb
 import github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 as data_pb
-from modela.infra.common import *
+import github.com.metaprov.modelaapi.pkg.apis.infra.v1alpha1.generated_pb2 as infra_pb
+
 from modela.Configuration import *
 from modela.common import ObjectReference
+from modela.infra.common import *
 
 
 @datamodel(proto=catalog_pb.NotificationSpec)

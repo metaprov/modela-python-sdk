@@ -1,15 +1,12 @@
-import hashlib
+import socket
 import subprocess
 import time
 from contextlib import closing
-import socket
 from typing import List
 
 import grpc
 from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1 import grpcinferenceservice_pb2_grpc
 from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1.grpcinferenceservice_pb2 import PredictRequest
-from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1.grpcinferenceservice_pb2_grpc import \
-    GRPCInferenceServiceStub
 
 from modela.ModelaException import ModelaException
 from modela.inference.models import PredictionResult

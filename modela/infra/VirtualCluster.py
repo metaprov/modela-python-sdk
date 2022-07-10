@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.infra.v1alpha1.generated_pb2 import VirtualCluster as MDVirtualCluster
-from github.com.metaprov.modelaapi.services.virtualcluster.v1.virtualcluster_pb2_grpc import VirtualClusterServiceStub
 from github.com.metaprov.modelaapi.services.virtualcluster.v1.virtualcluster_pb2 import CreateVirtualClusterRequest, \
     UpdateVirtualClusterRequest, \
     DeleteVirtualClusterRequest, GetVirtualClusterRequest, ListVirtualClustersRequest
+from github.com.metaprov.modelaapi.services.virtualcluster.v1.virtualcluster_pb2_grpc import VirtualClusterServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class VirtualCluster(Resource):

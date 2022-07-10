@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 import Curtain as MDCurtain
-from github.com.metaprov.modelaapi.services.curtain.v1.curtain_pb2_grpc import CurtainServiceStub
 from github.com.metaprov.modelaapi.services.curtain.v1.curtain_pb2 import CreateCurtainRequest, \
     UpdateCurtainRequest, \
     DeleteCurtainRequest, GetCurtainRequest, ListCurtainsRequest
+from github.com.metaprov.modelaapi.services.curtain.v1.curtain_pb2_grpc import CurtainServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class Curtain(Resource):

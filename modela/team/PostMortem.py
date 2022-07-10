@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.team.v1alpha1.generated_pb2 import PostMortem as MDPostMortem
-from github.com.metaprov.modelaapi.services.postmortem.v1.postmortem_pb2_grpc import PostMortemServiceStub
 from github.com.metaprov.modelaapi.services.postmortem.v1.postmortem_pb2 import CreatePostMortemRequest, \
     UpdatePostMortemRequest, \
     DeletePostMortemRequest, GetPostMortemRequest, ListPostMortemsRequest
+from github.com.metaprov.modelaapi.services.postmortem.v1.postmortem_pb2_grpc import PostMortemServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class PostMortem(Resource):

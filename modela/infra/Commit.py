@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.infra.v1alpha1.generated_pb2 import Commit as MDCommit
-from github.com.metaprov.modelaapi.services.commit.v1.commit_pb2_grpc import CommitServiceStub
 from github.com.metaprov.modelaapi.services.commit.v1.commit_pb2 import CreateCommitRequest, \
     UpdateCommitRequest, \
     DeleteCommitRequest, GetCommitRequest, ListCommitsRequest
+from github.com.metaprov.modelaapi.services.commit.v1.commit_pb2_grpc import CommitServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class Commit(Resource):

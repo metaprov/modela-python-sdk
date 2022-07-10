@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import Featureset as MDFeatureset
-from github.com.metaprov.modelaapi.services.featureset.v1.featureset_pb2_grpc import FeaturesetServiceStub
 from github.com.metaprov.modelaapi.services.featureset.v1.featureset_pb2 import CreateFeaturesetRequest, \
     UpdateFeaturesetRequest, \
     DeleteFeaturesetRequest, GetFeaturesetRequest, ListFeaturesetRequest
+from github.com.metaprov.modelaapi.services.featureset.v1.featureset_pb2_grpc import FeaturesetServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class Featureset(Resource):

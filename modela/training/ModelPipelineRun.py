@@ -1,13 +1,17 @@
+from typing import List, Union
+
 import grpc
-from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import ModelPipelineRun as MDModelPipelineRun
-from github.com.metaprov.modelaapi.services.modelpipelinerun.v1.modelpipelinerun_pb2_grpc import ModelPipelineRunServiceStub
-from github.com.metaprov.modelaapi.services.modelpipelinerun.v1.modelpipelinerun_pb2 import CreateModelPipelineRunRequest, \
+from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import \
+    ModelPipelineRun as MDModelPipelineRun
+from github.com.metaprov.modelaapi.services.modelpipelinerun.v1.modelpipelinerun_pb2 import \
+    CreateModelPipelineRunRequest, \
     UpdateModelPipelineRunRequest, \
     DeleteModelPipelineRunRequest, GetModelPipelineRunRequest, ListModelPipelineRunsRequest
+from github.com.metaprov.modelaapi.services.modelpipelinerun.v1.modelpipelinerun_pb2_grpc import \
+    ModelPipelineRunServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class ModelPipelineRun(Resource):

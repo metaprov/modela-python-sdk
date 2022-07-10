@@ -1,15 +1,16 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.infra.v1alpha1.generated_pb2 import UserRoleClass as MDUserRoleClass
-from github.com.metaprov.modelaapi.services.userroleclass.v1.userroleclass_pb2_grpc import UserRoleClassServiceStub
 from github.com.metaprov.modelaapi.services.userroleclass.v1.userroleclass_pb2 import CreateUserRoleClassRequest, \
     UpdateUserRoleClassRequest, \
     DeleteUserRoleClassRequest, GetUserRoleClassRequest, ListUserRoleClassesRequest
+from github.com.metaprov.modelaapi.services.userroleclass.v1.userroleclass_pb2_grpc import UserRoleClassServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from modela.infra.models import UserRoleClassSpec, Rule
+from modela.Resource import Resource
 from modela.infra.common import ResourceKind, Verb
-from typing import List, Union
+from modela.infra.models import UserRoleClassSpec, Rule
 
 
 class UserRoleClass(Resource):

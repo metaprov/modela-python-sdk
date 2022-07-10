@@ -1,18 +1,18 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import Model as MDModel
-from github.com.metaprov.modelaapi.services.model.v1.model_pb2_grpc import ModelServiceStub
 from github.com.metaprov.modelaapi.services.model.v1.model_pb2 import \
     DeleteModelRequest, GetModelRequest, ListModelsRequest, \
     AbortModelRequest, CompileModelRequest, DeployModelRequest, DownloadModelRequest, \
     PauseModelRequest, GetModelProfileRequest, PublishModelRequest, ResumeModelRequest, TestModelRequest
+from github.com.metaprov.modelaapi.services.model.v1.model_pb2_grpc import ModelServiceStub
 from tabulate import tabulate
 
-from modela.data.Dataset import Dataset
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
-
+from modela.Resource import Resource
 from modela.common import Metric
+from modela.data.Dataset import Dataset
 from modela.training.Report import Report
 from modela.training.common import ModelPhase, TaskType
 from modela.training.models import ModelSpec, ModelStatus, ModelProfile

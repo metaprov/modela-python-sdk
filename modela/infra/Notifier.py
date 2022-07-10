@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.infra.v1alpha1.generated_pb2 import Notifier as MDNotifier
-from github.com.metaprov.modelaapi.services.notifier.v1.notifier_pb2_grpc import NotifierServiceStub
 from github.com.metaprov.modelaapi.services.notifier.v1.notifier_pb2 import CreateNotifierRequest, \
     UpdateNotifierRequest, \
     DeleteNotifierRequest, GetNotifierRequest, ListNotifiersRequest
+from github.com.metaprov.modelaapi.services.notifier.v1.notifier_pb2_grpc import NotifierServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class Notifier(Resource):

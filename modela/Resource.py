@@ -3,8 +3,8 @@ import time
 from google.protobuf.message import Message
 from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import ObjectMeta
 
+from modela.ModelaException import ResourceNotFoundException, GrpcErrorException
 from modela.common import ObjectReference
-from modela.ModelaException import ResourceNotFoundException, ResourceExistsException, GrpcErrorException
 
 
 class Resource:

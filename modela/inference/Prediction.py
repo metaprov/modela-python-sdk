@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 import Prediction as MDPrediction
-from github.com.metaprov.modelaapi.services.prediction.v1.prediction_pb2_grpc import PredictionServiceStub
 from github.com.metaprov.modelaapi.services.prediction.v1.prediction_pb2 import CreatePredictionRequest, \
     UpdatePredictionRequest, \
     DeletePredictionRequest, GetPredictionRequest, ListPredictionsRequest
+from github.com.metaprov.modelaapi.services.prediction.v1.prediction_pb2_grpc import PredictionServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class Prediction(Resource):

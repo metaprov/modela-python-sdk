@@ -1,8 +1,10 @@
 from dataclasses import dataclass
+from enum import Enum
 from typing import List, get_type_hints, get_args
+
 import typing_utils
 from google.protobuf.message import Message
-from enum import Enum
+
 from modela.util import TrackedList
 
 

@@ -1,17 +1,17 @@
 from dataclasses import field
 from typing import List
 
+import github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 as training_pb
+import github.com.metaprov.modelaapi.services.common.v1.common_pb2 as common_pb
 
 from modela.Configuration import Configuration, ImmutableConfiguration, datamodel
-from modela.common import PriorityLevel, Time, StatusError, ConditionStatus, ObjectReference, Freq, Plot
+from modela.common import Metric, Measurement
+from modela.common import PriorityLevel, Time, StatusError, ConditionStatus, ObjectReference, Plot
 from modela.data.common import DataType
 from modela.data.models import DataLocation, GovernanceSpec, CompilerSettings, Correlation, DataSourceSpec
 from modela.inference.common import AccessType
 from modela.infra.models import Workload, OutputLogs, NotificationSettings
 from modela.training.common import *
-from modela.common import Metric,Measurement
-import github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 as training_pb
-import github.com.metaprov.modelaapi.services.common.v1.common_pb2 as common_pb
 
 
 @datamodel(proto=training_pb.SegmentSpec)

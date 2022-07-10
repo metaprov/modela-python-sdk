@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 import Notebook as MDNotebook
-from github.com.metaprov.modelaapi.services.notebook.v1.notebook_pb2_grpc import NotebookServiceStub
 from github.com.metaprov.modelaapi.services.notebook.v1.notebook_pb2 import CreateNotebookRequest, \
     UpdateNotebookRequest, \
     DeleteNotebookRequest, GetNotebookRequest, ListNotebooksRequest
+from github.com.metaprov.modelaapi.services.notebook.v1.notebook_pb2_grpc import NotebookServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class Notebook(Resource):

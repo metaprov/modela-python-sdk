@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import RecipeRun as MDRecipeRun
-from github.com.metaprov.modelaapi.services.reciperun.v1.reciperun_pb2_grpc import RecipeRunServiceStub
 from github.com.metaprov.modelaapi.services.reciperun.v1.reciperun_pb2 import CreateRecipeRunRequest, \
     UpdateRecipeRunRequest, \
     DeleteRecipeRunRequest, GetRecipeRunRequest, ListRecipeRunsRequest
+from github.com.metaprov.modelaapi.services.reciperun.v1.reciperun_pb2_grpc import RecipeRunServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class RecipeRun(Resource):

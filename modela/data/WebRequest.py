@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import WebRequest as MDWebRequest
-from github.com.metaprov.modelaapi.services.webrequest.v1.webrequest_pb2_grpc import WebRequestServiceStub
 from github.com.metaprov.modelaapi.services.webrequest.v1.webrequest_pb2 import CreateWebRequestRequest, \
     UpdateWebRequestRequest, \
     DeleteWebRequestRequest, GetWebRequestRequest, ListWebRequestsRequest
+from github.com.metaprov.modelaapi.services.webrequest.v1.webrequest_pb2_grpc import WebRequestServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class WebRequest(Resource):

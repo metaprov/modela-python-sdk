@@ -1,19 +1,18 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import DataProduct as MDDataProduct
-from github.com.metaprov.modelaapi.services.dataproduct.v1.dataproduct_pb2_grpc import DataProductServiceStub
 from github.com.metaprov.modelaapi.services.dataproduct.v1.dataproduct_pb2 import CreateDataProductRequest, \
     UpdateDataProductRequest, \
     DeleteDataProductRequest, GetDataProductRequest, ListDataProductsRequest
+from github.com.metaprov.modelaapi.services.dataproduct.v1.dataproduct_pb2_grpc import DataProductServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
-
-from modela.infra.VirtualBucket import VirtualBucket
-from modela.infra.ServingSite import ServingSite
-from modela.infra.Lab import Lab
-import modela.data.models
+from modela.Resource import Resource
 from modela.data.models import DataProductSpec, Permissions, DataLocation
+from modela.infra.Lab import Lab
+from modela.infra.ServingSite import ServingSite
+from modela.infra.VirtualBucket import VirtualBucket
 from modela.infra.models import NotificationSettings, Workload
 from modela.training.common import TaskType
 

@@ -1,19 +1,19 @@
 import os
+from typing import List, Union
 
 import grpc
+import pandas
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import DataSource as MDDataSource
-from github.com.metaprov.modelaapi.services.datasource.v1.datasource_pb2_grpc import DataSourceServiceStub
 from github.com.metaprov.modelaapi.services.datasource.v1.datasource_pb2 import CreateDataSourceRequest, \
     UpdateDataSourceRequest, \
     DeleteDataSourceRequest, GetDataSourceRequest, ListDataSourceRequest, InferSchemaRequest
+from github.com.metaprov.modelaapi.services.datasource.v1.datasource_pb2_grpc import DataSourceServiceStub
 
+from modela.ModelaException import ModelaException
+from modela.Resource import *
 from modela.data.common import *
 from modela.data.models import ExcelNotebookFormat, CsvFileFormat, Column, DataType, DataSourceSpec, ColumnProfile, \
     DataLocation
-from modela.Resource import *
-from modela.ModelaException import ModelaException
-from typing import List, Union
-import pandas
 from modela.training.common import *
 
 

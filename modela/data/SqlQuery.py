@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import SqlQuery as MDSqlQuery
-from github.com.metaprov.modelaapi.services.sqlquery.v1.sqlquery_pb2_grpc import SqlQueryServiceStub
 from github.com.metaprov.modelaapi.services.sqlquery.v1.sqlquery_pb2 import CreateSqlQueryRequest, \
     UpdateSqlQueryRequest, \
     DeleteSqlQueryRequest, GetSqlQueryRequest, ListSqlQuerysRequest
+from github.com.metaprov.modelaapi.services.sqlquery.v1.sqlquery_pb2_grpc import SqlQueryServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class SqlQuery(Resource):

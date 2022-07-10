@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import WebRequestRun as MDWebRequestRun
-from github.com.metaprov.modelaapi.services.webrequestrun.v1.webrequestrun_pb2_grpc import WebRequestRunServiceStub
 from github.com.metaprov.modelaapi.services.webrequestrun.v1.webrequestrun_pb2 import CreateWebRequestRunRequest, \
     UpdateWebRequestRunRequest, \
     DeleteWebRequestRunRequest, GetWebRequestRunRequest, ListWebRequestRunsRequest
+from github.com.metaprov.modelaapi.services.webrequestrun.v1.webrequestrun_pb2_grpc import WebRequestRunServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class WebRequestRun(Resource):

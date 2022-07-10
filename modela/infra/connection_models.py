@@ -4,6 +4,7 @@ from typing import List
 from modela.Configuration import Configuration
 from modela.common import StatusError, Time, ConditionStatus, SecretReference, ObjectReference
 from modela.infra.common import ProviderName, ConnectionConditionType, ConnectionCategory
+
 dataclass()
 
 

@@ -1,13 +1,16 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import FeatureHistogram as MDFeatureHistogram
-from github.com.metaprov.modelaapi.services.featurehistogram.v1.featurehistogram_pb2_grpc import FeatureHistogramServiceStub
-from github.com.metaprov.modelaapi.services.featurehistogram.v1.featurehistogram_pb2 import CreateFeatureHistogramRequest, \
+from github.com.metaprov.modelaapi.services.featurehistogram.v1.featurehistogram_pb2 import \
+    CreateFeatureHistogramRequest, \
     UpdateFeatureHistogramRequest, \
     DeleteFeatureHistogramRequest, GetFeatureHistogramRequest, ListFeatureHistogramsRequest
+from github.com.metaprov.modelaapi.services.featurehistogram.v1.featurehistogram_pb2_grpc import \
+    FeatureHistogramServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class FeatureHistogram(Resource):

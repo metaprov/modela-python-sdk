@@ -1,13 +1,14 @@
+from typing import List, Union
+
 import grpc
 from github.com.metaprov.modelaapi.pkg.apis.team.v1alpha1.generated_pb2 import Review as MDReview
-from github.com.metaprov.modelaapi.services.review.v1.review_pb2_grpc import ReviewServiceStub
 from github.com.metaprov.modelaapi.services.review.v1.review_pb2 import CreateReviewRequest, \
     UpdateReviewRequest, \
     DeleteReviewRequest, GetReviewRequest, ListReviewRequest
+from github.com.metaprov.modelaapi.services.review.v1.review_pb2_grpc import ReviewServiceStub
 
-from modela.Resource import Resource
 from modela.ModelaException import ModelaException
-from typing import List, Union
+from modela.Resource import Resource
 
 
 class Review(Resource):

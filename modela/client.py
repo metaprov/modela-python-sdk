@@ -1,18 +1,14 @@
-import grpc # type: ignore
+from typing import Optional, Union, List
 
+import grpc  # type: ignore
+from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1 import grpcinferenceservice_pb2
+from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1 import grpcinferenceservice_pb2_grpc
 from grpc import (  # type: ignore
     UnaryUnaryClientInterceptor,
     UnaryStreamClientInterceptor,
     StreamUnaryClientInterceptor,
     StreamStreamClientInterceptor
 )
-
-from modela.common import Metric
-
-from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1 import grpcinferenceservice_pb2
-from github.com.metaprov.modelaapi.services.grpcinferenceservice.v1 import grpcinferenceservice_pb2_grpc
-
-from typing import Dict, Optional, Union, List
 
 SERVER_ADDRESS = '0.0.0.0'
 PORT = 8080
