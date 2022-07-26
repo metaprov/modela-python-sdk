@@ -4,7 +4,8 @@ from typing import List, Union, Dict
 import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
 import github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 as data_pb
 import github.com.metaprov.modelaapi.services.common.v1.common_pb2 as common_pb
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import Stakeholder, PermissionsSpec
+from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import Stakeholder, PermissionsSpec,TestSuiteResult,Logs
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import FeatureHistogramCondition,ColumnHistogram
 
 import modela.data.common as data_common
 from modela.Configuration import *
@@ -434,19 +435,6 @@ class RecommendationSchema(Configuration):
     """ The name of the column that specifies ratings """
 
 
-@datamodel(proto=data_pb.DatasetTestSuite)
-class DatasetTestSuite(Configuration):
-    MultiDatasetTests: TestSuite = TestSuite()
-    DatasetTests: TestSuite = TestSuite()
-    """ DatasetTests contains tests for the whole dataset """
-    MultiColumnTests: TestSuite = TestSuite()
-    """ MultiColumnTests defines tests for multiple columns from the dataset """
-    ColumnTests: TestSuite = TestSuite()
-    """ ColumnTests defines assertions for columns from the dataset """
-    FileTests: TestSuite = TestSuite()
-    """ FileTests defines assertions for the contents of the data file """
-
-
 MDTimeSeriesSchema = TimeSeriesSchema
 MDRecommendationSchema = RecommendationSchema
 
@@ -460,8 +448,6 @@ class Schema(Configuration):
     """ The time-series schema, which sets time-series specific parameters """
     RecommendationSchema: MDRecommendationSchema = None
     """ The recommendation schema, which is used for the recommendation ML task """
-    TestTemplate: DatasetTestSuite = DatasetTestSuite()
-    """ The specification for test rules which will be performed on new Datasets """
 
 
 @datamodel(proto=data_pb.RelationshipSpec)
@@ -621,6 +607,14 @@ class DatasetSpec(Configuration):
     PredictorRef: ObjectReference = ObjectReference()
     """
     Used for prediction dataset, contain a reference to the predictor resource that created this dataset
+    """
+    GenerateFeatureHistogram:bool = False
+    """
+    Used for prediction dataset, contain a reference to the predictor resource that created this dataset
+    """
+    UnitTests: TestSuite = TestSuite()
+    """
+    The collection of tests.
     """
 
 
@@ -888,5 +882,72 @@ class DatasetStatus(ImmutableConfiguration):
     StartTime: Time = None
     """ The time that the system started processing the Dataset, usually after the creation of the object """
     EndTime: Time = None
-    """ The time that the Dataset finished processing, either due to completion or failure """
+    """ The time that the system started processing the Dataset, usually after the creation of the object """
+    FeatureHistogramRef: ObjectReference = ObjectReference()
+    """ The feature histogram reference """
+    UnitTestResult: TestSuiteResult = TestSuiteResult()
+    """ The unit test result """
     Conditions: List[DatasetCondition] = field(default_factory=lambda : [])
+
+@datamodel(proto=data_pb.DriftThreshold)
+class DriftThreshold(Configuration):
+    Metric: Metric = None
+    """The metric name"""
+    Value: float = 0
+    """ The threshold value"""
+
+@datamodel(proto=data_pb.FeatureHistogramSpec)
+class FeatureHistogramSpec(Configuration):
+    Owner: str = 'no-one'
+    """ The name of the Account which created the object, which exists in the same tenant as the object """
+    VersionName:str = ''
+    """ The version name """
+    Description:str = ''
+
+    Columns: List[str] = field(default_factory=lambda : [])
+    """ The set of of columns in this feature histograms"""
+
+    SourceRef: ObjectReference = ObjectReference()
+
+    Training:bool = False
+    """ If true, this is a training feature histogram """
+    Target: bool = False
+    """ If true, this is a target feature histogram """
+    Live: bool = False
+    """ If true, this is a live feature histogram """
+    Start: Time = None
+    """ The start time """
+    End: Time = None
+    """ The End time of the histogram"""
+    BaseFeatureHistogram :ObjectReference = ObjectReference()
+    """ The feature histogram that we use when calculating the drift"""
+    DriftThresholds: List[DriftThreshold] = field(default_factory=lambda : [])
+    """ The feature histogram that we use when calculating the drift"""
+    SyncIntervalSec: int = 3600
+
+    UnitTests: TestSuite = None
+    """ The feature histogram that we use when calculating the drift"""
+
+
+@datamodel(proto=data_pb.FeatureHistogramStatus)
+class FeatureHistogramStatus(Configuration):
+    ObservedGeneration: int = 0
+    """ The feature histogram that we use when calculating the drift"""
+    Columns: List[ColumnHistogram] = field(default_factory=lambda : [])
+    """ The actual histograms """
+    LastUpdated: Time = None
+    """ Last time the feature histogram was updated """
+    Logs: Logs = None
+
+    Phase: str = ''
+
+    FailureReason: StatusError = None
+
+    FailureMessage: str = None
+
+    UnitTestsResult: TestSuiteResult = None
+    """ The results of running the unite tests """
+    Conditions:List[FeatureHistogramCondition] = field(default_factory=lambda : [])
+    """ A list of conditions """
+
+

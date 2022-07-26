@@ -221,21 +221,6 @@ class PredictionCacheStatus(Configuration):
 class OnlineStoreStatus(Configuration):
     LastAccessed: Time = None
 
-
-@datamodel(proto=inference_pb.GroundTruthTestStatus)
-class GroundTruthTestStatus(Configuration):
-    Results: TestSuiteResult = TestSuiteResult()
-
-    LastRun: Time = None
-
-
-@datamodel(proto=inference_pb.DriftDetectionStatus)
-class DriftDetectionStatus(Configuration):
-    Results: TestSuiteResult = None
-    """ The drift detection test results """
-    LastRun: Time = None
-    """ Last time we performed the last run """
-
 @datamodel(proto=inference_pb.PredictorStatus)
 class PredictorStatus(Configuration):
     """ PredictorStatus contain the current state of the Predictor resource """
@@ -255,11 +240,7 @@ class PredictorStatus(Configuration):
     OnlineStore: OnlineStoreStatus = OnlineStoreStatus()
     """ Online store status status is the status of the prediction cache """
     LastPredictionDataset: Time = None
-    """ Last time the the predictor perform a prediction"""
-    GroundTruth: GroundTruthTestStatus = GroundTruthTestStatus()
-    """ Ground Truth is the status of the ground truth tests """
-    Drift: DriftDetectionStatus = DriftDetectionStatus()
-    """ Drift is the status of the drift status"""
+
     LastUpdated: Time = None
     """ The last time the object was updated """
     EndPoint: str = ''
@@ -271,8 +252,8 @@ class PredictorStatus(Configuration):
     Conditions: List[PredictorCondition] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=inference_pb.GroundTruthTestSpec)
-class GroundTruthTestSpec(Configuration):
+@datamodel(proto=inference_pb.FeedbackTestSpec)
+class FeedbackTestSpec(Configuration):
     Enabled: bool = False
     """
     Indicates if model monitoring is enabled for the model
@@ -281,7 +262,7 @@ class GroundTruthTestSpec(Configuration):
     """ The training dataset to use when calculated metrics """
     TrainingDatasetRef: ObjectReference = None
     """ The training dataset to use when calculated metrics """
-    Tests: TestSuite = TestSuite()
+    UnitTestsTemplate: TestSuite = TestSuite()
     """ Test to run in order to calculate the predictor"""
     Schedule: RunSchedule = None
     """ The schedule on which model monitoring computations will be performed """
@@ -297,7 +278,7 @@ class DriftDetectionSpec(Configuration):
     """ The training dataset to use when calculated metrics """
     TrainingHistogramRef: ObjectReference = None
     """ The training dataset to use when calculated metrics """
-    Tests: TestSuite = TestSuite()
+    UnitTestsTemplate: TestSuite = TestSuite()
     """ Test to run in order to calculate the predictor"""
     Schedule: RunSchedule = None
     """ The schedule on which model monitoring computations will be performed """
@@ -501,8 +482,8 @@ class PredictorSpec(Configuration):
     """ The prediction threshold """
     Drift: DriftDetectionSpec = DriftDetectionSpec()
     """ Drift specify the drift detection settings"""
-    GroundTruth: GroundTruthTestSpec = GroundTruthTestSpec()
-    """ Ground truth specify how to assign ground truth """
+    Feedback: FeedbackTestSpec = FeedbackTestSpec()
+    """ Feedback specify how to assign feedback files """
     FastSlow: FastSlowModelSpec = FastSlowModelSpec()
     """ Fast Slow define the configuration of fast slow models """
 
