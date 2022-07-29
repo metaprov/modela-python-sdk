@@ -188,7 +188,7 @@ class Training(Configuration):
     """ The maximum log level for logs produced by Jobs associated with the Model """
     SamplePct: int = 100
     """ The number percentage (0 through 100) of rows to be used during training """
-    LabRef: ObjectReference = ObjectReference('default-tenant', 'default-lab')
+    LabRef: ObjectReference = ObjectReference('modela', 'modela-lab')
     """ The reference to the Lab under which the model training Job will be created """
     TimeoutInSecs: int = 600
     """ The maximum time, in seconds, that Jobs associated with the Model can run for before being forcefully cancelled. """
@@ -891,7 +891,7 @@ class StudySpec(Configuration):
     """
     Description: str = ''
     """ The user-provided description of the Study """
-    LabRef: ObjectReference = ObjectReference('default-tenant', 'default-lab')
+    LabRef: ObjectReference = ObjectReference('modela', 'modela-lab')
     """
     The reference to the Lab under which the Model resources created by the Study will be trained.
     If unspecified, the default Lab from the parent DataProduct will be used
@@ -1243,12 +1243,12 @@ class ModelAutobuilderSpec(Configuration):
     """ Indicates if feature engineering will be performed prior to the primary model search """
     FeatureSelection: bool = False
     """ Indicates if feature selection will be performed prior to the primary model search """
-    ServingSiteRef: ObjectReference = ObjectReference(Namespace='default-tenant', Name='default-serving-site')
+    ServingSiteRef: ObjectReference = ObjectReference(Namespace='modela', Name='default-serving-site')
     """
     The reference to the ServingSite where the Predictor created by the ModelAutobuilder will be hosted.
     If unspecified, the default ServingSite from the parent DataProduct will be used
     """
-    LabRef: ObjectReference = ObjectReference(Namespace='default-tenant', Name='default-lab')
+    LabRef: ObjectReference = ObjectReference(Namespace='modela', Name='modela-lab')
     """
     The reference to the Lab under which Dataset and Study resources created by the ModelAutobuilder will be trained.
     If unspecified, the default Lab from the parent DataProduct will be used

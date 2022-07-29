@@ -158,7 +158,7 @@ class Modela:
             password: str = "admin",
             secure=False,
             tls_cert=None,
-            tenant="default-tenant",
+            tenant="modela",
             port_forward=False,
     ):
         """
@@ -170,7 +170,7 @@ class Modela:
         :param password: Password for your Modela account.
         :param secure: If connecting through gRPC ingress, secure must be enabled and a TLS public key must be supplied.
         :param tls_cert: The TLS public key of the ingress that exposes the API gateway gRPC service.
-        :param tenant: The tenant that Modela SDK objects will utilize by default (default: `default-tenant`)
+        :param tenant: The tenant that Modela SDK objects will utilize by default (default: `modela`)
         :param port_forward: If enabled, the SDK will attempt to port forward the API gateway using kubectl. Kubectl
             must be installed and must be connected to a cluster with Modela installed.
         """
@@ -487,11 +487,11 @@ class Modela:
         return self.__dataset_client
 
     def Dataset(self, namespace="", name="", version=Resource.DefaultVersion, gen_datasource: bool = False,
-                lab: Union[ObjectReference, Lab, str] = "default-lab",
+                lab: Union[ObjectReference, Lab, str] = "modela-lab",
                 target_column: str = None, datasource: Union[DataSource, str] = "",
                 bucket: Union[VirtualBucket, str] = "default-minio-bucket",
                 dataframe: pandas.DataFrame = None, data_file: str = None, data_bytes: bytes = None,
-                workload: Workload = Workload("general-large"), fast: bool = False,
+                workload: Workload = Workload("memory-2xlarge"), fast: bool = False,
                 sample: SampleSettings = None, task_type: TaskType = None,
                 notification: NotificationSettings = None) -> Dataset:
         """
@@ -842,7 +842,7 @@ class Modela:
         return self.__modelautobuilder_client
 
     def ModelAutobuilder(self, namespace="", name="", version=Resource.DefaultVersion,
-                         lab: Union[ObjectReference, Lab, str] = "default-lab",
+                         lab: Union[ObjectReference, Lab, str] = "modela-lab",
                          serving_site: Union[ObjectReference, ServingSite, str] = "default-serving-site",
                          task_type: TaskType = TaskType.BinaryClassification, workload: Workload = Workload("general-large"),
                          bucket: Union[ObjectReference, VirtualBucket, str] = "default-minio-bucket",
@@ -945,7 +945,7 @@ class Modela:
 
     def Study(self, namespace="", name="", version=Resource.DefaultVersion, dataset: Union[str, Dataset] = "",
               test_dataset: Union[str, Dataset] = "",
-              lab: Union[ObjectReference, Lab, str] = "default-lab", bucket: Union[VirtualBucket, str] = None,
+              lab: Union[ObjectReference, Lab, str] = "modela-lab", bucket: Union[VirtualBucket, str] = None,
               objective: Metric = Metric.Accuracy, search: ModelSearch = None,
               fe_search: FeatureEngineeringSearch = None, baseline: BaselineSettings = None,
               ensemble: Ensemble = None, trainer_template: Training = None, interpretability: Interpretability = None,
@@ -959,7 +959,7 @@ class Modela:
             If specified as a Dataset object, or if one was found with the given name, it will be used in the Study.
         :param test_dataset: If specified, the Dataset will be used as the test dataset and the Dataset specified by
             the `dataset` field will be used solely as the training dataset
-        :param lab: The object reference, Lab object, or lab name under the default-tenant for which all Study-related
+        :param lab: The object reference, Lab object, or lab name under the modela for which all Study-related
             workloads will be performed under.
         :param bucket: The Bucket object or name of the bucket which will store the Study artifacts
         :param objective: The objective metric relevant to the task type.

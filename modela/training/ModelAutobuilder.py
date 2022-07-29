@@ -35,7 +35,7 @@ from modela.training.models import *
 class ModelAutobuilder(Resource):
     def __init__(self, item: MDModelAutobuilder = MDModelAutobuilder(), client=None, namespace="", name="",
                  version=Resource.DefaultVersion,
-                 lab: Union[ObjectReference, Lab, str] = "default-lab",
+                 lab: Union[ObjectReference, Lab, str] = "modela-lab",
                  serving_site: Union[ObjectReference, ServingSite, str] = "default-serving-site",
                  task_type: TaskType = TaskType.BinaryClassification,
                  workload: Workload = Workload("general-large"),

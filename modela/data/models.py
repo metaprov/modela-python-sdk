@@ -137,7 +137,7 @@ class Permissions(Configuration):
     Stakeholders: List[Stakeholder] = field(default_factory=lambda : [])
 
     @classmethod
-    def create(cls, accounts: Dict[Union[Account, str], Union[UserRoleClass, str, List[UserRoleClass], List[str]]], tenant='default-tenant') ->PermissionsSpec:
+    def create(cls, accounts: Dict[Union[Account, str], Union[UserRoleClass, str, List[UserRoleClass], List[str]]], tenant='modela') ->PermissionsSpec:
         """
         Generate a permission specification based on a dictionary of Accounts and their User Role Classes
         :param accounts: The dictionary of accounts to generate a permission specification from
@@ -170,13 +170,13 @@ class DataProductSpec(Configuration):
     """ DataProductSpec defines the desired state of the DataProduct """
     Owner: str = 'no-one'
     """ The name of the Account which created the object, which exists in the same tenant as the object """
-    TenantRef: ObjectReference = ObjectReference(Namespace='modela-system', Name='default-tenant')
-    """ The reference to the Tenant which owns the DataProduct. Defaults to `default-tenant` """
+    TenantRef: ObjectReference = ObjectReference(Namespace='modela-system', Name='modela')
+    """ The reference to the Tenant which owns the DataProduct. Defaults to `modela` """
     GitLocation: GitSettings = GitSettings()
     """ GitLocation is the default Git location where all child resources will be tracked as YAML """
     ImageLocation: ImageLocationType = ImageLocation()
     """ ImageLocation is the default Docker image repository where model images produced under the DataProduct will be stored """
-    LabName: str = 'default-lab'
+    LabName: str = 'modela-lab'
     """ The name of the Lab that will be used by default with all compute-requiring child resources """
     ServingSiteName: str = 'default-serving-site'
     """ The name of the Serving Site which will be used by default with all Predictor resources """
@@ -226,7 +226,7 @@ class DataProductSpec(Configuration):
 @datamodel(proto=data_pb.DataProductVersionSpec)
 class DataProductVersionSpec(Configuration):
     """ DataProductVersionSpec defines the desired state of a DataProductVersion """
-    ProductRef: ObjectReference = ObjectReference(Namespace='default-tenant', Name='iris-product')
+    ProductRef: ObjectReference = ObjectReference(Namespace='modela', Name='iris-product')
     """
     ProductRef contains the object reference to the DataProduct
     resource which the DataProductVersion describes the version of
@@ -534,7 +534,7 @@ class DatasetSpec(Configuration):
     created, the resource controller will retrieve the data from the location, validate it against its Data Source
     if applicable, and store it inside the `live` section of the Virtual Bucket resource specified by the location
     """
-    LabRef: ObjectReference = ObjectReference('default-tenant', 'default-lab')
+    LabRef: ObjectReference = ObjectReference('modela', 'modela-lab')
     """ The reference to the Lab under which Jobs created by the Dataset will be executed """
     Location: DataLocation = DataLocation()
     """
@@ -560,15 +560,12 @@ class DatasetSpec(Configuration):
     """ User-provided display name of the object """
     Reported: bool = True
     """ Indicates if a PDF report containing the Dataset's profile should be generated """
+    UnitTested: bool = True
     Snapshotted: bool = False
     """
     Indicates if the resource controller has created a snapshot of the data in the case that it is being read
     directly from a database, and must be converted to a flat-file type such as a CSV as a result
     """
-    Validate: bool = True
-    """ Indicates if the Dataset should be checked against the tests of its Data Source """
-    Labeled: bool = True
-    """ Indicates if the data is labeled or not """
     Synthetic: bool = False
     """ Indicates if synthetic data should be generated (currently unimplemented) """
     SyntheticRows: int = 0
@@ -599,10 +596,6 @@ class DatasetSpec(Configuration):
     """
     Indicates if the Dataset should be quickly processed.
     If enabled, the validation, profiling, and reporting phases will be skipped.
-    """
-    PredictionDatasetRef: ObjectReference = ObjectReference()
-    """
-    Prediction dataset ref is a reference to a prediction dataset ref (dataset that contain the predictions log).
     """
     PredictorRef: ObjectReference = ObjectReference()
     """
@@ -861,8 +854,6 @@ class DatasetStatus(ImmutableConfiguration):
     """ Whether or not the data was detected as imbalanced """
     ObservedGeneration: int = 0
     """ ObservedGeneration is the last generation that was acted on """
-    TestResults: TestSuiteResult = TestSuiteResult()
-    """ List of test results which are generated for every test associated with the Dataset's Data Source """
     LastStudyTime: Time = None
     """ Last time the Dataset was used with a Study """
     FailureReason: StatusError = None
@@ -884,8 +875,6 @@ class DatasetStatus(ImmutableConfiguration):
     EndTime: Time = None
     """ The time that the system started processing the Dataset, usually after the creation of the object """
     FeatureHistogramRef: ObjectReference = ObjectReference()
-    """ The feature histogram reference """
-    UnitTestResult: TestSuiteResult = TestSuiteResult()
     """ The unit test result """
     Conditions: List[DatasetCondition] = field(default_factory=lambda : [])
 
@@ -923,8 +912,6 @@ class FeatureHistogramSpec(Configuration):
     """ The feature histogram that we use when calculating the drift"""
     DriftThresholds: List[DriftThreshold] = field(default_factory=lambda : [])
     """ The feature histogram that we use when calculating the drift"""
-    SyncIntervalSec: int = 3600
-
     UnitTests: TestSuite = None
     """ The feature histogram that we use when calculating the drift"""
 

@@ -26,7 +26,7 @@ class Study(Resource):
     def __init__(self, item: MDStudy = MDStudy(), client=None, namespace="", name="", version=Resource.DefaultVersion,
                  dataset: Union[str, Dataset] = "",
                  test_dataset: Union[str, Dataset] = "",
-                 lab: Union[ObjectReference, Lab, str] = "default-lab",
+                 lab: Union[ObjectReference, Lab, str] = "modela-lab",
                  bucket: Union[VirtualBucket, str] = None,
                  objective: Metric = None,
                  search: ModelSearch = None,

@@ -68,14 +68,14 @@ class Predictor(Resource):
         if model is not None:
             if type(model) == Model:
                 model = model.name
-            self.spec.Models = [ModelDeploymentSpec(ModelName=model)]
+            self.spec.Models = [ModelDeploymentSpec(ModelRef=ObjectReference(namespace, model))]
         else:
             self.spec.Models = models
 
         if self.default_resource:
             self.spec.ServingsiteRef = serving_site
             if port is not None:
-                spec.Port = port
+                spec.Access.Port = port
 
             if path is not None:
                 spec.Path = path

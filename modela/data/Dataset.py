@@ -32,7 +32,7 @@ from modela.util import convert_size
 class Dataset(Resource):
     def __init__(self, item: MDDataset = MDDataset(), client=None, namespace="", name="",
                  version=Resource.DefaultVersion,
-                 lab: Union[ObjectReference, Lab, str] = "default-lab",
+                 lab: Union[ObjectReference, Lab, str] = "modela-lab",
                  gen_datasource: bool = False,
                  target_column: str = None,
                  datasource: Union[DataSource, str] = "",
@@ -91,7 +91,7 @@ class Dataset(Resource):
                 datasource = client.modela.DataSource(namespace=namespace, name=datasource)
                 assert not datasource.default_resource
 
-            file_type = datasource.spec.FileType
+            file_type = datasource.spec.Flatfile.FileType
 
         if data_file is not None:
             with open(data_file, 'r') as f:

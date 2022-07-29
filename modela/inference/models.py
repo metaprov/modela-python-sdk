@@ -77,9 +77,9 @@ class PredictorletStatus(Configuration):
     """ The name of the Kubernetes Service which exposes the Predictorlet externally """
     P50: float = 0
     """ 50% latency (median) for predictions served by the Predictorlet """
-    Current95: float = 0
+    P95: float = 0
     """ 95% latency for predictions served by the Predictorlet """
-    Current99: float = 0
+    P99: float = 0
     """ 99% latency for predictions served by the Predictorlet """
     LastPredictionTime: Time = None
     """ The last time a prediction was served by the Predictorlet """
@@ -126,16 +126,10 @@ class ModelDeploymentSpec(Configuration):
     """ The minimum percentage (0 through 100) of traffic that will be served by the model """
     Role: ModelRole = ModelRole.Champion
     """ Role denotes the role of this model """
-    Released: bool = False
-    """ A released model is a model that should serve production traffic """
-    Deployed: bool = False
-    """ A deployed model is a model whose containers are up, but does not serve production traffic """
     MountTar: bool = False
     """ MountTar means that we would mount the model tar file. Else we would use baked image. """
     TrafficSelector: str = ''
     """ TrafficSelector is a filter on the traffic to this model """
-    CanaryMetrics: List[Metric] = field(default_factory=lambda: [])
-    """ If the deployment is canary, the metric define how to evaluate the canary """
     ApprovedBy: str = ''
     """ The account name of the approver """
     ApprovedAt: Time = None
@@ -171,9 +165,6 @@ class ProgressiveSpec(Configuration):
 @datamodel(proto=inference_pb.PredictionCacheSpec)
 class PredictionCacheSpec(Configuration):
     """
-    ///////////////////////////////////////////////////
-    Prediction Cache Spec
-    ///////////////////////////////////////////////////
     PredictionCacheSpec specifies the connection information of a key-value cache to store predictions
     """
     Enabled: bool = False
@@ -182,7 +173,7 @@ class PredictionCacheSpec(Configuration):
     """ InMemory indicates if predictions will be cached in the available memory of the Pod serving the model """
     Redis: bool = False
     """ Redis indicates if predictions will be cached in an external Redis deployment """
-    Hostname: ObjectReference = None
+    ConnectionRef: ObjectReference = None
     """ The reference to a Connection resource to an external Redis deployment """
 
 
@@ -221,6 +212,9 @@ class PredictionCacheStatus(Configuration):
 class OnlineStoreStatus(Configuration):
     LastAccessed: Time = None
 
+PredictorletStatus_ = PredictorletStatus
+OnlineStoreStatus_ = OnlineStoreStatus
+
 @datamodel(proto=inference_pb.PredictorStatus)
 class PredictorStatus(Configuration):
     """ PredictorStatus contain the current state of the Predictor resource """
@@ -228,16 +222,16 @@ class PredictorStatus(Configuration):
     """ ObservedGeneration is the last generation that was acted on """
     History: List[ModelRecord] = field(default_factory=lambda: [])
     """ The collection of historical records of models deployed to the Predictor, used internally to roll-back models """
-    Models: List[ModelDeploymentStatus] = field(default_factory=lambda: [])
+    ModelsStatus: List[ModelDeploymentStatus] = field(default_factory=lambda: [])
     """ The collection of statuses for each model deployed with the Predictor """
-    Predictorlet: PredictorletStatus = None
+    PredictorletStatus: PredictorletStatus_ = None
     """
     The status of the Predictorlet associated with the Predictor. The Predictorlet is a service which handles prediction traffic
     and routes predictions to individual models based on the specification of the Predictor
     """
     CacheStatus: PredictionCacheStatus = None
     """ Cache status is the status of the prediction cache """
-    OnlineStore: OnlineStoreStatus = OnlineStoreStatus()
+    OnlineStoreStatus: OnlineStoreStatus_ = OnlineStoreStatus_()
     """ Online store status status is the status of the prediction cache """
     LastPredictionDataset: Time = None
 
@@ -258,12 +252,8 @@ class FeedbackTestSpec(Configuration):
     """
     Indicates if model monitoring is enabled for the model
     """
-    GroundTrueDatasetRef: ObjectReference = None
-    """ The training dataset to use when calculated metrics """
     TrainingDatasetRef: ObjectReference = None
     """ The training dataset to use when calculated metrics """
-    UnitTestsTemplate: TestSuite = TestSuite()
-    """ Test to run in order to calculate the predictor"""
     Schedule: RunSchedule = None
     """ The schedule on which model monitoring computations will be performed """
 
@@ -293,10 +283,7 @@ class PredictionLoggingSpec(Configuration):
     """ Indicates if prediction logging is enabled """
     SamplePercent: int = 0
     """ The number percentage (0 through 100) of prediction requests to log """
-    LogRequests: bool = True
-    """ Indicates if incoming requests will be logged """
-    LogResponses: bool = True
-    """ Indicates if outgoing predictions will be logged """
+    Rows: int = 0
 
 
 @datamodel(proto=inference_pb.ModelServingSpec)
@@ -322,10 +309,6 @@ class ForwardCurtainSpec(Configuration):
     """
     The forward curtain receives prediction requests before the prediction (currently unimplemented)
     """
-    Percent: int = 0
-    """
-    Percent of request that are sent to the foreward curtain.
-    """
 
 
 @datamodel(proto=inference_pb.ForwardCurtainSpec)
@@ -339,15 +322,6 @@ class BackwardCurtainSpec(Configuration):
     """
     The forward curtain receives prediction requests before the prediction (currently unimplemented)
     """
-    ConfidenceLow: float = 0.4
-    """
-    For backward curtain is the confidence low
-    """
-    ConfidenceHigh: float = 0.6
-    """
-    For backward curtain is the confidence high
-    """
-
 
 @datamodel(proto=inference_pb.OnlineFeatureStoreSpec)
 class OnlineFeatureStoreSpec(Configuration):
@@ -356,7 +330,7 @@ class OnlineFeatureStoreSpec(Configuration):
     """
     Is online feature store enabled
     """
-    HostName: str = ""
+    Hostname: str = ""
     """
     The forward curtain receives prediction requests before the prediction (currently unimplemented)
     """
@@ -436,7 +410,7 @@ class PredictorSpec(Configuration):
     """ The user-provided description of the Predictor """
     ProductRef: ObjectReference = None
     """ The reference to the DataProduct that the resource exists under """
-    ServingsiteRef: ObjectReference = ObjectReference('default-tenant', 'default-lab')
+    ServingsiteRef: ObjectReference = ObjectReference('modela', 'modela-lab')
     """ The reference to the ServingSite resource that hosts the Predictor """
     Models: List[ModelDeploymentSpec] = field(default_factory=lambda: [])
     """
@@ -510,37 +484,3 @@ class PredictionResult(Configuration):
     MissingColumns: List[str] = field(default_factory=lambda: [])
     OutOfBound: List[str] = field(default_factory=lambda: [])
     BaseShapValue: float = 0
-
-
-@datamodel(proto=inference_pb.BackwardCurtainSpec)
-class BackwardCurtainSpec(Configuration):
-    """ AccessSpec specifies the configuration to expose a Predictor service externally """
-    Port: int = 0
-    """
-    The port number that will be exposed on the Predictor's Pods to serve prediction traffic through the GRPCInferenceService API.
-    The Kubernetes Service created by the Predictor will expose the port and forward GRPC traffic to the backend pods
-    """
-    NodePort: int = 0
-    """
-    The port number that will be exposed on the external address of every node on the cluster, in the case of the
-    Predictor's access type being NodePort. Traffic from the port will be forwarded to the Predictor's backend service
-    """
-    Path: str = 0
-    """
-    The auto-generated DNS path where the Predictor service can be accessed. If the access type is ClusterIP, it will
-    be a cluster-internal DNS name (i.e. predictor.default-serving-site.svc.cluster.local). In the case of the Ingress
-    access type, it will be determined by the FQDN of the host ServingSite (i.e. predictor.default-serving-site.your-domain.ai).
-    """
-    AccessType: AccessType_ = AccessType_.ClusterIP
-    """
-    The Kubernetes-native access method which specifies how the Kubernetes Service created by the Predictor will be exposed.
-    See https://modela.ai/docs/docs/serving/production/#access-method for a detailed description of each access type
-    (defaults to cluster-ip)
-    """
-    Rest: bool = False
-    """
-    Indicates if the prediction service should expose an additional port to serve the GRPCInferenceService API through REST.
-    The port one digit above the number specified by the Port field will be exposed to accept HTTP/1.1 traffic
-    """
-    ApikeySecretRef: ObjectReference = None
-    """ ApiKeySecretRef references a Kubernetes Secret containing an API key that must be passed in prediction requests to the Predictor """

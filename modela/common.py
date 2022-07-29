@@ -321,22 +321,13 @@ class DataTestCase(Configuration):
     Enabled: bool = True
     AssertThat: AssertionType = AssertionType.NoneAssertion
     Metric: Metric = Metric.Null
-    Entity: str = ""
-    ExpectedNumber: float = 0
-    ExpectedString: str = ""
-    Min: float = 0.0
-    Max: float = 0.0
     ExpectedSet: List[str] = field(default_factory=lambda: [])
-    StrictMin: bool = False
-    StrictMax: bool = False
     Generated: bool = False
-    DisplayName: str = ""
     Tags: List[str] = field(default_factory=lambda: [])
 
 
 @datamodel(proto=TestSuiteResult)
 class TestSuiteResult(Configuration):
-    Fixture: ObjectReference = None
     Failures: int = 0
     Errors: int = 0
     StartTime: Time = None
@@ -347,6 +338,7 @@ class TestSuiteResult(Configuration):
 
 @datamodel(proto=DataTestCaseResult)
 class TestCaseResult(Configuration):
+    Name: str = ''
     Actual: Measurement = Measurement()
     Failure: bool = False
     Error: bool = False
