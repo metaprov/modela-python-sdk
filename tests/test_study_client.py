@@ -8,7 +8,7 @@ class Test_Modela_study(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.modela = Modela(port_forward=True)
+        cls.modela = Modela(port_forward=True, tenant="modela")
 
     @classmethod
     def tearDownClass(cls):

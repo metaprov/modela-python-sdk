@@ -50,6 +50,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/metaprov/modela-python-sdk',
-    version='0.6.300',
+    version='0.7',
     zip_safe=False,
 )
