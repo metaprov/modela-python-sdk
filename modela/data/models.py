@@ -1,12 +1,10 @@
 from dataclasses import field
 from typing import List, Union, Dict
-
 import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
 import github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 as data_pb
 import github.com.metaprov.modelaapi.services.common.v1.common_pb2 as common_pb
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import Stakeholder, PermissionsSpec,TestSuiteResult,Logs
-from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import FeatureHistogramCondition,ColumnHistogram
-
+from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import Stakeholder, PermissionsSpec, TestSuiteResult, Logs
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import FeatureHistogramCondition, ColumnHistogram
 import modela.data.common as data_common
 from modela.Configuration import *
 from modela.common import *
@@ -98,6 +96,8 @@ class GovernanceSpec(Configuration):
     """ The account name of the compliance reviewer """
     BusinessReviewer: str = ''
     """ The account name of the business reviewer """
+    Members: List[str] = field(default_factory=lambda : [])
+    """ The name of the team members account that goveren this data product. """
 
 
 @datamodel(proto=catalog_pb.CompilerSpec)
@@ -171,7 +171,7 @@ class DataProductSpec(Configuration):
     Owner: str = 'no-one'
     """ The name of the Account which created the object, which exists in the same tenant as the object """
     TenantRef: ObjectReference = ObjectReference(Namespace='modela-system', Name='modela')
-    """ The reference to the Tenant which owns the DataProduct. Defaults to `modela` """
+    """ The reference to the Tenant which owns the DataProduct. Defaults to `default-tenant` """
     GitLocation: GitSettings = GitSettings()
     """ GitLocation is the default Git location where all child resources will be tracked as YAML """
     ImageLocation: ImageLocationType = ImageLocation()
@@ -270,8 +270,6 @@ class CsvFileFormat(Configuration):
     """ The compression type, if the file is compressed """
     HasIndexColumn: bool = False
     """ Indicates if the file contains an index column """
-    IndexColumn: int = 0
-    """ The position of the index column """
 
 
 @datamodel(proto=data_pb.ExcelSheetArea)
@@ -306,10 +304,12 @@ class ExcelNotebookFormat(Configuration):
     Data: ExcelSheetArea = ExcelSheetArea()
     """ The specification for the bounds of the data """
 
+
 @datamodel(proto=data_pb.ParquetFileSpec)
 class ParquetFileFormat(Configuration):
+    """ ParquetFileSpec specifies the format of a CSV (comma-separated values) file """
     Engine: str = ''
-    """ The name of the engine that exists in the excel file to read data from """
+    """ The character used to separate fields (by default, a comma) """
 
 
 @datamodel(proto=data_pb.Column)
@@ -370,11 +370,6 @@ class Column(Configuration):
     """ The minimum number of items if the column is a list of values """
     UniqueItems: bool = False
     """ Enforce that all the items in the list are unique """
-    TimeColumn: bool = False
-    """
-    Indicates if the column is used as the time axis in time series forecasting
-    Default is false.
-    """
     Pii: bool = False
     """ Indicates if the column contains personally identifiable information """
     Phi: bool = False
@@ -392,11 +387,9 @@ class Column(Configuration):
     Sigma: float = 0
     """ Sigma is the standard deviation of the distribution """
     SkewThreshold: float = None
-    """ The threshold skew for skew detection """
+    """ The threshold skew for skew detection for the feature represented by this feature. """
     DriftThreshold: float = None
-    """ The threshold drift value for model drift detection. """
-    Index: int = 0
-    """ Contain the Index for the column in the schema """
+    """ The threshold drift value for model drift detection for the feature represented by this feature """
     Fold: bool = False
     """ Indicates if the column holds fold values """
     Weight: bool = False
@@ -415,15 +408,43 @@ class Column(Configuration):
     """ Indicates if the column is an ID column """
     Step: float = 1
     """ The step value if the column values are a sequence of numbers """
-    IndexColumn: bool = False
-    """ Indicates if the column is an index column """
+    Key: bool = False
+    """ Indicates if the column is an key column """
+    Loc: int = 0
+    """ Contain the Index for the column in the schema """
+    DatetimeFormat: str = ''
+    """ The format of the datetime column. This is only setup if the column contain datetime type. """
+    Timeseries: bool = False
+    """
+    Indicates if the column is contain a time series,
+    In case of forecasting, if only one column is a time series, this is a univariate time series
+    Otherwise, if two or more columns contain time series, than this is a univariate time series.
+    """
+    Regressor: bool = False
+    """
+    In forecasting based data sets Indicates if the column is regressor
+    This is relevant only for time series schema
+    """
+    LaggedRegressor: bool = False
+    """
+    In forecasting based data sets Indicates if the column is regressor
+    This is relevant only for time series schema
+    """
+    TimeIndex: bool = False
+    """
+    For time series, the field indicate tha this column will be used as the data time index
+    for the time series. Note that there can multiple datatime type columns, but only one
+    time column.
+    """
 
 
 @datamodel(proto=data_pb.TimeSeriesSchema)
 class TimeSeriesSchema(Configuration):
-    Freq: Frequency = None
-    Country: HolidayCountry = None
-    """ The holiday which should be taken into account """
+    Freq: Frequency = Frequency.Days
+    Type: TimeSeriesType = TimeSeriesType.Series
+    """ The time series type """
+    Interval: int = 1
+    """ The interval to forecast at this level """
 
 
 @datamodel(proto=data_pb.RecommendationSchema)
@@ -441,13 +462,15 @@ MDRecommendationSchema = RecommendationSchema
 
 @datamodel(proto=data_pb.Schema)
 class Schema(Configuration):
-    """ Schema defines the column-level format and tests for data associated with a DataSource """
+    """ Schema defines the column-level format and validation rules for data associated with a DataSource """
     Columns: List[Column] = field(default_factory=lambda : [])
     """ The collection of columns and their attributes """
     TimeSeriesSchema: MDTimeSeriesSchema = None
     """ The time-series schema, which sets time-series specific parameters """
     RecommendationSchema: MDRecommendationSchema = None
     """ The recommendation schema, which is used for the recommendation ML task """
+    Key: List[str] = field(default_factory=lambda : [])
+    """ The keys columns are the index of the file or table. The set of keys will be used as an index for the in memory representation(e.g. pandas) """
 
 
 @datamodel(proto=data_pb.RelationshipSpec)
@@ -483,7 +506,49 @@ class FlatFileFormat(Configuration):
     """ The file format for CSV files, if applicable """
     Excel: ExcelNotebookFormat = ExcelNotebookFormat()
     """ The file format for Excel files, if applicable """
-    Parquet:ParquetFileFormat = ParquetFileFormat()
+    Parquet: ParquetFileFormat = ParquetFileFormat()
+    """ The file format for Parquet files, if applicable """
+
+
+@datamodel(proto=data_pb.LabelingRule)
+class LabelingRule(Configuration):
+    """ Labeling rule define a column expression """
+    Column: str = ''
+    Operator: Operation = None
+    Value: str = ''
+
+
+@datamodel(proto=data_pb.LabelingSpec)
+class LabelingSpec(Configuration):
+    Enabled: bool = False
+    ResultColumn: str = ''
+    """ The name of the column that will hold the result. """
+    Positive: List[LabelingRule] = field(default_factory=lambda : [])
+    """ List of rules for positive rules. """
+    Negative: List[LabelingRule] = field(default_factory=lambda : [])
+    """ List of negative rules """
+
+
+@datamodel(proto=data_pb.GroupBySpec)
+class GroupBySpec(Configuration):
+    """ Define how to group by the data, before processing. """
+    Groupby: List[str] = field(default_factory=lambda : [])
+    """
+    For group forecasting, this is the key of the group
+    If not specify this will be the key from the data source.
+    """
+    Freq: Frequency = Frequency.Days
+    """ The time series frequency, if not specify they freq will be the base freq from the data source. """
+    Interval: int = 1
+    """
+    The interval to forecast at this level. If not specify the interval will be the base interval
+    the data source
+    """
+    Aggr: Aggregate = Aggregate.Avg
+    """
+    Aggregation function. Define how to aggregate
+    By default this is the aggregation function from the data source.
+    """
 
 
 DataSourceSchema = Schema
@@ -523,6 +588,12 @@ class DataSourceSpec(Configuration):
     """ The type of dataset; currently, the only supported type is `tabular` """
     InferredFrom: DataLocation = None
     """ InferredFrom specifies the location of the data that was used to generate the schema of the Data Source """
+    Labeling: LabelingSpec = None
+    """ Labeling specificies how to automatically label the dataset using positive and negative rules """
+    Labeled: bool = False
+    """ If true, this datasource is for labeled data. """
+    UnitTestsTemplate: TestSuite = TestSuite()
+    """ The specification for tests for a new dataset """
 
 
 @datamodel(proto=data_pb.DatasetSpec)
@@ -551,7 +622,7 @@ class DatasetSpec(Configuration):
     DatasourceName: str = ''
     """
     The reference to the Data Source resource which exists in the same Data Product namespace as the object.
-    The Data Source must represent the columns and the task type of the Dataset. The tests associated with
+    The Data Source must represent the columns and the task type of the Dataset. The validation rules associated with
     the Data Source will be validated against the raw data of the Dataset once it is created
     """
     Description: str = ''
@@ -561,15 +632,12 @@ class DatasetSpec(Configuration):
     Reported: bool = True
     """ Indicates if a PDF report containing the Dataset's profile should be generated """
     UnitTested: bool = True
+    """ Indicates if the Dataset should be checked against the validation rules of its Data Source """
     Snapshotted: bool = False
     """
     Indicates if the resource controller has created a snapshot of the data in the case that it is being read
     directly from a database, and must be converted to a flat-file type such as a CSV as a result
     """
-    Synthetic: bool = False
-    """ Indicates if synthetic data should be generated (currently unimplemented) """
-    SyntheticRows: int = 0
-    """ If `Synthetic` is set to true, SyntheticRows indicates how many rows of synthetic data should be generated """
     Resources: Workload = None
     """ Resources specifies the resource requirements which the Dataset will request when creating Jobs to analyze the data """
     ActiveDeadlineSeconds: int = 600
@@ -598,17 +666,28 @@ class DatasetSpec(Configuration):
     If enabled, the validation, profiling, and reporting phases will be skipped.
     """
     PredictorRef: ObjectReference = ObjectReference()
-    """
-    Used for prediction dataset, contain a reference to the predictor resource that created this dataset
-    """
-    GenerateFeatureHistogram:bool = False
-    """
-    Used for prediction dataset, contain a reference to the predictor resource that created this dataset
-    """
+    """ Used for prediction dataset, contain a reference to the predictor resource that created this dataset """
+    GenerateFeatureHistogram: bool = False
+    """ If true generate feature histogram object from this dataset columns. """
     UnitTests: TestSuite = TestSuite()
+    """ The specification for tests for a new dataset """
+    Role: DatasetRole = DatasetRole.Training
+    """ The dataset role """
+    Featurized: bool = False
     """
-    The collection of tests.
+    Indicates if the Dataset should be featurized. Features are computed using tsfresh.
+    If the dataset is grouped dataset, a feature will be computed to each group.
+    If enabled, the validation, profiling, and reporting phases will be skipped.
     """
+    ServingDatasetRef: ObjectReference = None
+    """ For dataset that contain feedback information, this is reference to the serving dataset """
+    GroupBy: GroupBySpec = GroupBySpec()
+    """
+    Define how to group by the base dataset, before making the forecasts.
+    By default, this dataset is assigned
+    """
+    Key: List[str] = field(default_factory=lambda : [])
+    """ If this dataset represent a group in a multi series dataset, this are the values of the group key. """
 
 
 @datamodel(proto=data_pb.OutlierStat)
@@ -617,12 +696,14 @@ class OutlierStat(Configuration):
     Upper: int = 0
     """ The number of outliers above baseline """
     Percent: float = 0
-    """ Percentage of rows detected as outliers  """
+    """ Percentage of rows detected as outliers """
 
 
 @datamodel(proto=data_pb.ColumnStatistics)
 class ColumnStatistics(Configuration):
     """ ColumnStatistics contains statistical parameters for a single feature from a dataset """
+    Histogram: HistogramData = None
+    """ Histogram data representing the distribution of the values in the column """
     Name: str = ''
     """ The name of the column """
     Datatype: DataType = None
@@ -713,9 +794,11 @@ class ColumnStatistics(Configuration):
     Outliers: OutlierStat = None
     """ Outlier statistics. """
 
+ColumnHistogram = Histogram
 
 @datamodel(proto=common_pb.ColumnProfile)
 class ColumnProfile(Configuration):
+    Histogram: ColumnHistogram = None
     Name: str = ''
     Count: int = 0
     Type: str = 0
@@ -776,6 +859,7 @@ class DatasetProfile(Configuration):
     Plots: List[Plot] = field(default_factory=lambda : [])
     Columns: List[ColumnProfile] = field(default_factory=lambda : [])
     Hash: str = ''
+    AnomalyURI: str = ''
 
 
 @datamodel(proto=data_pb.Correlation)
@@ -832,8 +916,6 @@ class DatasetCondition(Configuration):
     """ A human readable message indicating details about the transition. """
 
 
-
-
 @datamodel(proto=data_pb.DatasetStatus)
 class DatasetStatus(ImmutableConfiguration):
     """ DatasetStatus defines the observed state of a Dataset object """
@@ -873,68 +955,85 @@ class DatasetStatus(ImmutableConfiguration):
     StartTime: Time = None
     """ The time that the system started processing the Dataset, usually after the creation of the object """
     EndTime: Time = None
-    """ The time that the system started processing the Dataset, usually after the creation of the object """
+    """ The time that the Dataset finished processing, either due to completion or failure """
     FeatureHistogramRef: ObjectReference = ObjectReference()
-    """ The unit test result """
+    """ The generated training feature histogram, Empty if no feature histogram generated """
     Conditions: List[DatasetCondition] = field(default_factory=lambda : [])
+    AnomaliesUri: str = ''
+    """
+    The location of anomaly file. The file contain the list of rows that were marked as anomaly by an isolation forest.
+    algorithm
+    """
+
 
 @datamodel(proto=data_pb.DriftThreshold)
 class DriftThreshold(Configuration):
+    """ Define a threshold """
     Metric: Metric = None
-    """The metric name"""
+    """ The metric type name (e.g. F1 / Accuracy) """
     Value: float = 0
-    """ The threshold value"""
+    """ The value of the metric for quantitive observations """
+
 
 @datamodel(proto=data_pb.FeatureHistogramSpec)
 class FeatureHistogramSpec(Configuration):
+    """ FeatureHistogramSpec contain the desired state of a FeatureHistogram """
     Owner: str = 'no-one'
-    """ The name of the Account which created the object, which exists in the same tenant as the object """
-    VersionName:str = ''
-    """ The version name """
-    Description:str = ''
-
+    """ The feature owner """
+    VersionName: str = ''
+    """ The product version for the feature. """
+    Description: str = ''
+    """ Comments is a description of the feature """
     Columns: List[str] = field(default_factory=lambda : [])
-    """ The set of of columns in this feature histograms"""
-
+    """ The list of columns to generate the histograms. """
     SourceRef: ObjectReference = ObjectReference()
-
-    Training:bool = False
-    """ If true, this is a training feature histogram """
-    Target: bool = False
-    """ If true, this is a target feature histogram """
+    """ A reference to the dataset or predictor that contain the column with this histogram """
+    Training: bool = False
+    """ If true, this is a training dataset feature histogram. If false the histogram was generated during serving. """
     Live: bool = False
-    """ If true, this is a live feature histogram """
+    """ If true, this is an active feature histogram. This feature histogram is being live updated by the predictorlet """
     Start: Time = None
-    """ The start time """
+    """
+    The start time of this feature histogram. For training dataset histogram this is set to the creation
+    time of the dataset
+    """
     End: Time = None
-    """ The End time of the histogram"""
-    BaseFeatureHistogram :ObjectReference = ObjectReference()
-    """ The feature histogram that we use when calculating the drift"""
+    """ The end time of the feature histogram. If reached, the predictor will start a new feature histogram """
     DriftThresholds: List[DriftThreshold] = field(default_factory=lambda : [])
-    """ The feature histogram that we use when calculating the drift"""
+    """ Define drift thresholds. This is usually assigned from the predictor. """
     UnitTests: TestSuite = None
-    """ The feature histogram that we use when calculating the drift"""
+    """ Test suite for this histogram. """
+    BaseRef: ObjectReference = ObjectReference()
+    """ The histogram to compare to for data drift calc """
+    GenUnitTests: bool = False
+    """ If true, generate the unit tests """
+    FeatureFilter: FeatureFilterType = FeatureFilterType.AllFeatures
+    """ Filter the filter for this unit test. """
+    ReferenceType: ReferenceDataType = ReferenceDataType.TrainingData
+    """ Set the reference type for this unit test """
 
 
 @datamodel(proto=data_pb.FeatureHistogramStatus)
 class FeatureHistogramStatus(Configuration):
+    """ FeatureHistogramStatus defines the observed state of FeatureHistogram """
     ObservedGeneration: int = 0
-    """ The feature histogram that we use when calculating the drift"""
+    """ ObservedGeneration is the Last generation that was acted on """
     Columns: List[ColumnHistogram] = field(default_factory=lambda : [])
-    """ The actual histograms """
+    """ The histogram values, map from column name to an histogram """
     LastUpdated: Time = None
-    """ Last time the feature histogram was updated """
+    """ Last time the object was updated """
     Logs: Logs = None
-
+    """ The log file specification that determines the location of all logs produced by the object """
     Phase: str = ''
-
+    """ The phase of the feature histogram """
     FailureReason: StatusError = None
-
+    """ In the case of failure, the Dataset resource controller will set this field with a failure reason """
     FailureMessage: str = None
-
+    """ In the case of failure, the Dataset resource controller will set this field with a failure message """
     UnitTestsResult: TestSuiteResult = None
-    """ The results of running the unite tests """
-    Conditions:List[FeatureHistogramCondition] = field(default_factory=lambda : [])
-    """ A list of conditions """
-
-
+    """ Test suite for this histogram. """
+    Conditions: List[FeatureHistogramCondition] = field(default_factory=lambda : [])
+    Total: int = 0
+    """ Total prediction recorded by this feature histograms """
+    Errors: int = 0
+    """ Errors predictions """

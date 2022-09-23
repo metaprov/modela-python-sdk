@@ -40,6 +40,8 @@ class Test_Modela_study(unittest.TestCase):
             Test_Modela_study.resource = None
 
     def test_0_create_actions(self):
+        return
+
         loop = asyncio.new_event_loop()
         study = self.request_resource("test-study")
         study.submit(replace=True)
@@ -80,17 +82,3 @@ class Test_Modela_study(unittest.TestCase):
 
 
 
-""" These tests should be run by an end-user on a functional terminal """
-def test_viz():
-    modela = Modela(port_forward=True)
-    study = modela.Study(
-        name="test-study-2",
-        namespace="iris-product",
-        dataset="iris",
-        task_type=TaskType.MultiClassification,
-        objective=Metric.Accuracy,
-        bucket="default-minio-bucket",
-        search=ModelSearch(MaxTime=200, MaxModels=8, Trainers=4))
-
-    study.submit_and_visualize(replace=True)
-    modela.close()

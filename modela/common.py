@@ -2,11 +2,12 @@ from enum import Enum
 from typing import List
 from dataclasses import field
 
-from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import Plot
+from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import Plot, Histogram
 from k8s.io.api.core.v1.generated_pb2 import ObjectReference, SecretReference
 from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import Time
 
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import TestSuite, DataTestCase, TestSuiteResult, \
+from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import TestSuite, DataTestCase, \
+    TestSuiteResult, \
     DataTestCaseResult
 
 from modela.Configuration import Configuration, ImmutableConfiguration, datamodel
@@ -18,7 +19,8 @@ from typing import List
 import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
 from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import TestSuite, DataTestCase, \
     TestSuiteResult, \
-    DataTestCaseResult
+    DataTestCaseResult, \
+    HistogramData
 from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import Plot
 from k8s.io.api.core.v1.generated_pb2 import ObjectReference, SecretReference
 from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import Time
@@ -125,25 +127,50 @@ class AssertionType(Enum):
     FileValidCsv = "file-valid-csv"
 
     # Model Tests
-    ModelAccuracy     = "model-accuracy-greater-than"
-    ModelRocAuc     = "model-roc-auc-greater-than"
-    ModelF1     = "model-f1-greater-than"
-    ModelPrecision     = "model-precision-greater-than"
-    ModelRecall     = "model-recall-less-than"
-    ModelMSE     = "model-mse-less-than"
-    ModelRMSE     = "model-rmse-less-than"
-    ModelMAPE     = "model-mape-less-than"
+    ModelAccuracy = "model-accuracy-greater-than"
+    ModelRocAuc = "model-roc-auc-greater-than"
+    ModelF1 = "model-f1-greater-than"
+    ModelPrecision = "model-precision-greater-than"
+    ModelRecall = "model-recall-less-than"
+    ModelMSE = "model-mse-less-than"
+    ModelRMSE = "model-rmse-less-than"
+    ModelMAPE = "model-mape-less-than"
 
-    ModelAccuracyGreaterThanBaseline      = "model-accuracy-greater-than-baseline"
-    ModelRocAucGreaterThanBaseline     = "model-roc-auc-greater-than-baseline"
-    ModelF1GreaterThanBaseline     = "model-f1-greater-than-baseline"
-    ModelPrecisionGreaterThanBaseline     = "model-precision-greater-than-baseline"
-    ModelRecallGreaterThanBaseline     = "model-recall-less-than-baseline"
-    ModelMSELessThanBaseline     = "model-mse-less-than-baseline"
-    ModelRMSELessThanBaseline     = "model-rmse-less-than-baseline"
-    ModelMAPELessThanBaseline     = "model-mape-less-than-baseline"
+    ModelAccuracyGreaterThanBaseline = "model-accuracy-greater-than-baseline"
+    ModelRocAucGreaterThanBaseline = "model-roc-auc-greater-than-baseline"
+    ModelF1GreaterThanBaseline = "model-f1-greater-than-baseline"
+    ModelPrecisionGreaterThanBaseline = "model-precision-greater-than-baseline"
+    ModelRecallGreaterThanBaseline = "model-recall-less-than-baseline"
+    ModelMSELessThanBaseline = "model-mse-less-than-baseline"
+    ModelRMSELessThanBaseline = "model-rmse-less-than-baseline"
+    ModelMAPELessThanBaseline = "model-mape-less-than-baseline"
 
     NoneAssertion = "none"
+
+
+class DataTestType(Enum):
+    MultiDataset = "multi-dataset"
+    Dataset = "dataset"
+    MultiColumn = "multi-column"
+    Column = "column"
+    Model = "model"
+    DataDrift = "data-drift"
+
+
+class FeatureFilterType(Enum):
+    AllFeatures = "all-features"
+    ImportantFeatures = "important-features"
+    FeatureList = "features-list"
+    NumericFeatures = "numeric-features"
+    CatFeatures = "categorical-features"
+    TextFeatures = "text-features"
+
+
+class ReferenceDataType(Enum):
+    TrainingData = "train-data"
+    TestingData = "test-data"
+    DataRange = "range"
+    DataMovingAvg = "moving-avg"
 
 
 class PriorityLevel(Enum):
@@ -301,10 +328,18 @@ class Plot(ImmutableConfiguration):
 @datamodel(proto=catalog_pb.Measurement)
 class Measurement(ImmutableConfiguration):
     """ Measurement is a value for a specific metric """
+    Entity: ObjectReference = None
+    Column: str = ''
     Metric: Metric = Metric.Null
     """ The metric type name (e.g. F1 / Accuracy) """
     Value: float = 0
     """ The value of the metric """
+    Stddev: float = 0
+    BoolQty: bool = False
+    Category: str = ''
+    ValueSet: List[str] = field(default_factory=lambda: [])
+    TimePoint: Time = None
+
 
 ##########################################
 # Test classes
@@ -316,14 +351,34 @@ class TestSuite(Configuration):
     Tests: List[DataTestCase] = field(default_factory=lambda: [])
 
 
+TestMetric = Metric
+
+
 @datamodel(proto=DataTestCase)
 class DataTestCase(Configuration):
     Enabled: bool = True
     AssertThat: AssertionType = AssertionType.NoneAssertion
-    Metric: Metric = Metric.Null
+    Metric: TestMetric = TestMetric.Null
     ExpectedSet: List[str] = field(default_factory=lambda: [])
     Generated: bool = False
     Tags: List[str] = field(default_factory=lambda: [])
+    Name: str = ''
+    EntityRef: ObjectReference = None
+    CompareToRef: ObjectReference = None
+    Column: str = ''
+    Type: DataTestType = DataTestType.Column
+    ExpectedValue: float = 0
+    ExpectedCategory: str = ''
+    Lower: float = 0
+    Upper: float = 0
+    LowerInclusive: bool = False
+    UpperInclusive: bool = False
+    Column2: str = ''
+    EntityRef2: ObjectReference = None
+    Columns: List[str] = ''
+    FeatureFilter: FeatureFilterType = FeatureFilterType.AllFeatures
+    ReferenceType: ReferenceDataType = ReferenceDataType.TrainingData
+    Periods: int = 0
 
 
 @datamodel(proto=TestSuiteResult)
@@ -335,7 +390,6 @@ class TestSuiteResult(Configuration):
     Tests: List[DataTestCaseResult] = field(default_factory=lambda: [])
 
 
-
 @datamodel(proto=DataTestCaseResult)
 class TestCaseResult(Configuration):
     Name: str = ''
@@ -343,3 +397,20 @@ class TestCaseResult(Configuration):
     Failure: bool = False
     Error: bool = False
     FailureMsg: str = ""
+
+
+@datamodel(proto=HistogramData)
+class HistogramData(Configuration):
+    Bins: List[float] = field(default_factory=lambda: [])
+    Categories: List[str] = field(default_factory=lambda: [])
+    Counts: List[float] = field(default_factory=lambda: [])
+    Missing: int = 0
+    Invalid: int = 0
+
+
+@datamodel(proto=Histogram)
+class Histogram(Configuration):
+    Values: List[float] = field(default_factory=lambda: [])
+    Categories: List[str] = field(default_factory=lambda: [])
+    Bins: List[float] = field(default_factory=lambda: [])
+

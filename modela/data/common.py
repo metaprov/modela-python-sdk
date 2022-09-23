@@ -187,3 +187,17 @@ class SecurityClearanceLevel(Enum):
     Confidential = "confidential"
     Secret = "secret"
     TopSecret = "top-secret"
+
+
+class DatasetRole(Enum):
+    Unlabeled = "unlabeled"
+    Serving = "serving"
+    Feedback = "feedback"
+    Training = "training"
+    Prediction = "prediction"
+
+
+class TimeSeriesType(Enum):
+    Series = "series"
+    Panel = "panel"
+    Hierarchical = "hierarchical"
