@@ -390,7 +390,7 @@ class FastSlowModelSpec(Configuration):
 AccessType_ = AccessType
 
 
-@datamodel(proto=inference_pb.AccessSpec)
+@datamodel(proto=catalog_pb.AccessSpec)
 class AccessSpec(Configuration):
     """ AccessSpec specifies the configuration to expose a Predictor service externally """
     Port: int = 0
