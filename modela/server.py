@@ -59,13 +59,7 @@ from modela.data.DataProductVersion import *
 from modela.data.DataSource import *
 from modela.data.Dataset import *
 from modela.data.Entity import *
-from modela.data.Feature import *
 from modela.data.FeatureHistogram import *
-from modela.data.FeaturePipeline import *
-from modela.data.FeaturePipelineRun import *
-from modela.data.Featureset import *
-from modela.data.LabelingPipeline import *
-from modela.data.LabelingPipelineRun import *
 from modela.data.Recipe import *
 from modela.data.RecipeRun import *
 from modela.data.SqlQuery import *
@@ -73,7 +67,6 @@ from modela.data.SqlQueryRun import *
 from modela.data.WebRequest import *
 from modela.data.WebRequestRun import *
 from modela.inference.CronPrediction import *
-from modela.inference.Curtain import *
 from modela.inference.DataApp import *
 from modela.inference.InferenceService import *
 from modela.inference.Prediction import *
@@ -100,10 +93,8 @@ from modela.team.PostMortem import *
 from modela.team.Review import *
 from modela.team.RunBook import *
 from modela.team.Todo import *
-from modela.training.CronReport import *
 from modela.training.Model import *
 from modela.training.ModelAutobuilder import *
-from modela.training.ModelCompilerRun import *
 from modela.training.ModelPipeline import *
 from modela.training.ModelPipelineRun import *
 from modela.training.Notebook import *
@@ -149,7 +140,7 @@ class Modela:
             password: str = "admin",
             secure=False,
             tls_cert=None,
-            tenant="default-tenant",
+            tenant="modela",
             port_forward=False,
     ):
         """
@@ -161,7 +152,7 @@ class Modela:
         :param password: Password for your Modela account.
         :param secure: If connecting through gRPC ingress, secure must be enabled and a TLS public key must be supplied.
         :param tls_cert: The TLS public key of the ingress that exposes the API gateway gRPC service.
-        :param tenant: The tenant that Modela SDK objects will utilize by default (default: `default-tenant`)
+        :param tenant: The tenant that Modela SDK objects will utilize by default (default: `modela`)
         :param port_forward: If enabled, the SDK will attempt to port forward the API gateway using kubectl. Kubectl
             must be installed and must be connected to a cluster with Modela installed.
         """
@@ -233,24 +224,6 @@ class Modela:
 
         self.__featurehistogram_stub = featurehistogram_pb2_grpc.FeatureHistogramServiceStub(self._channel)
         self.__featurehistogram_client = FeatureHistogramClient(self.__featurehistogram_stub, self)
-
-        self.__featurepipelinerun_stub = featurepipelinerun_pb2_grpc.FeaturePipelineRunServiceStub(self._channel)
-        self.__featurepipelinerun_client = FeaturePipelineRunClient(self.__featurepipelinerun_stub, self)
-
-        self.__featurepipeline_stub = featurepipeline_pb2_grpc.FeaturePipelineServiceStub(self._channel)
-        self.__featurepipeline_client = FeaturePipelineClient(self.__featurepipeline_stub, self)
-
-        self.__feature_stub = feature_pb2_grpc.FeatureServiceStub(self._channel)
-        self.__feature_client = FeatureClient(self.__feature_stub, self)
-
-        self.__featureset_stub = featureset_pb2_grpc.FeaturesetServiceStub(self._channel)
-        self.__featureset_client = FeaturesetClient(self.__featureset_stub, self)
-
-        self.__labelingpipelinerun_stub = labelingpipelinerun_pb2_grpc.LabelingPipelineRunServiceStub(self._channel)
-        self.__labelingpipelinerun_client = LabelingPipelineRunClient(self.__labelingpipelinerun_stub, self)
-
-        self.__labelingpipeline_stub = labelingpipeline_pb2_grpc.LabelingPipelineServiceStub(self._channel)
-        self.__labelingpipeline_client = LabelingPipelineClient(self.__labelingpipeline_stub, self)
 
         self.__reciperun_stub = reciperun_pb2_grpc.RecipeRunServiceStub(self._channel)
         self.__reciperun_client = RecipeRunClient(self.__reciperun_stub, self)
@@ -345,14 +318,8 @@ class Modela:
         self.__todo_stub = todo_pb2_grpc.TodoServiceStub(self._channel)
         self.__todo_client = TodoClient(self.__todo_stub, self)
 
-        self.__cronreport_stub = cronreport_pb2_grpc.CronReportServiceStub(self._channel)
-        self.__cronreport_client = CronReportClient(self.__cronreport_stub, self)
-
         self.__modelautobuilder_stub = modelautobuilder_pb2_grpc.ModelAutobuilderServiceStub(self._channel)
         self.__modelautobuilder_client = ModelAutobuilderClient(self.__modelautobuilder_stub, self)
-
-        self.__modelcompilerrun_stub = modelcompilerrun_pb2_grpc.ModelCompilerRunServiceStub(self._channel)
-        self.__modelcompilerrun_client = ModelCompilerRunClient(self.__modelcompilerrun_stub, self)
 
         self.__modelpipelinerun_stub = modelpipelinerun_pb2_grpc.ModelPipelineRunServiceStub(self._channel)
         self.__modelpipelinerun_client = ModelPipelineRunClient(self.__modelpipelinerun_stub, self)
@@ -478,11 +445,11 @@ class Modela:
         return self.__dataset_client
 
     def Dataset(self, namespace="", name="", version=Resource.DefaultVersion, gen_datasource: bool = False,
-                lab: Union[ObjectReference, Lab, str] = "default-lab",
+                lab: Union[ObjectReference, Lab, str] = "modela-lab",
                 target_column: str = None, datasource: Union[DataSource, str] = "",
                 bucket: Union[VirtualBucket, str] = "default-minio-bucket",
                 dataframe: pandas.DataFrame = None, data_file: str = None, data_bytes: bytes = None,
-                workload: Workload = Workload("general-large"), fast: bool = False,
+                workload: Workload = Workload("memory-2xlarge"), fast: bool = False,
                 sample: SampleSettings = None, task_type: TaskType = None,
                 notification: NotificationSettings = None) -> Dataset:
         """
@@ -531,47 +498,6 @@ class Modela:
     def FeatureHistogram(self, namespace="", name="") -> FeatureHistogram:
         return FeatureHistogram(MDFeatureHistogram(), self.FeatureHistograms, namespace, name)
 
-    @property
-    def FeaturePipelineRuns(self) -> FeaturePipelineClient:
-        return self.__featurepipelinerun_client
-
-    def FeaturePipelineRun(self, namespace="", name="") -> FeaturePipelineRun:
-        return FeaturePipelineRun(MDFeaturePipelineRun(), self.FeaturePipelineRuns, namespace, name)
-
-    @property
-    def FeaturePipelines(self) -> FeaturePipelineClient:
-        return self.__featurepipeline_client
-
-    def FeaturePipeline(self, namespace="", name="") -> FeaturePipeline:
-        return FeaturePipeline(MDFeaturePipeline(), self.FeaturePipelines, namespace, name)
-
-    @property
-    def Features(self) -> FeatureClient:
-        return self.__feature_client
-
-    def Feature(self, namespace="", name="") -> Feature:
-        return Feature(MDFeature(), self.Features, namespace, name)
-
-    @property
-    def Featuresets(self) -> FeaturesetClient:
-        return self.__featureset_client
-
-    def Featureset(self, namespace="", name="") -> Featureset:
-        return Featureset(MDFeatureset(), self.Featuresets, namespace, name)
-
-    @property
-    def LabelingPipelineRuns(self) -> LabelingPipelineRunClient:
-        return self.__labelingpipelinerun_client
-
-    def LabelingPipelineRun(self, namespace="", name="") -> LabelingPipelineRun:
-        return LabelingPipelineRun(MDLabelingPipelineRun(), self.LabelingPipelineRuns, namespace, name)
-
-    @property
-    def LabelingPipelines(self) -> LabelingPipelineClient:
-        return self.__labelingpipeline_client
-
-    def LabelingPipeline(self, namespace="", name="") -> LabelingPipeline:
-        return LabelingPipeline(MDLabelingPipeline(), self.LabelingPipelines, namespace, name)
 
     @property
     def RecipeRuns(self) -> RecipeRunClient:
@@ -622,12 +548,6 @@ class Modela:
     def CronPrediction(self, namespace="", name="") -> CronPrediction:
         return CronPrediction(MDCronPrediction(), self.CronPredictions, namespace, name)
 
-    @property
-    def Curtains(self) -> CurtainClient:
-        return self.__curtain_client
-
-    def Curtain(self, namespace="", name="") -> Curtain:
-        return Curtain(MDCurtain(), self.Curtains, namespace, name)
 
     @property
     def DataApps(self) -> DataAppClient:
@@ -822,18 +742,11 @@ class Modela:
         return Todo(MDTodo(), self.Todos, namespace, name)
 
     @property
-    def CronReports(self) -> CronReportClient:
-        return self.__cronreport_client
-
-    def CronReport(self, namespace="", name="") -> CronReport:
-        return CronReport(MDCronReport(), self.CronReports, namespace, name)
-
-    @property
     def ModelAutobuilders(self) -> ModelAutobuilderClient:
         return self.__modelautobuilder_client
 
     def ModelAutobuilder(self, namespace="", name="", version=Resource.DefaultVersion,
-                         lab: Union[ObjectReference, Lab, str] = "default-lab",
+                         lab: Union[ObjectReference, Lab, str] = "modela-lab",
                          serving_site: Union[ObjectReference, ServingSite, str] = "default-serving-site",
                          task_type: TaskType = TaskType.BinaryClassification, workload: Workload = Workload("general-large"),
                          bucket: Union[ObjectReference, VirtualBucket, str] = "default-minio-bucket",
@@ -874,12 +787,7 @@ class Modela:
                                 target_column, objective, feature_selection, feature_engineering, max_models,
                                 max_time, trainers, predictor_access_type, predictor_autoscale, create_data_app)
 
-    @property
-    def ModelCompilerRuns(self) -> ModelCompilerRunClient:
-        return self.__modelcompilerrun_client
 
-    def ModelCompilerRun(self, namespace="", name="") -> ModelCompilerRun:
-        return ModelCompilerRun(MDModelCompilerRun(), self.ModelCompilerRuns, namespace, name)
 
     @property
     def ModelPipelineRuns(self) -> ModelPipelineRunClient:
@@ -936,7 +844,7 @@ class Modela:
 
     def Study(self, namespace="", name="", version=Resource.DefaultVersion, dataset: Union[str, Dataset] = "",
               test_dataset: Union[str, Dataset] = "",
-              lab: Union[ObjectReference, Lab, str] = "default-lab", bucket: Union[VirtualBucket, str] = None,
+              lab: Union[ObjectReference, Lab, str] = "modela-lab", bucket: Union[VirtualBucket, str] = None,
               objective: Metric = Metric.Accuracy, search: ModelSearch = None,
               fe_search: FeatureEngineeringSearch = None, baseline: BaselineSettings = None,
               ensemble: Ensemble = None, trainer_template: Training = None, interpretability: Interpretability = None,
@@ -950,7 +858,7 @@ class Modela:
             If specified as a Dataset object, or if one was found with the given name, it will be used in the Study.
         :param test_dataset: If specified, the Dataset will be used as the test dataset and the Dataset specified by
             the `dataset` field will be used solely as the training dataset
-        :param lab: The object reference, Lab object, or lab name under the default-tenant for which all Study-related
+        :param lab: The object reference, Lab object, or lab name under the modela for which all Study-related
             workloads will be performed under.
         :param bucket: The Bucket object or name of the bucket which will store the Study artifacts
         :param objective: The objective metric relevant to the task type.

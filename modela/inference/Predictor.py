@@ -58,6 +58,7 @@ class Predictor(Resource):
         """
         self.default_resource = False
         super().__init__(item, client, namespace=namespace, name=name, version=version)
+        self.spec.ProductRef = ObjectReference(Namespace=client.modela.tenant, Name=namespace)
 
         spec = self.spec
         if type(serving_site) == ServingSite:
@@ -68,20 +69,20 @@ class Predictor(Resource):
         if model is not None:
             if type(model) == Model:
                 model = model.name
-            self.spec.Models = [ModelDeploymentSpec(ModelName=model)]
+            self.spec.Models = [ModelDeploymentSpec(ModelRef=ObjectReference(namespace, model))]
         else:
             self.spec.Models = models
 
         if self.default_resource:
             self.spec.ServingsiteRef = serving_site
             if port is not None:
-                spec.Port = port
+                spec.Access.Port = port
 
             if path is not None:
-                spec.Path = path
+                spec.Access.Path = path
 
             if access_type is not None:
-                spec.AccessType = access_type.value
+                spec.Access.AccessType = access_type.value
 
         if replicas > 0:
             spec.Replicas = replicas
@@ -108,7 +109,7 @@ class Predictor(Resource):
     def model(self) -> Model:
         """ Get the model associated with the Predictor """
         self.ensure_client_repository()
-        return self._client.modela.Model(self.namespace, self.spec.Models[0].ModelName)
+        return self._client.modela.Model(self.namespace, self.spec.Models[0].ModelRef.Name)
 
     async def wait_until_ready(self):
         """ Block until the predictor service is ready to accept prediction requests. """

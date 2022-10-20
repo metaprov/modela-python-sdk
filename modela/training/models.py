@@ -1,11 +1,9 @@
 from dataclasses import field
 from typing import List
-
 import github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 as training_pb
 import github.com.metaprov.modelaapi.services.common.v1.common_pb2 as common_pb
-
 from modela.Configuration import Configuration, ImmutableConfiguration, datamodel
-from modela.common import Metric, Measurement
+from modela.common import Metric, Measurement, TestSuite
 from modela.common import PriorityLevel, Time, StatusError, ConditionStatus, ObjectReference, Plot
 from modela.data.common import DataType
 from modela.data.models import DataLocation, GovernanceSpec, CompilerSettings, Correlation, DataSourceSpec
@@ -108,16 +106,16 @@ class DataSplit(Configuration):
     Segments: List[Segment] = field(default_factory=lambda : [])
     """ The collection of segments """
     TrainDataset: str = ''
-    """ The name of the Dataset resource which will be used as the training dataset """
+    """ The name of the Entity resource which will be used as the training dataset """
     TestDataset: str = ''
     """
-    The name of the Dataset resource which will be used as the testing dataset, applicable
+    The name of the Entity resource which will be used as the testing dataset, applicable
     if the split type uses test-dataset. If enabled, the training dataset will not be split and used as-is
     If empty, we will not use test dataset
     """
     ValidationDataset: str = ''
     """
-    The name of the Dataset resource which will be used as the validation dataset, applicable
+    The name of the Entity resource which will be used as the validation dataset, applicable
     if the split type uses test-dataset. If enabled, the training dataset will not be split and used as-is
     """
 
@@ -188,7 +186,7 @@ class Training(Configuration):
     """ The maximum log level for logs produced by Jobs associated with the Model """
     SamplePct: int = 100
     """ The number percentage (0 through 100) of rows to be used during training """
-    LabRef: ObjectReference = ObjectReference('default-tenant', 'default-lab')
+    LabRef: ObjectReference = ObjectReference('modela', 'modela-lab')
     """ The reference to the Lab under which the model training Job will be created """
     TimeoutInSecs: int = 600
     """ The maximum time, in seconds, that Jobs associated with the Model can run for before being forcefully cancelled. """
@@ -403,7 +401,10 @@ class FeatureEngineeringSpec(ImmutableConfiguration):
 
 @datamodel(proto=training_pb.EnsembleSpec)
 class EnsembleSpec(ImmutableConfiguration):
-    """ EnsembleSpec specifies the parameters of an ensemble model """
+    """
+    Contain the spec for a single time series.
+    EnsembleSpec specifies the parameters of an ensemble model
+    """
     Models: List[str] = field(default_factory=lambda : [])
     """ The collection of models (by their name) to be used as estimators in the ensemble """
     Estimators: List[ClassicalEstimatorSpec] = field(default_factory=lambda : [])
@@ -433,7 +434,7 @@ class ModelSpec(ImmutableConfiguration):
     StudyName: str = ''
     """ The name of the Study which created the Model. If empty, the Model will be trained as a stand-alone model """
     DatasetName: str = ''
-    """ The name of the Dataset resource which the Model is being trained with """
+    """ The name of the Entity resource which the Model is being trained with """
     Task: TaskType = None
     """ The machine learning task type of the Model (i.e. regression, classification), derived from the parent Study """
     Subtask: SubtaskType = None
@@ -509,6 +510,27 @@ class ModelSpec(ImmutableConfiguration):
     """ Fast indicates if the Model should skip profiling, explaining, and reporting """
     Ttl: int = 0
     """ The time-to-live of the Model, after which the Model will be archived """
+    Registered: bool = False
+    """
+    Registered indicate if this model is registered with the model registry.
+    A registred model cannot be garbage collected, and apper in the model registry page.
+    """
+    Predict: bool = False
+    """ Perform a prediction at the end of the study. This is for example apply to forecasting. """
+    Tuned: bool = False
+    """ If true perform a final search after selecting the best model. to tune only this model. """
+    CodeGenerated: bool = False
+    """ Not implemented. For future use. If true,generate code when model trained """
+    GenDriftDetector: bool = False
+    """ GenDriftDetector indicates if we should generate a drift detector model for this model """
+    UnitTested: bool = False
+    """ Indicate if this model should be unit tested. """
+    FeedbackDatasetRef: ObjectReference = None
+    """ The reference to the lated feedback dataset """
+    UnitTests: TestSuite = TestSuite()
+    """ The set of unit tests for this model. """
+    FeedbackTests: TestSuite = TestSuite()
+    """ The set of unit tests to test this models against the feedback. """
 
 
 @datamodel(proto=training_pb.InterpretabilityStatus)
@@ -577,6 +599,10 @@ class ModelStatus(ImmutableConfiguration):
     """ Train contains the collection of measurements produced by validation on the training dataset """
     Test: List[Measurement] = field(default_factory=lambda : [])
     """ Train contains the collection of measurements produced by validation on the testing dataset """
+    Tune: List[Measurement] = field(default_factory=lambda : [])
+    """ Tune contains the collection of measurements produced by validation on the tune dataset """
+    Feedback: List[Measurement] = field(default_factory=lambda : [])
+    """ Feedback contain the collection of measurements produced by running dataset """
     Phase: ModelPhase = ModelPhase.Pending
     """ The phase of the Model """
     ReportName: str = ''
@@ -661,6 +687,18 @@ class ModelStatus(ImmutableConfiguration):
     Interpretability: InterpretabilityStatus = None
     """ Interpretability contains results produced during the explaining phase of the Model """
     Conditions: List[ModelCondition] = field(default_factory=lambda : [])
+    LastFeedbackDatasetRef: ObjectReference = None
+    """ The last feedback dataset """
+    MisclassificationUri: str = ''
+    """ The URI to the misclassification file produced during the testing phase """
+    TuningStartTime: Time = None
+    """ TuningStartTime represents the time at which the Model started testing """
+    TuningEndTime: Time = None
+    """ TuningEndTime represents the time at which the Model completed testing """
+    TarFileHash: str = ''
+    """ Sha256 of the model tar file """
+    SubModelsURI: str = ''
+    """ The sub models uri file contain the results of running the sub model """
 
 
 @datamodel(proto=common_pb.ModelProfile)
@@ -754,6 +792,8 @@ class ModelSearch(Configuration):
     The number of new models produced by the search which, if there is no improvement
     in score, the model search will conclude
     """
+    Tune: bool = False
+    """ Tune best model """
 
 
 @datamodel(proto=training_pb.BaselineSpec)
@@ -891,14 +931,14 @@ class StudySpec(Configuration):
     """
     Description: str = ''
     """ The user-provided description of the Study """
-    LabRef: ObjectReference = ObjectReference('default-tenant', 'default-lab')
+    LabRef: ObjectReference = ObjectReference('modela', 'modela-lab')
     """
     The reference to the Lab under which the Model resources created by the Study will be trained.
     If unspecified, the default Lab from the parent DataProduct will be used
     """
     DatasetName: str = ''
     """
-    The name of the Dataset resource that will be used to train models with.
+    The name of the Entity resource that will be used to train models with.
     The dataset will be split into individual training, testing, and validation datasets
     """
     Task: TaskType = TaskType.AutoDetectTask
@@ -965,6 +1005,8 @@ class StudySpec(Configuration):
     """ ModelVersion specifies the version assigned to all the Model resources produced by the Study """
     TimeoutInSecs: int = 14400
     """ The time, in seconds, after which the execution of the Study will be forcefully aborted (4 hours, by default) """
+    UnitTestsTemplate: TestSuite = TestSuite()
+    """ A template for models unit tests """
 
 
 @datamodel(proto=training_pb.StudyCondition)
@@ -1084,6 +1126,8 @@ class StudyStatus(ImmutableConfiguration):
     Gc: GarbageCollectionStatus = None
     """ GC specifies the status of garbage collection relevant to the Study """
     Conditions: List[StudyCondition] = field(default_factory=lambda : [])
+    ReportUri: str = ''
+    """ The name of the Report resource produced by the Study """
 
 
 @datamodel(proto=training_pb.ReportCondition)
@@ -1113,7 +1157,7 @@ class ReportSpec(Configuration):
     that exists in the same DataProduct namespace as the resource
     """
     EntityRef: ObjectReference = None
-    """ EntityRef specifies the entity which the Report references. The supported entities consist of Dataset, Model, and Study resources """
+    """ EntityRef specifies the entity which the Report references. The supported entities consist of Entity, Model, and Study resources """
     Location: DataLocation = DataLocation(BucketName='modela')
     """ The location of the flat-file containing the PDF report """
     ReportType: ReportType_ = None
@@ -1185,16 +1229,16 @@ class ModelAutobuilderSpec(Configuration):
     """
     DatasourceName: str = ''
     """
-    DataSourceName is the name of an existing DataSource resource which will be used as the schema for the ModelAutoBuilder's Dataset.
+    DataSourceName is the name of an existing DataSource resource which will be used as the schema for the ModelAutoBuilder's Entity.
     If empty, a DataSource will be automatically created based on the data specified by the Location field
     """
     DatasetName: str = ''
     """
-    The name of an existing Dataset resource, or the name of the Dataset resource that will be created
+    The name of an existing Entity resource, or the name of the Entity resource that will be created
     based on the data specified by the Location field, which will be used to train models
     """
     Location: DataLocation = None
-    """ The location for data that will be saved in a Dataset resource to train models with """
+    """ The location for data that will be saved in a Entity resource to train models with """
     Task: TaskType = None
     """ The machine learning task type relevant to the dataset (i.e. regression, classification) """
     Subtask: SubtaskType = None
@@ -1209,7 +1253,7 @@ class ModelAutobuilderSpec(Configuration):
     """ The number of candidate models that will be sampled and trained """
     Fast: bool = False
     """
-    Fast indicates if Dataset and Study resources associated with the ModelAutobuilder should run in fast mode.
+    Fast indicates if Entity and Study resources associated with the ModelAutobuilder should run in fast mode.
     Running in fast mode will skip unnecessary workloads such as profiling, reporting, explaining, etc.
     """
     AccessMethod: AccessType = AccessType.ClusterIP
@@ -1243,14 +1287,14 @@ class ModelAutobuilderSpec(Configuration):
     """ Indicates if feature engineering will be performed prior to the primary model search """
     FeatureSelection: bool = False
     """ Indicates if feature selection will be performed prior to the primary model search """
-    ServingSiteRef: ObjectReference = ObjectReference(Namespace='default-tenant', Name='default-serving-site')
+    ServingSiteRef: ObjectReference = ObjectReference(Namespace='modela', Name='default-serving-site')
     """
     The reference to the ServingSite where the Predictor created by the ModelAutobuilder will be hosted.
     If unspecified, the default ServingSite from the parent DataProduct will be used
     """
-    LabRef: ObjectReference = ObjectReference(Namespace='default-tenant', Name='default-lab')
+    LabRef: ObjectReference = ObjectReference(Namespace='modela', Name='modela-lab')
     """
-    The reference to the Lab under which Dataset and Study resources created by the ModelAutobuilder will be trained.
+    The reference to the Lab under which Entity and Study resources created by the ModelAutobuilder will be trained.
     If unspecified, the default Lab from the parent DataProduct will be used
     """
     DatasetType: DatasetType_ = DatasetType_.Tabular
@@ -1261,11 +1305,11 @@ class ModelAutobuilderSpec(Configuration):
 class ModelAutobuilderStatus(Configuration):
     """ ModelAutobuilderStatus define the observed state of a ModelAutobuilder """
     FlatFileName: str = ''
-    """ The name of the flat-file generated for the associated Dataset """
+    """ The name of the flat-file generated for the associated Entity """
     DataSourceName: str = ''
     """ The name of the DataSource associated with resource """
     DatasetName: str = ''
-    """ The name of the Dataset associated with the resource """
+    """ The name of the Entity associated with the resource """
     DataappName: str = ''
     """ The name of the DataApp associated with the resource """
     StudyName: str = ''
@@ -1278,11 +1322,11 @@ class ModelAutobuilderStatus(Configuration):
     Phase: ModelAutobuilderPhase = ModelAutobuilderPhase.Pending
     """ The phase of the ModelAutobuilder """
     Rows: int = 0
-    """ The number of rows observed in the Dataset associated with the resource """
+    """ The number of rows observed in the Entity associated with the resource """
     Cols: int = 0
-    """ The number of columns observed in the Dataset associated with the resource """
+    """ The number of columns observed in the Entity associated with the resource """
     FileSize: int = 0
-    """ The size of the raw data in the Dataset associated with the resource """
+    """ The size of the raw data in the Entity associated with the resource """
     Models: int = 0
     """ The number of total Model resources created by the associated Study resource """
     TrainedModels: int = 0

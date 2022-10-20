@@ -208,7 +208,7 @@ class DataSourceClient:
         request.namespace = namespace
         (data_source.spec if data_source else DataSourceSpec()).apply_config(request.datasource.spec)
         request.datasource.spec.versionName = version
-        request.datasource.spec.fileType = file_type.value
+        request.datasource.spec.flatfile.fileType = file_type.value
         request.location.CopyFrom(location.to_message())
 
         try:

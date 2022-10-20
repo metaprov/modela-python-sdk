@@ -16,8 +16,7 @@ class PredictorConditionType(Enum):
 
 
 class ModelRole(Enum):
-    Champion = "champion"
-    Challenger = "challenger"
+    Live = "live"
     Shadow = "shadow"
 
 
@@ -36,3 +35,8 @@ class PredictorType(Enum):
     Streaming = "streaming"
 
 
+class K8sObjectStatusState(Enum):
+    Healthy = "healthy"
+    Warning = "warning"
+    Error = "error"
+    Unknown = "unknown"

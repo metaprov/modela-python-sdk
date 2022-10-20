@@ -24,5 +24,5 @@ class Test_Modela_model(unittest.TestCase):
         with open('datasets/iris.csv', 'r') as f:
             data = f.read()
 
-        self.modela.FileService.upload_file("test", data, "default-tenant", "iris-product", "v0.0.1",
+        self.modela.FileService.upload_file("test", data, "modela", "iris-product", "v0.0.1",
                                             "default-minio-bucket", "dataset", "test")

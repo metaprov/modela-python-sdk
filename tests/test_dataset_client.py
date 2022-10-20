@@ -16,7 +16,7 @@ class Test_Modela_dataset(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.modela = Modela(port_forward=True)
+        cls.modela = Modela(port_forward=True, tenant="modela")
 
     @classmethod
     def tearDownClass(cls):
@@ -47,10 +47,11 @@ class Test_Modela_dataset(unittest.TestCase):
         dataset.submit(replace=True)
         assert len(self.modela.Datasets.list("iris-product")) >= 1
         assert dataset.datasource.reference == datasource.reference
-        self.clear_resource()
-        datasource.delete()
-        time.sleep(0.5)
-        self.assertRaises(ResourceNotFoundException, self.modela.Datasets.get, "iris-product", "test-ds-0")
+        #self.clear_resource()
+        #datasource.delete()
+        #time.sleep(1)
+        #self.assertRaises(ResourceNotFoundException, self.modela.Datasets.get, "iris-product", "test-ds-0")
+
 
     def test_0_create_gen_ds(self):
         dataset = self.request_resource("test-ds-gen", gen_datasource=True, target_column="target")
@@ -92,7 +93,7 @@ class Test_Modela_dataset(unittest.TestCase):
 
 """ These tests should be run by an end-user. """
 
-
+"""
 def test_viz():
     modela = Modela(port_forward=True)
     datasource = modela.DataSource(namespace="iris-product", name="iris")
@@ -101,3 +102,4 @@ def test_viz():
 
     dataset.submit_and_visualize(replace=True)
     modela.close()
+"""
