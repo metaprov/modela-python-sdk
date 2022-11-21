@@ -7,7 +7,6 @@ from github.com.metaprov.modelaapi.services.apitoken.v1 import apitoken_pb2_grpc
 from github.com.metaprov.modelaapi.services.attachment.v1 import attachment_pb2_grpc
 from github.com.metaprov.modelaapi.services.commit.v1 import commit_pb2_grpc
 from github.com.metaprov.modelaapi.services.connection.v1 import connection_pb2_grpc
-from github.com.metaprov.modelaapi.services.cronprediction.v1 import cronprediction_pb2_grpc
 from github.com.metaprov.modelaapi.services.dataapp.v1 import dataapp_pb2_grpc
 from github.com.metaprov.modelaapi.services.datapipeline.v1 import datapipeline_pb2_grpc
 from github.com.metaprov.modelaapi.services.datapipelinerun.v1 import datapipelinerun_pb2_grpc
@@ -23,11 +22,6 @@ from github.com.metaprov.modelaapi.services.license.v1 import license_pb2_grpc
 from github.com.metaprov.modelaapi.services.meeting.v1 import meeting_pb2_grpc
 from github.com.metaprov.modelaapi.services.model.v1 import model_pb2_grpc
 from github.com.metaprov.modelaapi.services.modelasystem.v1 import modelasystem_pb2_grpc
-from github.com.metaprov.modelaapi.services.modelautobuilder.v1 import modelautobuilder_pb2_grpc
-from github.com.metaprov.modelaapi.services.modelpipeline.v1 import modelpipeline_pb2_grpc
-from github.com.metaprov.modelaapi.services.modelpipelinerun.v1 import modelpipelinerun_pb2_grpc
-from github.com.metaprov.modelaapi.services.notebook.v1 import notebook_pb2_grpc
-from github.com.metaprov.modelaapi.services.notebookrun.v1 import notebookrun_pb2_grpc
 from github.com.metaprov.modelaapi.services.notifier.v1 import notifier_pb2_grpc
 from github.com.metaprov.modelaapi.services.postmortem.v1 import postmortem_pb2_grpc
 from github.com.metaprov.modelaapi.services.prediction.v1 import prediction_pb2_grpc
@@ -45,8 +39,6 @@ from github.com.metaprov.modelaapi.services.tenant.v1 import tenant_pb2_grpc
 from github.com.metaprov.modelaapi.services.todo.v1 import todo_pb2_grpc
 from github.com.metaprov.modelaapi.services.userroleclass.v1 import userroleclass_pb2_grpc
 from github.com.metaprov.modelaapi.services.virtualbucket.v1 import virtualbucket_pb2_grpc
-from github.com.metaprov.modelaapi.services.virtualcluster.v1 import virtualcluster_pb2_grpc
-from github.com.metaprov.modelaapi.services.virtualvolume.v1 import virtualvolume_pb2_grpc
 from github.com.metaprov.modelaapi.services.webrequest.v1 import webrequest_pb2_grpc
 from github.com.metaprov.modelaapi.services.webrequestrun.v1 import webrequestrun_pb2_grpc
 from grpc_interceptor import ClientCallDetails, ClientInterceptor
@@ -66,7 +58,6 @@ from modela.data.SqlQuery import *
 from modela.data.SqlQueryRun import *
 from modela.data.WebRequest import *
 from modela.data.WebRequestRun import *
-from modela.inference.CronPrediction import *
 from modela.inference.DataApp import *
 from modela.inference.InferenceService import *
 from modela.inference.Prediction import *
@@ -86,19 +77,12 @@ from modela.infra.ServingSite import *
 from modela.infra.Tenant import *
 from modela.infra.UserRoleClass import *
 from modela.infra.VirtualBucket import *
-from modela.infra.VirtualCluster import *
-from modela.infra.VirtualVolume import *
 from modela.team.Meeting import *
 from modela.team.PostMortem import *
 from modela.team.Review import *
 from modela.team.RunBook import *
 from modela.team.Todo import *
 from modela.training.Model import *
-from modela.training.ModelAutobuilder import *
-from modela.training.ModelPipeline import *
-from modela.training.ModelPipelineRun import *
-from modela.training.Notebook import *
-from modela.training.NotebookRun import *
 from modela.training.Report import *
 from modela.training.Study import *
 
@@ -243,8 +227,6 @@ class Modela:
         self.__webrequest_stub = webrequest_pb2_grpc.WebRequestServiceStub(self._channel)
         self.__webrequest_client = WebRequestClient(self.__webrequest_stub, self)
 
-        self.__cronprediction_stub = cronprediction_pb2_grpc.CronPredictionServiceStub(self._channel)
-        self.__cronprediction_client = CronPredictionClient(self.__cronprediction_stub, self)
 
         self.__curtain_stub = curtain_pb2_grpc.CurtainServiceStub(self._channel)
         self.__curtain_client = CurtainClient(self.__curtain_stub, self)
@@ -294,12 +276,6 @@ class Modela:
         self.__virtualbucket_stub = virtualbucket_pb2_grpc.VirtualBucketServiceStub(self._channel)
         self.__virtualbucket_client = VirtualBucketClient(self.__virtualbucket_stub, self)
 
-        self.__virtualcluster_stub = virtualcluster_pb2_grpc.VirtualClusterServiceStub(self._channel)
-        self.__virtualcluster_client = VirtualClusterClient(self.__virtualcluster_stub, self)
-
-        self.__virtualvolume_stub = virtualvolume_pb2_grpc.VirtualVolumeServiceStub(self._channel)
-        self.__virtualvolume_client = VirtualVolumeClient(self.__virtualvolume_stub, self)
-
         self.__userroleclass_stub = userroleclass_pb2_grpc.UserRoleClassServiceStub(self._channel)
         self.__userroleclass_client = UserRoleClassClient(self.__userroleclass_stub, self)
 
@@ -318,23 +294,9 @@ class Modela:
         self.__todo_stub = todo_pb2_grpc.TodoServiceStub(self._channel)
         self.__todo_client = TodoClient(self.__todo_stub, self)
 
-        self.__modelautobuilder_stub = modelautobuilder_pb2_grpc.ModelAutobuilderServiceStub(self._channel)
-        self.__modelautobuilder_client = ModelAutobuilderClient(self.__modelautobuilder_stub, self)
-
-        self.__modelpipelinerun_stub = modelpipelinerun_pb2_grpc.ModelPipelineRunServiceStub(self._channel)
-        self.__modelpipelinerun_client = ModelPipelineRunClient(self.__modelpipelinerun_stub, self)
-
-        self.__modelpipeline_stub = modelpipeline_pb2_grpc.ModelPipelineServiceStub(self._channel)
-        self.__modelpipeline_client = ModelPipelineClient(self.__modelpipeline_stub, self)
 
         self.__model_stub = model_pb2_grpc.ModelServiceStub(self._channel)
         self.__model_client = ModelClient(self.__model_stub, self)
-
-        self.__notebookrun_stub = notebookrun_pb2_grpc.NotebookRunServiceStub(self._channel)
-        self.__notebookrun_client = NotebookRunClient(self.__notebookrun_stub, self)
-
-        self.__notebook_stub = notebook_pb2_grpc.NotebookServiceStub(self._channel)
-        self.__notebook_client = NotebookClient(self.__notebook_stub, self)
 
         self.__report_stub = report_pb2_grpc.ReportServiceStub(self._channel)
         self.__report_client = ReportClient(self.__report_stub, self)
@@ -541,12 +503,6 @@ class Modela:
     def WebRequest(self, namespace="", name="") -> WebRequest:
         return WebRequest(MDWebRequest(), self.WebRequests, namespace, name)
 
-    @property
-    def CronPredictions(self) -> CronPredictionClient:
-        return self.__cronprediction_client
-
-    def CronPrediction(self, namespace="", name="") -> CronPrediction:
-        return CronPrediction(MDCronPrediction(), self.CronPredictions, namespace, name)
 
 
     @property
@@ -680,19 +636,6 @@ class Modela:
     def VirtualBucket(self, namespace="", name="") -> VirtualBucket:
         return VirtualBucket(MDVirtualBucket(), self.VirtualBuckets, namespace, name)
 
-    @property
-    def VirtualClusters(self) -> VirtualClusterClient:
-        return self.__virtualcluster_client
-
-    def VirtualCluster(self, namespace="", name="") -> VirtualCluster:
-        return VirtualCluster(MDVirtualCluster(), self.VirtualClusters, namespace, name)
-
-    @property
-    def VirtualVolumes(self) -> VirtualVolumeClient:
-        return self.__virtualvolume_client
-
-    def VirtualVolume(self, namespace="", name="") -> VirtualVolume:
-        return VirtualVolume(MDVirtualVolume(), self.VirtualVolumes, namespace, name)
 
     @property
     def UserRoleClasses(self) -> UserRoleClassClient:
@@ -742,87 +685,11 @@ class Modela:
         return Todo(MDTodo(), self.Todos, namespace, name)
 
     @property
-    def ModelAutobuilders(self) -> ModelAutobuilderClient:
-        return self.__modelautobuilder_client
-
-    def ModelAutobuilder(self, namespace="", name="", version=Resource.DefaultVersion,
-                         lab: Union[ObjectReference, Lab, str] = "modela-lab",
-                         serving_site: Union[ObjectReference, ServingSite, str] = "default-serving-site",
-                         task_type: TaskType = TaskType.BinaryClassification, workload: Workload = Workload("general-large"),
-                         bucket: Union[ObjectReference, VirtualBucket, str] = "default-minio-bucket",
-                         dataframe: pandas.DataFrame = None, data_file: str = None, data_bytes: bytes = None,
-                         target_column: str = None, objective: Metric = Metric.Accuracy,
-                         feature_selection: bool = False, feature_engineering: bool = False, max_models: int = 1,
-                         max_time: int = 512, trainers: int = 1, predictor_access_type: AccessType = AccessType.ClusterIP,
-                         predictor_autoscale: bool = False, create_data_app: bool = False) -> ModelAutobuilder:
-        """
-        :param namespace: The target namespace of the resource.
-        :param name: The name of the resource.
-        :param version: The version of the resource.
-        :param lab: The object reference, Lab object, or lab name under the tenant of the resource for which all
-            data science workloads will be performed under.
-        :param serving_site: The object reference, Serving Site object, or name under the tenant of the resource for which
-            the created Predictor will be deployed under.
-        :param task_type: The target task type in relation to the data being used.
-        :param workload: The workload specification which determines the resources which will be allocated for training
-            and serving workloads.
-        :param bucket: The bucket which the raw dataset data will be uploaded to.
-        :param dataframe: The Pandas Dataframe will be serialized and uploaded to create a new Dataset resource.
-        :param data_file: The file path which will be read and uploaded to create a new Dataset resource.
-        :param data_bytes: The raw data as bytes that will be uploaded to create a new Dataset resource.
-        :param target_column: The target column of the Dataset to be created.
-        :param objective: The objective metric to be used when determining the best model from the Study.
-        :param feature_selection: If True feature selection will be performed on the Dataset before the model search.
-        :param feature_engineering: If True feature engineering will be performed on the Dataset before the model search.
-        :param max_models: The maximum number of models to sample before selecting the best model.
-        :param max_time: The maximum amount of time in seconds which the model search can run for.
-        :param trainers: The number of parallel trainers to allocate during the model search
-        :param predictor_access_type: The access type of the Predictor to be created. See https://www.modela.ai/docs/docs/serving/production/
-            for documentation on how different access types expose the Predictor service
-        :param predictor_autoscale: If true the created Predictor will automatically scale for traffic
-        :param create_data_app: If true a Data Application will be created to serve a live model dashboard
-        """
-        return ModelAutobuilder(MDModelAutobuilder(), self.ModelAutobuilders, namespace, name, version, lab,
-                                serving_site, task_type, workload, bucket, dataframe, data_file, data_bytes,
-                                target_column, objective, feature_selection, feature_engineering, max_models,
-                                max_time, trainers, predictor_access_type, predictor_autoscale, create_data_app)
-
-
-
-    @property
-    def ModelPipelineRuns(self) -> ModelPipelineRunClient:
-        return self.__modelpipelinerun_client
-
-    def ModelPipelineRun(self, namespace="", name="") -> ModelPipelineRun:
-        return ModelPipelineRun(MDModelPipelineRun(), self.ModelPipelineRuns, namespace, name)
-
-    @property
-    def ModelPipelines(self) -> ModelPipelineClient:
-        return self.__modelpipeline_client
-
-    def ModelPipeline(self, namespace="", name="") -> ModelPipeline:
-        return ModelPipeline(MDModelPipeline(), self.ModelPipelines, namespace, name)
-
-    @property
     def Models(self) -> ModelClient:
         return self.__model_client
 
     def Model(self, namespace="", name="") -> Model:
         return Model(MDModel(), self.Models, namespace, name)
-
-    @property
-    def NotebookRuns(self) -> NotebookRunClient:
-        return self.__notebookrun_client
-
-    def NotebookRun(self, namespace="", name="") -> NotebookRun:
-        return NotebookRun(MDNotebookRun(), self.NotebookRuns, namespace, name)
-
-    @property
-    def Notebooks(self) -> NotebookClient:
-        return self.__notebook_client
-
-    def Notebook(self, namespace="", name="") -> Notebook:
-        return Notebook(MDNotebook(), self.Notebooks, namespace, name)
 
     @property
     def Reports(self) -> ReportClient:

@@ -567,34 +567,6 @@ class ReportType(Enum):
     InvalidReport = "invalid-report"
 
 
-class ModelAutobuilderConditionType(Enum):
-    Ready = "Ready"
-    DataProductReady = "DataProductReady"
-    DataProductVersionReady = "DataProductVersionReady"
-    DataSourceReady = "DataSourceReady"
-    DatasetCompleted = "DatasetCompleted"
-    StudyCompleted = "StudyCompleted"
-    PredictorReady = "PredictorReady"
-    DataAppReady = "DataAppReady"
-    Saved = "Saved"
-
-
-class ModelAutobuilderPhase(Enum):
-    Pending = "Pending"
-    DataSourceRunning = "DataSourceRunning"
-    DataSourceReady = "DataSourceReady"
-    DatasetRunning = "DatasetRunning"
-    DatasetCompleted = "DatasetCompleted"
-    StudyRunning = "StudyRunning"
-    StudyCompleted = "StudyCompleted"
-    PredictorRunning = "PredictorRunning"
-    PredictorCompleted = "PredictorCompleted"
-    DataAppRunning = "DataAppRunning"
-    DataAppCompleted = "DataAppCompleted"
-    Completed = "Completed"
-    Aborted = "Aborted"
-    Failed = "Failed"
-
 
 class ModelTestName(Enum):
     ModelTest = "model-test"

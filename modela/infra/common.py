@@ -142,7 +142,6 @@ class ResourceKind(Enum):
     WebRequest = "webrequests"
     WebRequestRun = "webrequestruns"
 
-    CronPrediction = "cronpredictions"
     Prediction = "predictions"
     Predictor = "predictors"
     Curtain = "curtains"
@@ -159,19 +158,10 @@ class ResourceKind(Enum):
     ServingSite = "servingsites"
     Tenant = "tenants"
     VirtualBucket = "virtualbuckets"
-    VirtualCluster = "virtualclusters"
-    VirtualVolume = "virtualvolumes"
     Attachment = "attachments"
 
     Model = "models"
-    Notebook = "notebooks"
-    NotebookRun = "notebookruns"
-    ModelPipeline = "modelpipelines"
-    ModelPipelineRun = "modelpipelineruns"
-    ModelCompilerRun = "modelcompilerruns"
-    ModelAutobuilder = "modelautobuilders"
     Report = "reports"
-    CronReport = "cronreports"
     Study = "studies"
 
     Review = "reviews"

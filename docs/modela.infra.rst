@@ -20,8 +20,6 @@ Submodules
    modela.infra.ServingSite
    modela.infra.Tenant
    modela.infra.VirtualBucket
-   modela.infra.VirtualCluster
-   modela.infra.VirtualVolume
    modela.infra.common
    modela.infra.connection_models
    modela.infra.models
