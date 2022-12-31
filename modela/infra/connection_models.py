@@ -1,9 +1,9 @@
 from dataclasses import dataclass, field
 from typing import List
-
+from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import Condition
 from modela.Configuration import Configuration
 from modela.common import StatusError, Time, ConditionStatus, SecretReference, ObjectReference
-from modela.infra.common import ProviderName, ConnectionConditionType, ConnectionCategory
+from modela.infra.common import ProviderName, ConnectionCategory
 
 dataclass()
 
@@ -664,13 +664,6 @@ class Connection(Configuration):
     Neo4j: Neo4JConnection = None
     Owner: str = "no-one"
 
-@dataclass
-class ConnectionCondition(Configuration):
-    Type: ConnectionConditionType = ConnectionConditionType.ConnectionReady
-    Status: ConditionStatus = ConditionStatus.ConditionUnknown
-    LastTransitionTime: Time = None
-    Reason: str = ""
-    Message: str = ""
 
 
 @dataclass
@@ -679,5 +672,5 @@ class ConnectionStatus(Configuration):
     LastUpdated: Time = None
     FailureReason: StatusError = None
     FailureMessage: str = ""
-    Conditions: List[ConnectionCondition] = field(default_factory=lambda: [])
+    Conditions: List[Condition] = field(default_factory=lambda: [])
 

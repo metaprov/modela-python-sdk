@@ -1,5 +1,6 @@
 from dataclasses import field
 from typing import List
+from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import Condition
 import github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 as training_pb
 import github.com.metaprov.modelaapi.services.common.v1.common_pb2 as common_pb
 from modela.Configuration import Configuration, ImmutableConfiguration, datamodel
@@ -549,22 +550,6 @@ class InterpretabilityStatus(ImmutableConfiguration):
     Importance: List[FeatureImportance] = field(default_factory=lambda : [])
     """ The collection of feature importances generated from the computed SHAP values """
 
-
-@datamodel(proto=training_pb.ModelCondition)
-class ModelCondition(ImmutableConfiguration):
-    """ ModelCondition describes the state of a Model at a certain point """
-    Type: ModelConditionType = ModelConditionType.ModelReady
-    """ Type of Model condition """
-    Status: ConditionStatus = ConditionStatus.ConditionUnknown
-    """ Status of the condition, one of True, False, Unknown """
-    LastTransitionTime: Time = None
-    """ Last time the condition transitioned from one status to another """
-    Reason: str = ''
-    """ The reason for the condition's last transition """
-    Message: str = ''
-    """ A human-readable message indicating details about the transition """
-
-
 @datamodel(proto=training_pb.ModelStatus)
 class ModelStatus(ImmutableConfiguration):
     """ ModelStatus defines the observed state of a Model """
@@ -686,7 +671,7 @@ class ModelStatus(ImmutableConfiguration):
     """ The last time the object was updated """
     Interpretability: InterpretabilityStatus = None
     """ Interpretability contains results produced during the explaining phase of the Model """
-    Conditions: List[ModelCondition] = field(default_factory=lambda : [])
+    Conditions: List[Condition] = field(default_factory=lambda : [])
     LastFeedbackDatasetRef: ObjectReference = None
     """ The last feedback dataset """
     MisclassificationUri: str = ''
@@ -1009,19 +994,6 @@ class StudySpec(Configuration):
     """ A template for models unit tests """
 
 
-@datamodel(proto=training_pb.StudyCondition)
-class StudyCondition(Configuration):
-    """ StudyCondition describes the state of a Study at a certain point """
-    Type: StudyConditionType = None
-    """ Type of study condition """
-    Status: ConditionStatus = None
-    """ Status of the condition, one of True, False, Unknown """
-    LastTransitionTime: Time = None
-    """ Last time the condition transitioned from one status to another """
-    Reason: str = ''
-    """ The reason for the condition's last transition """
-    Message: str = ''
-    """ A human-readable message indicating details about the transition """
 
 
 @datamodel(proto=training_pb.GarbageCollectionStatus)
@@ -1125,24 +1097,11 @@ class StudyStatus(ImmutableConfiguration):
     """ BestFE specifies the best feature engineering pipeline produced by the Study """
     Gc: GarbageCollectionStatus = None
     """ GC specifies the status of garbage collection relevant to the Study """
-    Conditions: List[StudyCondition] = field(default_factory=lambda : [])
+    Conditions: List[Condition] = field(default_factory=lambda : [])
     ReportUri: str = ''
     """ The name of the Report resource produced by the Study """
 
 
-@datamodel(proto=training_pb.ReportCondition)
-class ReportCondition(Configuration):
-    """ ReportCondition describes the state of a Report at a certain point. """
-    Type: ReportConditionType = None
-    """ Type of Report condition """
-    Status: ConditionStatus = None
-    """ Status of the condition, one of True, False, Unknown """
-    LastTransitionTime: Time = None
-    """ Last time the condition transitioned from one status to another """
-    Reason: str = ''
-    """ The reason for the condition's last transition """
-    Message: str = ''
-    """ A human-readable message indicating details about the transition """
 
 
 ReportType_ = ReportType
@@ -1195,156 +1154,9 @@ class ReportStatus(Configuration):
     """ Logs specifies the location of logs produced by workloads associated with the Report """
     LastUpdated: Time = None
     """ The last time the object was updated """
-    Conditions: List[ReportCondition] = field(default_factory=lambda : [])
-
-
-@datamodel(proto=training_pb.ModelAutobuilderCondition)
-class ModelAutobuilderCondition(Configuration):
-    """ ModelAutobuilderCondition describes the state of a ModelAutobuilder at a certain point """
-    Type: ModelAutobuilderConditionType = None
-    """ Type of ModelAutobuilder condition """
-    Status: ConditionStatus = None
-    """ Status of the condition, one of True, False, Unknown """
-    LastTransitionTime: Time = None
-    """ Last time the condition transitioned from one status to another """
-    Reason: str = ''
-    """ The reason for the condition's last transition """
-    Message: str = ''
-    """ A human-readable message indicating details about the transition """
+    Conditions: List[Condition] = field(default_factory=lambda : [])
 
 
 DataSourceTemplate = DataSourceSpec
 DatasetType_ = DatasetType
 
-
-@datamodel(proto=training_pb.ModelAutobuilderSpec)
-class ModelAutobuilderSpec(Configuration):
-    """ ModelAutobuilderSpec define the desired state of a ModelAutobuilder """
-    DataProductName: str = ''
-    """ The name of the DataProduct namespace that the resource exists under """
-    DataProductVersionName: str = ''
-    """
-    The name of the DataProductVersion which describes the version of the resource
-    that exists in the same DataProduct namespace as the resource
-    """
-    DatasourceName: str = ''
-    """
-    DataSourceName is the name of an existing DataSource resource which will be used as the schema for the ModelAutoBuilder's Entity.
-    If empty, a DataSource will be automatically created based on the data specified by the Location field
-    """
-    DatasetName: str = ''
-    """
-    The name of an existing Entity resource, or the name of the Entity resource that will be created
-    based on the data specified by the Location field, which will be used to train models
-    """
-    Location: DataLocation = None
-    """ The location for data that will be saved in a Entity resource to train models with """
-    Task: TaskType = None
-    """ The machine learning task type relevant to the dataset (i.e. regression, classification) """
-    Subtask: SubtaskType = None
-    """ The machine learning subtask relevant to the primary task (text classification, image object detection, etc.) """
-    Objective: Metric = None
-    """ The objective metric that will be measured against trained models to evaluate their performance """
-    TargetColumn: str = ''
-    """ The name of the column within the dataset that contains the label(s) to be predicted """
-    MaxTime: int = 600
-    """ The deadline for models to complete training, in seconds """
-    MaxModels: int = 10
-    """ The number of candidate models that will be sampled and trained """
-    Fast: bool = False
-    """
-    Fast indicates if Entity and Study resources associated with the ModelAutobuilder should run in fast mode.
-    Running in fast mode will skip unnecessary workloads such as profiling, reporting, explaining, etc.
-    """
-    AccessMethod: AccessType = AccessType.ClusterIP
-    """
-    The Kubernetes-native access method which specifies how the Predictor created by the ModelAutobuilder will be exposed.
-    See https://modela.ai/docs/docs/serving/production/#access-method for a detailed description of each access type
-    """
-    AutoScale: bool = False
-    """ Indicates if the Predictor created by the ModelAutobuilder will automatically scale to traffic """
-    Dataapp: bool = False
-    """ Indicates if the ModelAutobuilder will create a DataApp resource to serve the highest-performing model that was trained """
-    DataSourceSpec: DataSourceSpec = None
-    """
-    DataSourceSpec specifies the full specification of the DataSource resource that will be created by the ModelAutobuilder.
-    If empty, the ModelAutobuilder will attempt to infer the schema of the data specified by the Location field
-    """
-    Trainers: int = 1
-    """
-    The desired number of trainers that will train candidate models in parallel. The number
-    of trainers is restricted based on the allowance provided by the active License
-    """
-    Sampler: SamplerType = SamplerType.TPESearch
-    """ The hyper-parameter optimization search method """
-    Aborted: bool = False
-    """ Aborted indicates that the execution of the ModelAutobuilder and any associated workloads should be permanently stopped """
-    Owner: str = 'no-one'
-    """ The name of the Account which created the object, which exists in the same tenant as the object """
-    Resources: Workload = None
-    """ Resources specifies the resource requirements that will be allocated to dataset and model training Jobs """
-    FeatureEngineering: bool = False
-    """ Indicates if feature engineering will be performed prior to the primary model search """
-    FeatureSelection: bool = False
-    """ Indicates if feature selection will be performed prior to the primary model search """
-    ServingSiteRef: ObjectReference = ObjectReference(Namespace='modela', Name='default-serving-site')
-    """
-    The reference to the ServingSite where the Predictor created by the ModelAutobuilder will be hosted.
-    If unspecified, the default ServingSite from the parent DataProduct will be used
-    """
-    LabRef: ObjectReference = ObjectReference(Namespace='modela', Name='modela-lab')
-    """
-    The reference to the Lab under which Entity and Study resources created by the ModelAutobuilder will be trained.
-    If unspecified, the default Lab from the parent DataProduct will be used
-    """
-    DatasetType: DatasetType_ = DatasetType_.Tabular
-    """ The type of dataset which was uploaded. `tabular` is the only supported type as of the current release """
-
-
-@datamodel(proto=training_pb.ModelAutobuilderStatus)
-class ModelAutobuilderStatus(Configuration):
-    """ ModelAutobuilderStatus define the observed state of a ModelAutobuilder """
-    FlatFileName: str = ''
-    """ The name of the flat-file generated for the associated Entity """
-    DataSourceName: str = ''
-    """ The name of the DataSource associated with resource """
-    DatasetName: str = ''
-    """ The name of the Entity associated with the resource """
-    DataappName: str = ''
-    """ The name of the DataApp associated with the resource """
-    StudyName: str = ''
-    """ The name of the Study associated with the resource """
-    BestModelName: str = ''
-    """ The name of the highest-performing Model resource produced as a result of the associated Study resource """
-    PredictorName: str = ''
-    """ The name of the Predictor associated with the resource """
-    ImageRepoName: str = ''
-    Phase: ModelAutobuilderPhase = ModelAutobuilderPhase.Pending
-    """ The phase of the ModelAutobuilder """
-    Rows: int = 0
-    """ The number of rows observed in the Entity associated with the resource """
-    Cols: int = 0
-    """ The number of columns observed in the Entity associated with the resource """
-    FileSize: int = 0
-    """ The size of the raw data in the Entity associated with the resource """
-    Models: int = 0
-    """ The number of total Model resources created by the associated Study resource """
-    TrainedModels: int = 0
-    """ The number of successfully trained Model resources created by the associated Study resource """
-    BestModelScore: float = 0
-    """ The highest score out of all Models created by the associated Study resource """
-    Estimator: ClassicalEstimatorSpec = None
-    """ The estimator specification for the highest-performing Model resource """
-    StartTime: Time = None
-    """ StartTime represents the time at which the execution of the ModelAutobuilder started """
-    EndTime: Time = None
-    """ EndTime represents the time at which the ModelAutobuilder was marked as completed, failed, or aborted """
-    ObservedGeneration: int = 0
-    """ ObservedGeneration is the last generation that was acted on """
-    FailureReason: StatusError = None
-    """ In the case of failure, the ModelAutobuilder resource controller will set this field with a failure reason """
-    FailureMessage: str = ''
-    """ In the case of failure, the ModelAutobuilder resource controller will set this field with a failure message """
-    LastUpdated: Time = None
-    """ The last time the object was updated """
-    Conditions: List[ModelAutobuilderCondition] = field(default_factory=lambda : [])

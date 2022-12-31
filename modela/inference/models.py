@@ -1,5 +1,6 @@
 from dataclasses import field
 from typing import List
+from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import Condition
 import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
 import github.com.metaprov.modelaapi.pkg.apis.inference.v1alpha1.generated_pb2 as inference_pb
 import github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 as data_pb
@@ -173,19 +174,6 @@ class ModelDeploymentSpec(Configuration):
     """ the port of the model service. """
 
 
-@datamodel(proto=inference_pb.PredictorCondition)
-class PredictorCondition(Configuration):
-    """ PredictorCondition describes the state of a Predictor at a certain point """
-    Type: PredictorConditionType = None
-    """ Type of Predictor condition """
-    Status: ConditionStatus = None
-    """ Status of the condition, one of True, False, Unknown """
-    LastTransitionTime: Time = None
-    """ Last time the condition transitioned from one status to another """
-    Reason: str = ''
-    """ The reason for the condition's last transition """
-    Message: str = ''
-    """ A human-readable message indicating details about the transition """
 
 
 @datamodel(proto=inference_pb.ProgressiveSpec)
@@ -285,7 +273,7 @@ class PredictorStatus(Configuration):
     """ In the case of failure, the Predictor resource controller will set this field with a failure reason """
     FailureMessage: str = ''
     """ In the case of failure, the Predictor resource controller will set this field with a failure reason """
-    Conditions: List[PredictorCondition] = field(default_factory=lambda : [])
+    Conditions: List[Condition] = field(default_factory=lambda : [])
 
 
 @datamodel(proto=inference_pb.FeedbackTestSpec)
@@ -553,6 +541,7 @@ class PredictionResult(Configuration):
     Success: bool = False
     Score: float = 0
     Label: str = ''
+    Probability:float = 0
     Probabilities: List[ProbabilityValue] = field(default_factory=lambda : [])
     ShapValues: List[ShapValue] = field(default_factory=lambda : [])
     MissingColumns: List[str] = field(default_factory=lambda : [])

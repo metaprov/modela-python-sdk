@@ -3,9 +3,7 @@ from typing import Callable
 from github.com.metaprov.modelaapi.services.account.v1 import account_pb2_grpc
 from github.com.metaprov.modelaapi.services.account.v1.account_pb2 import AccountLoginRequest
 from github.com.metaprov.modelaapi.services.alert.v1 import alert_pb2_grpc
-from github.com.metaprov.modelaapi.services.apitoken.v1 import apitoken_pb2_grpc
 from github.com.metaprov.modelaapi.services.attachment.v1 import attachment_pb2_grpc
-from github.com.metaprov.modelaapi.services.commit.v1 import commit_pb2_grpc
 from github.com.metaprov.modelaapi.services.connection.v1 import connection_pb2_grpc
 from github.com.metaprov.modelaapi.services.dataapp.v1 import dataapp_pb2_grpc
 from github.com.metaprov.modelaapi.services.datapipeline.v1 import datapipeline_pb2_grpc
@@ -19,7 +17,6 @@ from github.com.metaprov.modelaapi.services.featurehistogram.v1 import featurehi
 from github.com.metaprov.modelaapi.services.fileservices.v1 import fileservices_pb2_grpc
 from github.com.metaprov.modelaapi.services.lab.v1 import lab_pb2_grpc
 from github.com.metaprov.modelaapi.services.license.v1 import license_pb2_grpc
-from github.com.metaprov.modelaapi.services.meeting.v1 import meeting_pb2_grpc
 from github.com.metaprov.modelaapi.services.model.v1 import model_pb2_grpc
 from github.com.metaprov.modelaapi.services.modelasystem.v1 import modelasystem_pb2_grpc
 from github.com.metaprov.modelaapi.services.notifier.v1 import notifier_pb2_grpc
@@ -32,15 +29,11 @@ from github.com.metaprov.modelaapi.services.report.v1 import report_pb2_grpc
 from github.com.metaprov.modelaapi.services.review.v1 import review_pb2_grpc
 from github.com.metaprov.modelaapi.services.runbook.v1 import runbook_pb2_grpc
 from github.com.metaprov.modelaapi.services.servingsite.v1 import servingsite_pb2_grpc
-from github.com.metaprov.modelaapi.services.sqlquery.v1 import sqlquery_pb2_grpc
-from github.com.metaprov.modelaapi.services.sqlqueryrun.v1 import sqlqueryrun_pb2_grpc
 from github.com.metaprov.modelaapi.services.study.v1 import study_pb2_grpc
 from github.com.metaprov.modelaapi.services.tenant.v1 import tenant_pb2_grpc
 from github.com.metaprov.modelaapi.services.todo.v1 import todo_pb2_grpc
 from github.com.metaprov.modelaapi.services.userroleclass.v1 import userroleclass_pb2_grpc
 from github.com.metaprov.modelaapi.services.virtualbucket.v1 import virtualbucket_pb2_grpc
-from github.com.metaprov.modelaapi.services.webrequest.v1 import webrequest_pb2_grpc
-from github.com.metaprov.modelaapi.services.webrequestrun.v1 import webrequestrun_pb2_grpc
 from grpc_interceptor import ClientCallDetails, ClientInterceptor
 
 from modela.common import Metric
@@ -54,19 +47,13 @@ from modela.data.Entity import *
 from modela.data.FeatureHistogram import *
 from modela.data.Recipe import *
 from modela.data.RecipeRun import *
-from modela.data.SqlQuery import *
-from modela.data.SqlQueryRun import *
-from modela.data.WebRequest import *
-from modela.data.WebRequestRun import *
 from modela.inference.DataApp import *
 from modela.inference.InferenceService import *
 from modela.inference.Prediction import *
 from modela.inference.Predictor import *
 from modela.infra.Account import *
 from modela.infra.Alert import *
-from modela.infra.ApiToken import *
 from modela.infra.Attachment import *
-from modela.infra.Commit import *
 from modela.infra.Connection import *
 from modela.infra.FileService import *
 from modela.infra.Lab import *
@@ -77,7 +64,6 @@ from modela.infra.ServingSite import *
 from modela.infra.Tenant import *
 from modela.infra.UserRoleClass import *
 from modela.infra.VirtualBucket import *
-from modela.team.Meeting import *
 from modela.team.PostMortem import *
 from modela.team.Review import *
 from modela.team.RunBook import *
@@ -215,22 +201,6 @@ class Modela:
         self.__recipe_stub = recipe_pb2_grpc.RecipeServiceStub(self._channel)
         self.__recipe_client = RecipeClient(self.__recipe_stub, self)
 
-        self.__sqlquery_stub = sqlquery_pb2_grpc.SqlQueryServiceStub(self._channel)
-        self.__sqlquery_client = SqlQueryClient(self.__sqlquery_stub, self)
-
-        self.__sqlqueryrun_stub = sqlqueryrun_pb2_grpc.SqlQueryRunServiceStub(self._channel)
-        self.__sqlqueryrun_client = SqlQueryRunClient(self.__sqlqueryrun_stub, self)
-
-        self.__webrequestrun_stub = webrequestrun_pb2_grpc.WebRequestRunServiceStub(self._channel)
-        self.__webrequestrun_client = WebRequestRunClient(self.__webrequestrun_stub, self)
-
-        self.__webrequest_stub = webrequest_pb2_grpc.WebRequestServiceStub(self._channel)
-        self.__webrequest_client = WebRequestClient(self.__webrequest_stub, self)
-
-
-        self.__curtain_stub = curtain_pb2_grpc.CurtainServiceStub(self._channel)
-        self.__curtain_client = CurtainClient(self.__curtain_stub, self)
-
         self.__dataapp_stub = dataapp_pb2_grpc.DataAppServiceStub(self._channel)
         self.__dataapp_client = DataAppClient(self.__dataapp_stub, self)
 
@@ -243,14 +213,8 @@ class Modela:
         self.__alert_stub = alert_pb2_grpc.AlertServiceStub(self._channel)
         self.__alert_client = AlertClient(self.__alert_stub, self)
 
-        self.__apitoken_stub = apitoken_pb2_grpc.ApiTokenServiceStub(self._channel)
-        self.__apitoken_client = ApiTokenClient(self.__apitoken_stub, self)
-
         self.__attachment_stub = attachment_pb2_grpc.AttachmentServiceStub(self._channel)
         self.__attachment_client = AttachmentClient(self.__attachment_stub, self)
-
-        self.__commit_stub = commit_pb2_grpc.CommitServiceStub(self._channel)
-        self.__commit_client = CommitClient(self.__commit_stub, self)
 
         self.__connection_stub = connection_pb2_grpc.ConnectionServiceStub(self._channel)
         self.__connection_client = ConnectionClient(self.__connection_stub, self)
@@ -279,9 +243,6 @@ class Modela:
         self.__userroleclass_stub = userroleclass_pb2_grpc.UserRoleClassServiceStub(self._channel)
         self.__userroleclass_client = UserRoleClassClient(self.__userroleclass_stub, self)
 
-        self.__meeting_stub = meeting_pb2_grpc.MeetingServiceStub(self._channel)
-        self.__meeting_client = MeetingClient(self.__meeting_stub, self)
-
         self.__postmortem_stub = postmortem_pb2_grpc.PostMortemServiceStub(self._channel)
         self.__postmortem_client = PostMortemClient(self.__postmortem_stub, self)
 
@@ -293,7 +254,6 @@ class Modela:
 
         self.__todo_stub = todo_pb2_grpc.TodoServiceStub(self._channel)
         self.__todo_client = TodoClient(self.__todo_stub, self)
-
 
         self.__model_stub = model_pb2_grpc.ModelServiceStub(self._channel)
         self.__model_client = ModelClient(self.__model_stub, self)
@@ -475,35 +435,6 @@ class Modela:
     def Recipe(self, namespace="", name="") -> Recipe:
         return Recipe(MDRecipe(), self.Recipes, namespace, name)
 
-    @property
-    def SqlQuerys(self) -> SqlQueryClient:
-        return self.__sqlquery_client
-
-    def SqlQuery(self, namespace="", name="") -> SqlQuery:
-        return SqlQuery(MDSqlQuery(), self.SqlQuerys, namespace, name)
-
-    @property
-    def SqlQueryRuns(self) -> SqlQueryRunClient:
-        return self.__sqlqueryrun_client
-
-    def SqlQueryRun(self, namespace="", name="") -> SqlQueryRun:
-        return SqlQueryRun(MDSqlQueryRun(), self.SqlQueryRuns, namespace, name)
-
-    @property
-    def WebRequestRuns(self) -> WebRequestRunClient:
-        return self.__webrequestrun_client
-
-    def WebRequestRun(self, namespace="", name="") -> WebRequestRun:
-        return WebRequestRun(MDWebRequestRun(), self.WebRequestRuns, namespace, name)
-
-    @property
-    def WebRequests(self) -> WebRequestClient:
-        return self.__webrequest_client
-
-    def WebRequest(self, namespace="", name="") -> WebRequest:
-        return WebRequest(MDWebRequest(), self.WebRequests, namespace, name)
-
-
 
     @property
     def DataApps(self) -> DataAppClient:
@@ -559,12 +490,6 @@ class Modela:
     def Alert(self, namespace="", name="") -> Alert:
         return Alert(MDAlert(), self.Alerts, namespace, name)
 
-    @property
-    def ApiTokens(self) -> ApiTokenClient:
-        return self.__apitoken_client
-
-    def ApiToken(self, namespace="", name="") -> ApiToken:
-        return ApiToken(MDApiToken(), self.ApiTokens, namespace, name)
 
     @property
     def Attachments(self) -> AttachmentClient:
@@ -573,12 +498,6 @@ class Modela:
     def Attachment(self, namespace="", name="") -> Attachment:
         return Attachment(MDAttachment(), self.Attachments, namespace, name)
 
-    @property
-    def Commits(self) -> CommitClient:
-        return self.__commit_client
-
-    def Commit(self, namespace="", name="") -> Commit:
-        return Commit(MDCommit(), self.Commits, namespace, name)
 
     @property
     def Connections(self) -> ConnectionClient:
@@ -649,12 +568,6 @@ class Modela:
         """
         return UserRoleClass(MDUserRoleClass(), self.UserRoleClasses, namespace, name, rules)
 
-    @property
-    def Meetings(self) -> MeetingClient:
-        return self.__meeting_client
-
-    def Meeting(self, namespace="", name="") -> Meeting:
-        return Meeting(MDMeeting(), self.Meetings, namespace, name)
 
     @property
     def PostMortems(self) -> PostMortemClient:
