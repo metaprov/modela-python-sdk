@@ -49,12 +49,9 @@ class TaskName(Enum):
     MergeForecastTask = "merge-forecast"
     PartitionForecastTask = "partition-forecast"
     SplitDatasetToRungs = "split-dataset-to-rungs"
-    CompileTask = "compile-model"
     PackageModelTask = "package-model"
     FeatureGenTask = "feature-gen"
     FeatureSelectTask = "feature-select"
-    RunSqlQueryTask = "run-sql-query"
-    RunWebRequestTask = "run-web-request"
     GenerateDataset = "generate-dataset"
     ValidateModel = "validate-model"
 

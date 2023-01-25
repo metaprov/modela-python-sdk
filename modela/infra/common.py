@@ -137,10 +137,6 @@ class ResourceKind(Enum):
     LabelingPipelineRun = "labelingpipelineruns"
     Recipe = "recipes"
     RecipeRun = "reciperuns"
-    SqlQuery = "sqlqueries"
-    SqlQueryRun = "sqlqueryruns"
-    WebRequest = "webrequests"
-    WebRequestRun = "webrequestruns"
 
     Prediction = "predictions"
     Predictor = "predictors"
@@ -149,9 +145,7 @@ class ResourceKind(Enum):
 
     Account = "accounts"
     Alert = "alerts"
-    ApiToken = "apitokens"
     Connection = "connections"
-    Commit = "commits"
     Lab = "labs"
     License = "licenses"
     Notifier = "notifiers"
@@ -168,7 +162,6 @@ class ResourceKind(Enum):
     PostMortem = "postmortems"
     RunBook = "runbooks"
     Todo = "todos"
-    Meeting = "meetings"
 
     Secret = "secrets"
     Deployment = "deployments"

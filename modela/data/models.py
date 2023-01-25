@@ -1,10 +1,11 @@
 from dataclasses import field
 from typing import List, Union, Dict
+from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import Condition
 import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
 import github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 as data_pb
 import github.com.metaprov.modelaapi.services.common.v1.common_pb2 as common_pb
 from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import Stakeholder, PermissionsSpec, TestSuiteResult, Logs
-from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import FeatureHistogramCondition, ColumnHistogram
+from github.com.metaprov.modelaapi.pkg.apis.data.v1alpha1.generated_pb2 import ColumnHistogram
 import modela.data.common as data_common
 from modela.Configuration import *
 from modela.common import *
@@ -902,18 +903,6 @@ class DatasetStatistics(Configuration):
         return search[0]
 
 
-@datamodel(proto=data_pb.DatasetCondition)
-class DatasetCondition(Configuration):
-    """ DatasetCondition describes the state of a dataset at a certain point """
-    Type: data_common.DatasetCondition = data_common.DatasetCondition.Ready
-    Status: ConditionStatus = ConditionStatus.ConditionUnknown
-    """ Status of the condition, one of True, False, Unknown """
-    LastTransitionTime: Time = None
-    """ Last time the condition transitioned from one status to another. """
-    Reason: str = ''
-    """ The reason for the condition's last transition. """
-    Message: str = ''
-    """ A human readable message indicating details about the transition. """
 
 
 @datamodel(proto=data_pb.DatasetStatus)
@@ -958,7 +947,7 @@ class DatasetStatus(ImmutableConfiguration):
     """ The time that the Dataset finished processing, either due to completion or failure """
     FeatureHistogramRef: ObjectReference = ObjectReference()
     """ The generated training feature histogram, Empty if no feature histogram generated """
-    Conditions: List[DatasetCondition] = field(default_factory=lambda : [])
+    Conditions: List[Condition] = field(default_factory=lambda : [])
     AnomaliesUri: str = ''
     """
     The location of anomaly file. The file contain the list of rows that were marked as anomaly by an isolation forest.
@@ -1032,7 +1021,7 @@ class FeatureHistogramStatus(Configuration):
     """ In the case of failure, the Dataset resource controller will set this field with a failure message """
     UnitTestsResult: TestSuiteResult = None
     """ Test suite for this histogram. """
-    Conditions: List[FeatureHistogramCondition] = field(default_factory=lambda : [])
+    Conditions: List[Condition] = field(default_factory=lambda : [])
     Total: int = 0
     """ Total prediction recorded by this feature histograms """
     Errors: int = 0
