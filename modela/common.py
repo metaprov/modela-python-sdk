@@ -3,15 +3,6 @@ from typing import List
 from dataclasses import field
 
 from github.com.metaprov.modelaapi.services.common.v1.common_pb2 import Plot, Histogram
-from k8s.io.api.core.v1.generated_pb2 import ObjectReference, SecretReference
-from k8s.io.apimachinery.pkg.apis.meta.v1.generated_pb2 import Time
-
-from github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 import TestSuite, DataTestCase, \
-    TestSuiteResult, \
-    DataTestCaseResult
-
-from modela.Configuration import Configuration, ImmutableConfiguration, datamodel
-import github.com.metaprov.modelaapi.pkg.apis.catalog.v1alpha1.generated_pb2 as catalog_pb
 from dataclasses import field
 from enum import Enum
 from typing import List
@@ -180,6 +171,11 @@ class PriorityLevel(Enum):
     Urgent = "urgent"
 
 
+class PromotionType(Enum):
+    Manual = "manual"
+    Latest = "latest"
+    Best = "best"
+
 class HardwareTarget(Enum):
     AMDEPYC2 = "amd-epyc-2"
     ARMA53 = "arma-53"
@@ -213,12 +209,6 @@ class Freq(Enum):
     Months = "month"
     Qtrs = "quarter"
     Years = "year"
-
-
-@datamodel(proto=Time)
-class Time(Configuration):
-    Seconds: int = 0
-    Nanos: int = 0
 
 
 class Metric(Enum):
@@ -310,6 +300,19 @@ class ObjectReference(Configuration):
     Name: str = ""
 
 
+@datamodel(proto=Time)
+class Time(Configuration):
+    Seconds: int = 0
+    Nanos: int = 0
+
+
+@datamodel(proto=catalog_pb.RunSchedule)
+class RunSchedule(Configuration):
+    Enabled: bool = False
+    Cron: str = ''
+    Type: TriggerScheduleEventType = TriggerScheduleEventType.Cron
+
+
 @datamodel(proto=SecretReference)
 class SecretReference(Configuration):
     Name: str = ""
@@ -342,7 +345,7 @@ class Measurement(ImmutableConfiguration):
 
 
 ##########################################
-# Test classes
+# Test Suite Classes
 ##########################################
 
 @datamodel(proto=TestSuite)
@@ -413,4 +416,3 @@ class Histogram(Configuration):
     Values: List[float] = field(default_factory=lambda: [])
     Categories: List[str] = field(default_factory=lambda: [])
     Bins: List[float] = field(default_factory=lambda: [])
-

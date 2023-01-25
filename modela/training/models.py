@@ -3,13 +3,20 @@ from typing import List
 import github.com.metaprov.modelaapi.pkg.apis.training.v1alpha1.generated_pb2 as training_pb
 import github.com.metaprov.modelaapi.services.common.v1.common_pb2 as common_pb
 from modela.Configuration import Configuration, ImmutableConfiguration, datamodel
-from modela.common import Metric, Measurement, TestSuite
-from modela.common import PriorityLevel, Time, StatusError, ConditionStatus, ObjectReference, Plot
+from modela.common import Metric, Measurement, TestSuite, RunSchedule, PromotionType, PriorityLevel, Time, StatusError, \
+    ConditionStatus, ObjectReference, Plot
 from modela.data.common import DataType
-from modela.data.models import DataLocation, GovernanceSpec, CompilerSettings, Correlation, DataSourceSpec
-from modela.inference.common import AccessType
+from modela.data.models import DataLocation, GovernanceSpec, CompilerSettings, Correlation, Schema, FlatFileFormat
 from modela.infra.models import Workload, OutputLogs, NotificationSettings
+from modela.inference.models import AccessSpec
 from modela.training.common import *
+
+
+@datamodel(proto=training_pb.ModelImageSpec)
+class ModelImageSpec(Configuration):
+    Exist: bool = False
+    ImageName: str = ''
+    RegistryConnectionName: str = ''
 
 
 @datamodel(proto=training_pb.SegmentSpec)
@@ -35,7 +42,7 @@ class ClassicalEstimatorSpec(ImmutableConfiguration):
     """ ClassicalEstimatorSpec is the specification for an algorithm and the actual value fof the hyper parameters """
     AlgorithmName: str = ''
     """ AlgorithmName is a reference to the algorithm in the catalog """
-    Parameters: List[HyperParameterValue] = field(default_factory=lambda : [])
+    Parameters: List[HyperParameterValue] = field(default_factory=lambda: [])
     """ Parameters is a list of the algorithm hyper parameters """
 
 
@@ -103,7 +110,7 @@ class DataSplit(Configuration):
     The name of the column containing a binary value that indicates if the row should be split.
     The split type must use split-column in order for SplitColumn to have an effect
     """
-    Segments: List[Segment] = field(default_factory=lambda : [])
+    Segments: List[Segment] = field(default_factory=lambda: [])
     """ The collection of segments """
     TrainDataset: str = ''
     """ The name of the Entity resource which will be used as the training dataset """
@@ -161,7 +168,7 @@ class Training(Configuration):
     """ The number of folds to use during cross-validation """
     Split: DataSplit = DataSplit()
     """ Split specifies the configuration to generate training, testing, and validation datasets """
-    EvalMetrics: List[Metric] = field(default_factory=lambda : [])
+    EvalMetrics: List[Metric] = field(default_factory=lambda: [])
     """ EvalMetrics specifies the collection of metrics that will be evaluated after model training is complete """
     Sh: SuccessiveHalving = None
     """ SuccessiveHalving specifies the configuration for a Study to execute a model search using successive halving """
@@ -285,7 +292,7 @@ class FeatureSelection(Configuration):
     """ Indicates if filter methods will be tested as part of the candidate algorithms (e.g. chi-square or anova tests) """
     Wrapper: bool = False
     """ Indicates if wrapper methods will be tested as part of the candidate algorithms """
-    Pipeline: List[FeatureSelectionType] = field(default_factory=lambda : [])
+    Pipeline: List[FeatureSelectionType] = field(default_factory=lambda: [])
     """ The collection of feature selection methods that will be applied in order to the dataset """
     VarianceThresholdPct: int = 5
     """ The threshold as a percentage to remove low variance features """
@@ -295,7 +302,7 @@ class FeatureSelection(Configuration):
     """ The number of features that will be selected based on importance. If TopN is 0, all features will be selected """
     Percentile: int = 95
     """ Percent of features to keep """
-    Reserved: List[str] = field(default_factory=lambda : [])
+    Reserved: List[str] = field(default_factory=lambda: [])
     """ List of features that are reserved and will always be included in the final feature selection """
 
 
@@ -310,7 +317,7 @@ class Interpretability(Configuration):
     """ InterpretabilitySpec specifies the configuration to generate interpretability data and diagrams """
     Ice: bool = True
     """ Indicates if ICE (individual condition expectation) plots will be generated """
-    Icepairs: List[FeaturePair] = field(default_factory=lambda : [])
+    Icepairs: List[FeaturePair] = field(default_factory=lambda: [])
     """ The collection of feature pairs to generate ICE scatter diagrams for each """
     Lime: bool = False
     """ Indicates if LIME (local interpretable model-agnostic explanations) diagrams will be generated """
@@ -319,7 +326,7 @@ class Interpretability(Configuration):
     The type of SHAP values to be generated. Linear and tree values are the
     only recommended types due to the high compute times of other methods
     """
-    Shappairs: List[FeaturePair] = field(default_factory=lambda : [])
+    Shappairs: List[FeaturePair] = field(default_factory=lambda: [])
     """ The collection of feature pairs to generate SHAP scatter diagrams for each """
     Counterfactual: bool = False
     """ Indicates if counter-factual diagrams will be generated """
@@ -342,7 +349,7 @@ class FeatureEngineeringPipeline(ImmutableConfiguration):
     """ The name of the pipeline """
     Datatype: DataType = DataType.Text
     """ The type of data which the pipeline applies to """
-    Columns: List[str] = field(default_factory=lambda : [])
+    Columns: List[str] = field(default_factory=lambda: [])
     """
     The collection of columns which the pipeline applies to. Each column in the dataset with the
     data type of the pipeline should be added to the collection of columns
@@ -372,9 +379,9 @@ class FeatureEngineeringPipeline(ImmutableConfiguration):
     """ Audio specifies the pipeline to handle audio data (currently unsupported) """
     Video: VideoPipelineSpec = None
     """ Video specifies the pipeline to handle video data (currently unsupported) """
-    Generated: List[GeneratedColumnSpec] = field(default_factory=lambda : [])
+    Generated: List[GeneratedColumnSpec] = field(default_factory=lambda: [])
     """ Generated specifies a collection of columns to be generated """
-    Custom: List[GeneratedColumnSpec] = field(default_factory=lambda : [])
+    Custom: List[GeneratedColumnSpec] = field(default_factory=lambda: [])
     """ Custom specifies a collection of columns to be generated. Custom columns are specified by end-users """
     Drop: bool = False
     """ Indicates if all of all the columns specified by the Columns field should be dropped """
@@ -385,7 +392,7 @@ class FeatureEngineeringPipeline(ImmutableConfiguration):
 @datamodel(proto=training_pb.FeatureEngineeringSpec)
 class FeatureEngineeringSpec(ImmutableConfiguration):
     """ FeatureEngineeringSpec specifies the feature engineering and preprocessing to be performed on a dataset """
-    Pipelines: List[FeatureEngineeringPipeline] = field(default_factory=lambda : [])
+    Pipelines: List[FeatureEngineeringPipeline] = field(default_factory=lambda: [])
     """
     Pipelines contains the collection of feature engineering pipelines that
     will be applied to a dataset prior to model training
@@ -405,9 +412,9 @@ class EnsembleSpec(ImmutableConfiguration):
     Contain the spec for a single time series.
     EnsembleSpec specifies the parameters of an ensemble model
     """
-    Models: List[str] = field(default_factory=lambda : [])
+    Models: List[str] = field(default_factory=lambda: [])
     """ The collection of models (by their name) to be used as estimators in the ensemble """
-    Estimators: List[ClassicalEstimatorSpec] = field(default_factory=lambda : [])
+    Estimators: List[ClassicalEstimatorSpec] = field(default_factory=lambda: [])
     """ The collection of estimators to be used in the ensemble, derived from Models """
     Final: ClassicalEstimatorSpec = None
     """ The base estimator """
@@ -546,7 +553,7 @@ class InterpretabilityStatus(ImmutableConfiguration):
     """ The URI for the train SHAP values """
     TestShapValuesURI: str = ''
     """ The URI for the test SHAP values """
-    Importance: List[FeatureImportance] = field(default_factory=lambda : [])
+    Importance: List[FeatureImportance] = field(default_factory=lambda: [])
     """ The collection of feature importances generated from the computed SHAP values """
 
 
@@ -590,18 +597,18 @@ class ModelStatus(ImmutableConfiguration):
     """ Cost is the cost of training the model in the case of a deep-learning model """
     Best: bool = False
     """ Best indicates if the Model was found to be the best model produced by a Study """
-    Cv: List[Measurement] = field(default_factory=lambda : [])
+    Cv: List[Measurement] = field(default_factory=lambda: [])
     """
     CV contains the collection of measurements produced by cross-validation
     on the training dataset or validation on the validation dataset
     """
-    Train: List[Measurement] = field(default_factory=lambda : [])
+    Train: List[Measurement] = field(default_factory=lambda: [])
     """ Train contains the collection of measurements produced by validation on the training dataset """
-    Test: List[Measurement] = field(default_factory=lambda : [])
+    Test: List[Measurement] = field(default_factory=lambda: [])
     """ Train contains the collection of measurements produced by validation on the testing dataset """
-    Tune: List[Measurement] = field(default_factory=lambda : [])
+    Tune: List[Measurement] = field(default_factory=lambda: [])
     """ Tune contains the collection of measurements produced by validation on the tune dataset """
-    Feedback: List[Measurement] = field(default_factory=lambda : [])
+    Feedback: List[Measurement] = field(default_factory=lambda: [])
     """ Feedback contain the collection of measurements produced by running dataset """
     Phase: ModelPhase = ModelPhase.Pending
     """ The phase of the Model """
@@ -625,7 +632,7 @@ class ModelStatus(ImmutableConfiguration):
     """ The URI to the model application file """
     ImageName: str = ''
     """ The name of the Docker image produced by the Model """
-    Importance: List[FeatureImportance] = field(default_factory=lambda : [])
+    Importance: List[FeatureImportance] = field(default_factory=lambda: [])
     """
     The collection of features and their importance, sorted by the greatest importance first
     The collection is measured based on impuriry and uses the native measures by a tree algorithm
@@ -678,15 +685,15 @@ class ModelStatus(ImmutableConfiguration):
     """ The endpoint of the Model, which is set after it is deployed to a Predictor """
     Logs: OutputLogs = None
     """ Logs specifies the location of logs produced by workloads associated with the Model """
-    CorrelationsWithTarget: List[Correlation] = field(default_factory=lambda : [])
+    CorrelationsWithTarget: List[Correlation] = field(default_factory=lambda: [])
     """ The collection of correlations of the features of the training dataset and the target feature """
-    TopCorrelations: List[Correlation] = field(default_factory=lambda : [])
+    TopCorrelations: List[Correlation] = field(default_factory=lambda: [])
     """ The top correlations between features of the training dataset """
     LastUpdated: Time = None
     """ The last time the object was updated """
     Interpretability: InterpretabilityStatus = None
     """ Interpretability contains results produced during the explaining phase of the Model """
-    Conditions: List[ModelCondition] = field(default_factory=lambda : [])
+    Conditions: List[ModelCondition] = field(default_factory=lambda: [])
     LastFeedbackDatasetRef: ObjectReference = None
     """ The last feedback dataset """
     MisclassificationUri: str = ''
@@ -704,14 +711,14 @@ class ModelStatus(ImmutableConfiguration):
 @datamodel(proto=common_pb.ModelProfile)
 class ModelProfile(ImmutableConfiguration):
     Name: str = ''
-    Importance: List[float] = field(default_factory=lambda : [])
-    Plots: List[Plot] = field(default_factory=lambda : [])
+    Importance: List[float] = field(default_factory=lambda: [])
+    Plots: List[Plot] = field(default_factory=lambda: [])
 
 
 @datamodel(proto=training_pb.AlgorithmSearchSpaceSpec)
 class AlgorithmSearchSpace(Configuration):
     """ AlgorithmSearchSpaceSpec defines the algorithms available to models produced by a Study """
-    Allowlist: List[ClassicEstimator] = field(default_factory=lambda : [])
+    Allowlist: List[ClassicEstimator] = field(default_factory=lambda: [])
     """
     AllowList contains the collection of algorithms available to the Study specifying the AlgorithmSearchSpaceSpec.
     If empty, all algorithms will be available for training
@@ -804,7 +811,7 @@ class BaselineSettings(Configuration):
     Indicates if baseline models will be produced. Enabling baseline will create a model for each
     algorithm in the parent Study's search space with default hyper-parameters
     """
-    Baselines: List[ClassicEstimator] = field(default_factory=lambda : [])
+    Baselines: List[ClassicEstimator] = field(default_factory=lambda: [])
     """ Baselines contains the collection of algorithms that models will be created with """
     All: bool = False
     """ Indicates if models will be created for every algorithm """
@@ -1029,7 +1036,7 @@ class GarbageCollectionStatus(Configuration):
     """ GarbageCollectionStatus contains the records for garbage-collected models """
     Collected: int = 0
     """ The number of models that were collected, equal to len(Models) """
-    Models: List[ModelResult] = field(default_factory=lambda : [])
+    Models: List[ModelResult] = field(default_factory=lambda: [])
     """ The collection of models that were archived """
 
 
@@ -1125,7 +1132,7 @@ class StudyStatus(ImmutableConfiguration):
     """ BestFE specifies the best feature engineering pipeline produced by the Study """
     Gc: GarbageCollectionStatus = None
     """ GC specifies the status of garbage collection relevant to the Study """
-    Conditions: List[StudyCondition] = field(default_factory=lambda : [])
+    Conditions: List[StudyCondition] = field(default_factory=lambda: [])
     ReportUri: str = ''
     """ The name of the Report resource produced by the Study """
 
@@ -1195,156 +1202,60 @@ class ReportStatus(Configuration):
     """ Logs specifies the location of logs produced by workloads associated with the Report """
     LastUpdated: Time = None
     """ The last time the object was updated """
-    Conditions: List[ReportCondition] = field(default_factory=lambda : [])
+    Conditions: List[ReportCondition] = field(default_factory=lambda: [])
 
 
-@datamodel(proto=training_pb.ModelAutobuilderCondition)
-class ModelAutobuilderCondition(Configuration):
-    """ ModelAutobuilderCondition describes the state of a ModelAutobuilder at a certain point """
-    Type: ModelAutobuilderConditionType = None
-    """ Type of ModelAutobuilder condition """
-    Status: ConditionStatus = None
-    """ Status of the condition, one of True, False, Unknown """
-    LastTransitionTime: Time = None
-    """ Last time the condition transitioned from one status to another """
-    Reason: str = ''
-    """ The reason for the condition's last transition """
-    Message: str = ''
-    """ A human-readable message indicating details about the transition """
-
-
-DataSourceTemplate = DataSourceSpec
-DatasetType_ = DatasetType
-
-
-@datamodel(proto=training_pb.ModelAutobuilderSpec)
-class ModelAutobuilderSpec(Configuration):
-    """ ModelAutobuilderSpec define the desired state of a ModelAutobuilder """
-    DataProductName: str = ''
-    """ The name of the DataProduct namespace that the resource exists under """
-    DataProductVersionName: str = ''
-    """
-    The name of the DataProductVersion which describes the version of the resource
-    that exists in the same DataProduct namespace as the resource
-    """
-    DatasourceName: str = ''
-    """
-    DataSourceName is the name of an existing DataSource resource which will be used as the schema for the ModelAutoBuilder's Entity.
-    If empty, a DataSource will be automatically created based on the data specified by the Location field
-    """
-    DatasetName: str = ''
-    """
-    The name of an existing Entity resource, or the name of the Entity resource that will be created
-    based on the data specified by the Location field, which will be used to train models
-    """
-    Location: DataLocation = None
-    """ The location for data that will be saved in a Entity resource to train models with """
-    Task: TaskType = None
-    """ The machine learning task type relevant to the dataset (i.e. regression, classification) """
-    Subtask: SubtaskType = None
-    """ The machine learning subtask relevant to the primary task (text classification, image object detection, etc.) """
-    Objective: Metric = None
-    """ The objective metric that will be measured against trained models to evaluate their performance """
-    TargetColumn: str = ''
-    """ The name of the column within the dataset that contains the label(s) to be predicted """
-    MaxTime: int = 600
-    """ The deadline for models to complete training, in seconds """
-    MaxModels: int = 10
-    """ The number of candidate models that will be sampled and trained """
-    Fast: bool = False
-    """
-    Fast indicates if Entity and Study resources associated with the ModelAutobuilder should run in fast mode.
-    Running in fast mode will skip unnecessary workloads such as profiling, reporting, explaining, etc.
-    """
-    AccessMethod: AccessType = AccessType.ClusterIP
-    """
-    The Kubernetes-native access method which specifies how the Predictor created by the ModelAutobuilder will be exposed.
-    See https://modela.ai/docs/docs/serving/production/#access-method for a detailed description of each access type
-    """
-    AutoScale: bool = False
-    """ Indicates if the Predictor created by the ModelAutobuilder will automatically scale to traffic """
-    Dataapp: bool = False
-    """ Indicates if the ModelAutobuilder will create a DataApp resource to serve the highest-performing model that was trained """
-    DataSourceSpec: DataSourceSpec = None
-    """
-    DataSourceSpec specifies the full specification of the DataSource resource that will be created by the ModelAutobuilder.
-    If empty, the ModelAutobuilder will attempt to infer the schema of the data specified by the Location field
-    """
-    Trainers: int = 1
-    """
-    The desired number of trainers that will train candidate models in parallel. The number
-    of trainers is restricted based on the allowance provided by the active License
-    """
-    Sampler: SamplerType = SamplerType.TPESearch
-    """ The hyper-parameter optimization search method """
+@datamodel(proto=training_pb.ModelClassTrainingSpec)
+class ModelClassTrainingSpec(Configuration):
+    LabRef: ObjectReference = ObjectReference("modela", "modela-lab")
+    StudyTemplateName: str = ''
+    ModelUnitTests: TestSuite = TestSuite()
+    TrainingSchedule: RunSchedule = RunSchedule()
+    ModelImage: ModelImageSpec = None
+    PromotionPolicy: PromotionType = PromotionType.Best
+    Retrain: bool = True
+    SearchSpace: AlgorithmSearchSpace = AlgorithmSearchSpace()
+    Resources: Workload = Workload('general-large')
+    Paused: bool = False
     Aborted: bool = False
-    """ Aborted indicates that the execution of the ModelAutobuilder and any associated workloads should be permanently stopped """
-    Owner: str = 'no-one'
-    """ The name of the Account which created the object, which exists in the same tenant as the object """
-    Resources: Workload = None
-    """ Resources specifies the resource requirements that will be allocated to dataset and model training Jobs """
-    FeatureEngineering: bool = False
-    """ Indicates if feature engineering will be performed prior to the primary model search """
-    FeatureSelection: bool = False
-    """ Indicates if feature selection will be performed prior to the primary model search """
-    ServingSiteRef: ObjectReference = ObjectReference(Namespace='modela', Name='default-serving-site')
-    """
-    The reference to the ServingSite where the Predictor created by the ModelAutobuilder will be hosted.
-    If unspecified, the default ServingSite from the parent DataProduct will be used
-    """
-    LabRef: ObjectReference = ObjectReference(Namespace='modela', Name='modela-lab')
-    """
-    The reference to the Lab under which Entity and Study resources created by the ModelAutobuilder will be trained.
-    If unspecified, the default Lab from the parent DataProduct will be used
-    """
-    DatasetType: DatasetType_ = DatasetType_.Tabular
-    """ The type of dataset which was uploaded. `tabular` is the only supported type as of the current release """
+    MaxTime: int = 3600
+    MaxModels: int = 10
+    Trainers: int = 1
 
 
-@datamodel(proto=training_pb.ModelAutobuilderStatus)
-class ModelAutobuilderStatus(Configuration):
-    """ ModelAutobuilderStatus define the observed state of a ModelAutobuilder """
-    FlatFileName: str = ''
-    """ The name of the flat-file generated for the associated Entity """
-    DataSourceName: str = ''
-    """ The name of the DataSource associated with resource """
-    DatasetName: str = ''
-    """ The name of the Entity associated with the resource """
-    DataappName: str = ''
-    """ The name of the DataApp associated with the resource """
-    StudyName: str = ''
-    """ The name of the Study associated with the resource """
-    BestModelName: str = ''
-    """ The name of the highest-performing Model resource produced as a result of the associated Study resource """
-    PredictorName: str = ''
-    """ The name of the Predictor associated with the resource """
-    ImageRepoName: str = ''
-    Phase: ModelAutobuilderPhase = ModelAutobuilderPhase.Pending
-    """ The phase of the ModelAutobuilder """
-    Rows: int = 0
-    """ The number of rows observed in the Entity associated with the resource """
-    Cols: int = 0
-    """ The number of columns observed in the Entity associated with the resource """
-    FileSize: int = 0
-    """ The size of the raw data in the Entity associated with the resource """
-    Models: int = 0
-    """ The number of total Model resources created by the associated Study resource """
-    TrainedModels: int = 0
-    """ The number of successfully trained Model resources created by the associated Study resource """
-    BestModelScore: float = 0
-    """ The highest score out of all Models created by the associated Study resource """
-    Estimator: ClassicalEstimatorSpec = None
-    """ The estimator specification for the highest-performing Model resource """
-    StartTime: Time = None
-    """ StartTime represents the time at which the execution of the ModelAutobuilder started """
-    EndTime: Time = None
-    """ EndTime represents the time at which the ModelAutobuilder was marked as completed, failed, or aborted """
-    ObservedGeneration: int = 0
-    """ ObservedGeneration is the last generation that was acted on """
-    FailureReason: StatusError = None
-    """ In the case of failure, the ModelAutobuilder resource controller will set this field with a failure reason """
-    FailureMessage: str = ''
-    """ In the case of failure, the ModelAutobuilder resource controller will set this field with a failure message """
-    LastUpdated: Time = None
-    """ The last time the object was updated """
-    Conditions: List[ModelAutobuilderCondition] = field(default_factory=lambda : [])
+ModelClassSchema = Schema
+
+
+@datamodel(proto=training_pb.ModelClassDataSpec)
+class ModelClassDataSpec(Configuration):
+    Observations: DataLocation = DataLocation()
+    PredictionHistory: DataLocation = DataLocation()
+    Predictions: DataLocation = DataLocation()
+    Schema: ModelClassSchema = ModelClassSchema()
+    Flatfile: FlatFileFormat = FlatFileFormat()
+    PrimaryKey: List[str] = field(default_factory=lambda: [])
+    PredictionTimeColumn: str = ''
+    Target: str = ''
+    Tests: TestSuite = TestSuite()
+
+@datamodel(proto=training_pb.PipelineStageSpec)
+class PipelineStageSpec(Configuration):
+    Name: str = ''
+    Tests: TestSuite() = TestSuite()
+    ServingSiteRef: ObjectReference = ObjectReference('modela', 'modela-serving-site')
+    Resources: Workload = Workload('general-small')
+
+@datamodel(proto=training_pb.ModelClassServingSpec)
+class ModelClassServingSpec(Configuration):
+    Pipeline: List[PipelineStageSpec] = field(default_factory=lambda: [])
+    PredictorTemplateName: str = ''
+    ServingSiteRef: ObjectReference = ObjectReference('modela', 'modela-serving-site')
+    Online: bool = False
+    Dashboard: bool = False
+    Access: AccessSpec = AccessSpec()
+    Replicas: int = 1
+    MonitoringSchedule: RunSchedule = RunSchedule()
+    BatchPredictionSchedule: RunSchedule = RunSchedule()
+    Resources: Workload = Workload('general-small')
+
+

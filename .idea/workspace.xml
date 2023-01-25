@@ -4,18 +4,19 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Update datamodels">
+    <list default="true" id="d8fb08af-0a2a-4ce7-b115-7a4f5c37c372" name="Changes" comment="Upgrade project version">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/data/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/data/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/inference/Predictor.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/Predictor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/inference/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/inference/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/inference/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modela/infra/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/infra/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/SqlQuery.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/SqlQueryRun.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/WebRequest.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/data/WebRequestRun.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/infra/ApiToken.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/infra/Commit.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/modela/team/Meeting.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/modela/training/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/modela/training/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_file_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_file_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_study_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_study_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_modelautobuilder_client.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +93,7 @@
       <recent name="C:\Users\liamm\PycharmProjects\modela-python-sdk\hack" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests in test_study_client.py">
+  <component name="RunManager" selected="Python.Validate Datamodels">
     <configuration name="go build modela-python-sdk gen_crd_docs.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="modela-python-sdk" />
       <working_directory value="$PROJECT_DIR$" />
@@ -502,21 +503,10 @@
       <workItem from="1658877860598" duration="14595000" />
       <workItem from="1659552045804" duration="2676000" />
       <workItem from="1661361450668" duration="1047000" />
-      <workItem from="1663867381089" duration="21910000" />
-    </task>
-    <task id="LOCAL-00003" summary="Append all client stubs to Modela SDK">
-      <created>1643939468776</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1643939468776</updated>
-    </task>
-    <task id="LOCAL-00004" summary="Implement Resource &amp; Configuration Models">
-      <created>1644194342699</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1644194342699</updated>
+      <workItem from="1663867381089" duration="26475000" />
+      <workItem from="1668798240502" duration="8412000" />
+      <workItem from="1671396276298" duration="1260000" />
+      <workItem from="1672437640516" duration="5733000" />
     </task>
     <task id="LOCAL-00005" summary="Add DataSource tests &amp; fix misc. configuration bugs">
       <created>1644523069019</created>
@@ -847,7 +837,21 @@
       <option name="project" value="LOCAL" />
       <updated>1659132854281</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="Update datamodels">
+      <created>1663967809091</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1663967809092</updated>
+    </task>
+    <task id="LOCAL-00053" summary="Upgrade project version">
+      <created>1663967947538</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1663967947538</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -868,7 +872,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/docs/sphinx-markdown-builder" />
     </ignored-roots>
-    <MESSAGE value="Finish study progress visualization" />
     <MESSAGE value="Implement custom markdown documentation generator&#10;&#10;Heavily edited https://github.com/clayrisser/sphinx-markdown-builder to generate nice-looking markdown suitable for the Modela documentation." />
     <MESSAGE value="Finish implementing custom markdown generator" />
     <MESSAGE value="Update README.md" />
@@ -893,7 +896,8 @@
     <MESSAGE value="Update data models to the latest API" />
     <MESSAGE value="Require modelaapi version using greater than" />
     <MESSAGE value="Update datamodels" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update datamodels" />
+    <MESSAGE value="Upgrade project version" />
+    <option name="LAST_COMMIT_MESSAGE" value="Upgrade project version" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -913,7 +917,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/modela_python_sdk$build.coverage" NAME="build Coverage Results" MODIFIED="1646678944062" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/docs" />
-    <SUITE FILE_PATH="coverage/modela_python_sdk$Validate_Datamodels.coverage" NAME="Validate Datamodels Coverage Results" MODIFIED="1663959963413" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/hack" />
+    <SUITE FILE_PATH="coverage/modela_python_sdk$Validate_Datamodels.coverage" NAME="Validate Datamodels Coverage Results" MODIFIED="1668798366403" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/hack" />
     <SUITE FILE_PATH="coverage/modela_python_sdk$Unittests_in_test_configuration_py.coverage" NAME="Unittests in test_configuration.py Coverage Results" MODIFIED="1648494060547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/modela_python_sdk$Add_Documentation.coverage" NAME="Add Documentation Coverage Results" MODIFIED="1663953350732" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/hack" />
     <SUITE FILE_PATH="coverage/modela_python_sdk$.coverage" NAME=" Coverage Results" MODIFIED="1663967288671" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
